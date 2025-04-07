@@ -13,6 +13,7 @@ public class MoviesController : ControllerBase
         _context = temp;
     }
 
+    [HttpGet ("GetMovies")]
     public IActionResult Get() // this gets and returns all the movies in the db
     {
         var movies = _context.movies_titles.ToList();
