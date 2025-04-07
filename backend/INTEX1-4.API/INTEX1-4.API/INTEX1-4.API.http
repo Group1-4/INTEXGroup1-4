@@ -1,0 +1,6 @@
+@INTEX1_4.API_HostAddress = http://localhost:5055
+
+GET {{INTEX1_4.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
