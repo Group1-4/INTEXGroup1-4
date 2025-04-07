@@ -1,4 +1,10 @@
+
+
 function HomePage () {
 
-}
-export default HomePage
+    return(
+        <>
+        </>
+    );
+};
+export default HomePage;
