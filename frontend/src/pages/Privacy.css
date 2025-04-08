@@ -1,0 +1,179 @@
+/* === GLOBAL RESET / OVERRIDES === */
+
+body, html {
+    background-color: #fdfcfb; /* Off-white background */
+    color: #000; /* Black text */
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+  }
+  
+  a {
+    color: #C4453C; /* Themed red links */
+    text-decoration: underline;
+  }
+  
+  a:hover {
+    color: #a83832;
+  }
+  
+  /* Override identity.css specific classes if needed */
+  [class^="netlify-identity"],
+  [class*=" netlify-identity"] {
+    all: unset !important;
+  }
+  
+  /* Optional: Normalize all headers/text alignment */
+  h1, h2, h3, h4, h5, h6, p, li {
+    text-align: left !important;
+    color: #000;
+  }
+  
+  /* Make sure the entire app respects off-white bg */
+  .privacy-container,
+  .privacy-content,
+  .privacy-sidebar {
+    background-color: #fdfcfb !important;
+  }
+  
+  /* Apply the red for accent areas like sidebar headers or emphasized elements */
+  .privacy-sidebar h3,
+  .privacy-content h2 {
+    border-left: 4px solid #C4453C;
+    padding-left: 0.5rem;
+  }
+
+
+/* Container for the entire layout */
+
+.privacy-content ul {
+    list-style: none;
+    padding-left: 0;
+    margin-left: 0;
+  }
+
+.privacy-container {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  /* Sidebar styles */
+  .privacy-sidebar {
+    flex: 0 0 250px;
+    border-right: 2px solid #e0e0e0;
+    padding-right: 1.5rem;
+  }
+  
+  .privacy-sidebar h3 {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    border-left: 4px solid #C4453C;
+    padding-left: 0.5rem;
+  }
+  
+  .privacy-sidebar ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+  
+  .privacy-sidebar li {
+    margin-bottom: 0.75rem;
+  }
+  
+  .privacy-sidebar a {
+    text-decoration: none !important;
+    color: #333;
+    font-weight: 500;
+  }
+  
+  .privacy-sidebar a:hover {
+    color: #C4453C;
+  }
+  
+  /* Main content */
+  .privacy-content {
+    flex: 1;
+    padding-left: 1rem;
+  }
+  
+  .privacy-content h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+  
+  .privacy-content section {
+    margin-bottom: 2rem;
+  }
+  
+  .privacy-content h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #551A1C;
+    margin-bottom: 0.75rem;
+  }
+  
+  .privacy-content p,
+  .privacy-content li {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 1rem;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .privacy-container {
+      flex-direction: column;
+    }
+  
+    .privacy-sidebar {
+      border-right: none;
+      padding-right: 0;
+      margin-bottom: 2rem;
+    }
+  }
+  
+  /* Force override for all anchor tags globally */
+a,
+a:visited {
+  color: #551A1C !important; /* CineNiche red */
+  text-decoration: underline !important;
+}
+
+a:hover {
+  color: #C4453C !important;
+}
+
+.print-button {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    background-color: #551A1C;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: #FDF2CD;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: background-color 0.2s ease;
+  }
+  
+  .print-button:hover {
+    background-color: #C4453C;
+  }
+
+  @media print {
+    .print-button {
+      display: none;
+    }
+  }

@@ -1,3 +1,7 @@
 ﻿<Project>
+<<<<<<< HEAD
   <Import Project="../buildMultiTargeting/INTEX1-4.API.props" />
+=======
+  <Import Project="..\buildMultiTargeting\INTEX1-4.API.props" />
+>>>>>>> 6caa44f799364fbead98e48bf22c942bbaace398
 </Project>
