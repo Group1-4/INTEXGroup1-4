@@ -1,20 +1,11 @@
 {
   "Version": 1,
-<<<<<<< HEAD
   "Hash": "3+Vn2oTcK0yeHUpABzwJbHJuzY4BRx3CcB5AHzROMqk=",
-=======
-  "Hash": "PBGRQolbwiz2If2mVcZqn3GV5h2VHLmjxAHYgja6FVI=",
->>>>>>> 6caa44f799364fbead98e48bf22c942bbaace398
   "Source": "INTEX1-4.API",
   "BasePath": "_content/INTEX1-4.API",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
   "DiscoveryPatterns": [],
-<<<<<<< HEAD
   "Assets": []
-=======
-  "Assets": [],
-  "Endpoints": []
->>>>>>> 6caa44f799364fbead98e48bf22c942bbaace398
 }
