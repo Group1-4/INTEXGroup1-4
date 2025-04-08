@@ -260,12 +260,28 @@ function Admin() {
             overflow: "hidden",
           }}
         >
-          <TableContainer sx={{ flex: 1 }}>
+          <TableContainer
+            sx={{
+              flex: 1,
+              backgroundColor: "#FDF2CD", // cream background
+            }}
+          >
             <Table stickyHeader aria-label="movie table">
               <TableHead>
-                <TableRow>
+                <TableRow
+                  sx={{
+                    backgroundColor: "#C4453C",
+                  }}
+                >
                   {[...baseColumns, "category", "actions"].map((col) => (
-                    <TableCell key={col}>
+                    <TableCell
+                      key={col}
+                      sx={{
+                        color: "#FDF2CD",
+                        fontWeight: "bold",
+                        backgroundColor: "#C4453C", // header cell color
+                      }}
+                    >
                       {col === "actions"
                         ? "Actions"
                         : col.charAt(0).toUpperCase() + col.slice(1)}
@@ -273,6 +289,7 @@ function Admin() {
                   ))}
                 </TableRow>
               </TableHead>
+
               <TableBody>
                 {rows
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -282,9 +299,15 @@ function Admin() {
                       role="checkbox"
                       tabIndex={-1}
                       key={row.showId || idx}
+                      sx={{
+                        backgroundColor: "#FFF9E2", // optional row background
+                        "&:hover": {
+                          backgroundColor: "#FDEEBB",
+                        },
+                      }}
                     >
                       {[...baseColumns, "category"].map((col) => (
-                        <TableCell key={col}>
+                        <TableCell key={col} sx={{ color: "#2F2A26" }}>
                           {String(row[col as keyof Movie])}
                         </TableCell>
                       ))}
@@ -292,7 +315,15 @@ function Admin() {
                         <Button
                           variant="outlined"
                           size="small"
-                          sx={{ mr: 1 }}
+                          sx={{
+                            mr: 1,
+                            color: "#C4453C",
+                            borderColor: "#C4453C",
+                            "&:hover": {
+                              backgroundColor: "#fdf2cd",
+                              borderColor: "#a73930",
+                            },
+                          }}
                           onClick={() => handleEditClick(row)}
                         >
                           Edit
@@ -329,8 +360,14 @@ function Admin() {
           maxWidth="md"
           fullWidth
         >
-          <DialogTitle>{editMode ? "Edit Movie" : "Add New Movie"}</DialogTitle>
-          <DialogContent dividers>
+          <DialogTitle sx={{ backgroundColor: "#C4453C", color: "#FDF2CD" }}>
+            {editMode ? "Edit Movie" : "Add New Movie"}
+          </DialogTitle>
+
+          <DialogContent
+            dividers
+            sx={{ backgroundColor: "#2F2A26", color: "#FDF2CD" }}
+          >
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               {baseColumns.map((field) => (
                 <TextField
@@ -340,9 +377,27 @@ function Admin() {
                   value={String(newMovie[field] ?? "")}
                   onChange={handleInputChange}
                   fullWidth
+                  sx={{
+                    input: { color: "#FDF2CD" },
+                    label: { color: "#FDF2CD" },
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: "#FDF2CD",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#FDF2CD",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#FDF2CD",
+                      },
+                    },
+                  }}
                 />
               ))}
-              <Typography variant="subtitle1">Categories</Typography>
+
+              <Typography variant="subtitle1" sx={{ color: "#FDF2CD" }}>
+                Categories
+              </Typography>
               <FormGroup>
                 {allCategoryFields.map((cat) => (
                   <FormControlLabel
@@ -352,19 +407,39 @@ function Admin() {
                         checked={newMovie[cat] === 1}
                         onChange={handleCheckboxChange}
                         name={cat}
+                        sx={{
+                          color: "#FDF2CD",
+                          "&.Mui-checked": {
+                            color: "#C4453C",
+                          },
+                        }}
                       />
                     }
-                    label={cat}
+                    label={<span style={{ color: "#FDF2CD" }}>{cat}</span>}
                   />
                 ))}
               </FormGroup>
             </Box>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setShowForm(false)} color="inherit">
+
+          <DialogActions sx={{ backgroundColor: "#2F2A26" }}>
+            <Button
+              onClick={() => setShowForm(false)}
+              sx={{ color: "#C4453C", fontWeight: "bold" }}
+            >
               Cancel
             </Button>
-            <Button onClick={handleFormSubmit} variant="contained">
+            <Button
+              onClick={handleFormSubmit}
+              variant="contained"
+              sx={{
+                backgroundColor: "#C4453C",
+                color: "#FDF2CD",
+                "&:hover": {
+                  backgroundColor: "#a73930",
+                },
+              }}
+            >
               {editMode ? "Update" : "Submit"}
             </Button>
           </DialogActions>
