@@ -21,9 +21,18 @@ const Privacy: React.FC = () => {
     <div className="privacy-container">
       {/* Sidebar navigation */}
       <aside className="privacy-sidebar">
-        <h3>Sections</h3>
+        <h3>Section A: Our Collection, Use, and Disclosure of Personal Information</h3>
         <ul>
-          {sections.map((section) => (
+          {sections.slice(0, 5).map((section) => (
+            <li key={section.id}>
+              <a href={`#${section.id}`}>{section.title}</a>
+            </li>
+          ))}
+        </ul>
+
+        <h3>Section B: Cookies and Internet Advertising</h3>
+        <ul>
+          {sections.slice(5).map((section) => (
             <li key={section.id}>
               <a href={`#${section.id}`}>{section.title}</a>
             </li>
@@ -33,10 +42,13 @@ const Privacy: React.FC = () => {
 
       {/* Main content */}
       <main className="privacy-content">
-      <button className="print-button" onClick={() => window.print()}>
-      🖶 Print
-      </button>
-        <h1>CineNiche Privacy Policy</h1>
+      <div className="print-button-wrapper">
+        <button className="print-button" onClick={() => window.print()}>
+          🖶 Print
+        </button>
+      </div>
+
+      <h1>CineNiche Privacy Policy</h1>
 
         <Section id="data-we-collect" title="What data do we collect?">
           <ul>

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { FaFacebookF, FaYoutube, FaInstagram, FaXTwitter } from 'react-icons/fa6';
 import './GlobalFooter.css';
 
@@ -46,9 +45,9 @@ const GlobalFooter: React.FC = () => {
             <h4 className="footer-heading">LEGAL</h4>
             <ul className="footer-list">
             <li>
-                <Link to="/privacy" className="footer-link">
+                <a href="/privacy" className="footer-privacy">
                     Privacy Policy
-                </Link>
+                </a>
                 </li>
                 <li>About Ads</li>
                 <li>Subscriber Agreement</li>
