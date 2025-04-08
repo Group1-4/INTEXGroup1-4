@@ -6,12 +6,14 @@ import MoviePage from './pages/MoviePage'
 import Privacy from './pages/Privacy'
 import RegisterPage from './pages/RegisterPage'
 import GlobalFooter from './components/GlobalFooter'
+import Header from './components/header'
 
 function App() {
 
 
   return (
     <>
+    <Header />
     <Router>
       <Routes>
         <Route path='/' element={<HomePage />}></Route>
