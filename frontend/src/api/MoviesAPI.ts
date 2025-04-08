@@ -7,14 +7,20 @@ interface FetchMoviesResponse {
 const api_url = "https://localhost:4000"
 
 export const fetchMovies = async (): Promise<FetchMoviesResponse> => {
-   try { const response = await fetch(`${api_url}/Movies/GetMovies`);
-    return await response.json();}
-    catch (error){
-        console.error('Error fetching movies', error)
-        throw error;
-    }
+  try {
+    const response = await fetch(`${api_url}/Movies/GetMovies`, {
+      credentials: 'include'
+    });
+    const data = await response.json();
+    console.log('Fetched Movies:', data); // Print the response
+    return data;
+  } catch (error) {
+    console.error('Error fetching movies', error);
+    throw error;
+  }
+};
 
-}
+
 
 export const addMovie = async (movie: Movie): Promise<{ success: boolean; newId: number }> => {
     try {

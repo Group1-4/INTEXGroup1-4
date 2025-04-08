@@ -49,7 +49,7 @@ public class MoviesController : ControllerBase
         return NoContent();
     }
     [HttpPut("UpdateMovie/{id}")]
-    public IActionResult UpdateMovie(int id, [FromBody] Movie updatedMovie)
+    public IActionResult UpdateMovie(string id, [FromBody] Movie updatedMovie)
     {
         if (id != updatedMovie.ShowId)
             return BadRequest("ID mismatch.");
@@ -63,4 +63,11 @@ public class MoviesController : ControllerBase
 
         return NoContent();
     }
+    [HttpGet ("MovieDetails/{id}")]
+    public IActionResult MovieDetails(string id) // this gets and returns all the movies in the db
+    {
+        var existing = _context.movies_titles.Find(id);
+        return Ok(existing);
+    }
+    
 }
