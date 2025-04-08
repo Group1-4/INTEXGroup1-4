@@ -48,7 +48,7 @@ function Admin() {
         const data = await fetchMovies();
         const knownFields = new Set(baseColumns.concat(['showId']));
 
-        const formattedRows = data.map((item) => {
+        const formattedRows = data.movies.map((item) => {
           const categoryKeys = Object.keys(item).filter(
             (key) => !knownFields.has(key) && item[key as keyof Movie] === 1
           );
