@@ -1,7 +1,7 @@
 /* === GLOBAL RESET / OVERRIDES === */
 
 body, html {
-    background-color: #fdfcfb; /* Off-white background */
+    background-color: #FDF2CD; /* Off-white background */
     color: #000; /* Black text */
     font-family: sans-serif;
     margin: 0;
@@ -176,4 +176,29 @@ a:hover {
     .print-button {
       display: none;
     }
+  }
+
+  .print-button-wrapper {
+    position: sticky;
+    top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 1rem;
+    z-index: 10;
+  }
+  
+  .print-button {
+    background-color: #3f1c1c;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+  }
+  
+  .print-button:hover {
+    background-color: #C4453C;
   }
