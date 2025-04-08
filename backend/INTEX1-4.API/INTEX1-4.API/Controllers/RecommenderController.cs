@@ -1,6 +1,7 @@
 using INTEX1_4.API.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 [Route("[controller]")]
 [ApiController]
@@ -55,8 +56,6 @@ public class RecommenderController : ControllerBase
 
         return Ok(result);
     }
-
-
 
 
     [HttpGet("Collaborative")]
