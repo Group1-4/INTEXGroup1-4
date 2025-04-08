@@ -63,4 +63,11 @@ public class MoviesController : ControllerBase
 
         return NoContent();
     }
+    [HttpGet ("MovieDetails/{id}")]
+    public IActionResult MovieDetails(string id) // this gets and returns all the movies in the db
+    {
+        var existing = _context.movies_titles.Find(id);
+        return Ok(existing);
+    }
+    
 }
