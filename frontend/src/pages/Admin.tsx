@@ -7,6 +7,7 @@ import {
 import { Movie } from '../types/Movie';
 import { fetchMovies, addMovie, deleteMovie, updateMovie } from '../api/MoviesAPI';
 
+
 const baseColumns = [
   'type', 'title', 'director', 'cast', 'country',
   'releaseYear', 'rating', 'duration', 'description'
@@ -49,6 +50,7 @@ function Admin() {
           );
 
           return {
+            
             ...item,
             category: categoryKeys.join(', ')
           };
