@@ -107,26 +107,27 @@ export const updateMovie = async (movie: Movie): Promise<boolean> => {
 
 export const fetchMoviesCard = async (
   page: number,
-  pageSize: number = 20
-
+  pageSize: number = 20,
+  selectedCategories: string[] = []
 ): Promise<FetchMoviesCardsResponse> => {
-  try {
-    const response = await fetch(
-      `${API_URL}/Movies/MovieList/${page}/${pageSize}`,
-      { credentials: "include" }
-    );
+  const categoryQuery =
+    selectedCategories.length > 0
+      ? `?categories=${encodeURIComponent(selectedCategories.join(","))}`
+      : "";
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch movie cards: ${response.status}`);
-    }
+  const response = await fetch(
+    `${API_URL}/Movies/MovieList/${page}/${pageSize}${categoryQuery}`,
+    { credentials: "include" }
+  );
 
-    const data: FetchMoviesCardsResponse = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching movie cards:", error);
-    throw error;
+  if (!response.ok) {
+    throw new Error(`Failed to fetch movie cards: ${response.status}`);
   }
+
+  return await response.json();
 };
+
+
 
 export const fetchMoviesPaginated = async (page: number, pageSize: number): Promise<{ movies: Movie[], total: number }> => {
   const response = await fetch(`${API_URL}/Movies/GetMovies?page=${page}&pageSize=${pageSize}`, {
