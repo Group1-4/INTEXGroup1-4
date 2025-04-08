@@ -1,33 +1,16 @@
 import React, { useEffect, useState } from "react";
 import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TablePagination,
-  TableRow,
-  Button,
-  Box,
-  Typography,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
-} from "@mui/material";
-import { Movie } from "../types/Movie";
-import {
-  fetchMovies,
-  addMovie,
-  deleteMovie,
-  updateMovie,
-} from "../api/MoviesAPI";
-import "../App.css";
+
+  Paper, Table, TableBody, TableCell, TableContainer,
+  TableHead, TablePagination, TableRow, Button, Box, Typography,
+  Dialog, DialogTitle, DialogContent, DialogActions, TextField, FormGroup, FormControlLabel, Checkbox
+} from '@mui/material';
+import { Movie } from '../types/Movie';
+import { fetchMoviesPaginated, addMovie, deleteMovie, updateMovie } from '../api/MoviesAPI';
+import AuthorizeView, { AuthorizedUser } from '../components/Authorizeview';
+import Logout from '../components/logout';
+
+
 const baseColumns = [
   "type",
   "title",
@@ -40,81 +23,61 @@ const baseColumns = [
   "description",
 ];
 const allCategoryFields = [
-  "Action",
-  "Adventure",
-  "Anime Series International TV Shows",
-  "British TV Shows Docuseries International TV Shows",
-  "Children",
-  "Comedies",
-  "Comedies Dramas International Movies",
-  "Comedies International Movies",
-  "Comedies Romantic Movies",
-  "Crime TV Shows Docuseries",
-  "Documentaries",
-  "Documentaries International Movies",
-  "Docuseries",
-  "Dramas",
-  "Dramas International Movies",
-  "Dramas Romantic Movies",
-  "Family Movies",
-  "Fantasy",
-  "Horror Movies",
-  "International Movies Thrillers",
-  "International TV Shows Romantic TV Shows TV Dramas",
-  "Kids' TV",
-  "Language TV Shows",
-  "Musicals",
-  "Nature TV",
-  "Reality TV",
-  "Spirituality",
-  "TV Action",
-  "TV Comedies",
-  "TV Dramas",
-  "Talk Shows TV Comedies",
-  "Thrillers",
+
+  "action", "adventure", "animeSeriesInternationalTVShows", "britishTVShowsDocuseriesInternationalTVShows",
+  "children", "comedies", "comediesDramasInternationalMovies", "comediesInternationalMovies",
+  "comediesRomanticMovies", "crimeTVShowsDocuseries", "documentaries", "documentariesInternationalMovies",
+  "docuseries", "dramas", "dramasInternationalMovies", "dramasRomanticMovies", "familyMovies", "fantasy",
+  "horrorMovies", "internationalMoviesThrillers", "internationalTVShowsRomanticTVDramas",
+  "kidsTV", "languageTVShows", "musicals", "natureTV", "realityTV", "spirituality", "tvAction",
+  "tvComedies", "tvDramas", "talkShowsTVComedies", "thrillers"
 ];
+
 function Admin() {
   const [rows, setRows] = useState<Movie[]>([]);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(0); // 0-based index
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalRows, setTotalRows] = useState(0);
   const [showForm, setShowForm] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [selectedMovieId, setSelectedMovieId] = useState<number | null>(null);
+  const [selectedMovieId, setSelectedMovieId] = useState<string | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [newMovie, setNewMovie] = useState<any>({
-    showId: 0,
-    title: "",
-    type: "",
-    director: "",
-    cast: "",
-    country: "",
-    releaseYear: 0,
-    rating: 0,
-    duration: 0,
-    description: "",
-    ...Object.fromEntries(allCategoryFields.map((c) => [c, 0])),
+
+    showId: '', title: '', type: '', director: '', cast: '',
+    country: '', releaseYear: 0, rating: 0, duration: 0,
+    description: '',
+    ...Object.fromEntries(allCategoryFields.map((c) => [c, 0]))
   });
+
+  const getCategoryString = (movie: any) =>
+    allCategoryFields.filter((cat) => movie[cat] === 1).join(', ');
+
+  const fetchPage = async (page: number, size: number) => {
+    try {
+      const { movies, total } = await fetchMoviesPaginated(page + 1, size);
+      const knownFields = new Set(baseColumns.concat(['showId']));
+      const formattedRows = movies.map((item) => {
+        const categoryKeys = Object.keys(item).filter(
+          (key) => !knownFields.has(key) && item[key as keyof Movie] === 1
+        );
+        return {
+          ...item,
+          category: categoryKeys.join(', ')
+        };
+      });
+      setRows(formattedRows);
+      setTotalRows(total);
+    } catch (error) {
+      console.error('Error fetching paginated movies:', error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetchMovies();
-        const knownFields = new Set(baseColumns.concat(["showId"]));
-        const formattedRows = data.map((item) => {
-          const categoryKeys = Object.keys(item).filter(
-            (key) => !knownFields.has(key) && item[key as keyof Movie] === 1
-          );
-          return {
-            ...item,
-            category: categoryKeys.join(", "),
-          };
-        });
-        setRows(formattedRows);
-      } catch (error) {
-        console.error("Error fetching movies:", error);
-      }
-    };
-    fetchData();
-  }, []);
+    fetchPage(page, rowsPerPage);
+  }, [page, rowsPerPage]);
+
+
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
@@ -126,11 +89,12 @@ function Admin() {
   };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    const typedValue = ["releaseYear", "rating", "duration"].includes(name)
-      ? Number(value)
-      : value;
-    setNewMovie((prev: any) => ({ ...prev, [name]: typedValue }));
+
+    setNewMovie((prev: any) => ({ ...prev, [name]: value }));
   };
+  
+
+
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
     setNewMovie((prev: any) => ({ ...prev, [name]: checked ? 1 : 0 }));
@@ -140,49 +104,33 @@ function Admin() {
     try {
       if (editMode) {
         await updateMovie(movieToSend);
-        setRows((prev) =>
-          prev.map((m) =>
-            m.showId === newMovie.showId
-              ? { ...movieToSend, category: getCategoryString(movieToSend) }
-              : m
-          )
-        );
+
       } else {
         const response = await addMovie(movieToSend);
         if (response && response.success) {
-          setRows((prev) => [
-            ...prev,
-            {
-              ...movieToSend,
-              showId: response.newId,
-              category: getCategoryString(movieToSend),
-            },
-          ]);
+          movieToSend.showId = response.newId;
         }
       }
+      fetchPage(page, rowsPerPage);
     } catch (error) {
       console.error("Error saving movie:", error);
     } finally {
       setNewMovie({
-        showId: 0,
-        title: "",
-        type: "",
-        director: "",
-        cast: "",
-        country: "",
-        releaseYear: 0,
-        rating: 0,
-        duration: 0,
-        description: "",
-        ...Object.fromEntries(allCategoryFields.map((c) => [c, 0])),
+
+        showId: '', title: '', type: '', director: '', cast: '',
+        country: '', releaseYear: 0, rating: 0, duration: 0,
+        description: '',
+        ...Object.fromEntries(allCategoryFields.map((c) => [c, 0]))
+
       });
       setEditMode(false);
       setShowForm(false);
     }
   };
-  const getCategoryString = (movie: any) =>
-    allCategoryFields.filter((cat) => movie[cat] === 1).join(", ");
-  const handleDeleteClick = (id: number) => {
+
+
+  const handleDeleteClick = (id: string) => {
+
     setSelectedMovieId(id);
     setDeleteConfirmOpen(true);
   };
@@ -190,9 +138,9 @@ function Admin() {
     if (selectedMovieId !== null) {
       try {
         await deleteMovie(selectedMovieId);
-        setRows((prev) =>
-          prev.filter((movie) => movie.showId !== selectedMovieId)
-        );
+
+        fetchPage(page, rowsPerPage);
+
       } catch (error) {
         console.error("Error deleting movie:", error);
       } finally {
@@ -210,26 +158,21 @@ function Admin() {
     setShowForm(true);
   };
   return (
-    <>
-      <Box
-        sx={{ height: "100vh", display: "flex", flexDirection: "column", p: 2 }}
-      >
-        <h1 style={{ color: "#FDF2CD" }}>CineNiche Admin Portal</h1>
-        <Button
-          variant="contained"
-          onClick={() => {
-            setShowForm(true);
-            setEditMode(false);
-          }}
-          sx={{
-            mb: 2,
-            backgroundColor: "#C4453C", // your CineNiche red
-            color: "#FDF2CD", // your creamy gold text
-            "&:hover": {
-              backgroundColor: "#A73930", // darker red on hover
-            },
-          }}
-        >
+
+
+      <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', p: 2 }}>
+        <Typography variant="h4" sx={{ mb: 2 }}>
+          CineNiche Movie Administration
+        </Typography>
+
+        <span>
+          <Logout>
+            Logout <AuthorizedUser value="email" />
+          </Logout>
+        </span>
+
+        <Button variant="contained" onClick={() => { setShowForm(true); setEditMode(false); }} sx={{ mb: 2 }}>
+
           Add Movie
         </Button>
         <Paper
@@ -270,82 +213,45 @@ function Admin() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, idx) => (
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.showId || idx}
-                      sx={{
-                        backgroundColor: "#FFF9E2", // optional row background
-                        "&:hover": {
-                          backgroundColor: "#FDEEBB",
-                        },
-                      }}
-                    >
-                      {[...baseColumns, "category"].map((col) => (
-                        <TableCell key={col} sx={{ color: "#2F2A26" }}>
-                          {String(row[col as keyof Movie])}
-                        </TableCell>
-                      ))}
-                      <TableCell>
-                        <Button
-                          variant="outlined"
-                          size="small"
-                          sx={{
-                            mr: 1,
-                            color: "#C4453C",
-                            borderColor: "#C4453C",
-                            "&:hover": {
-                              backgroundColor: "#FDF2CD",
-                              borderColor: "#A73930",
-                            },
-                          }}
-                          onClick={() => handleEditClick(row)}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          color="error"
-                          size="small"
-                          onClick={() => handleDeleteClick(row.showId)}
-                        >
-                          Delete
-                        </Button>
+
+                {rows.map((row) => (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.showId}>
+                    {[...baseColumns, 'category'].map((col) => (
+                      <TableCell key={col}>
+                        {String(row[col as keyof Movie])}
                       </TableCell>
-                    </TableRow>
-                  ))}
+                    ))}
+                    <TableCell>
+                      <Button variant="outlined" size="small" sx={{ mr: 1 }} onClick={() => handleEditClick(row)}>
+                        Edit
+                      </Button>
+                      <Button variant="outlined" color="error" size="small" onClick={() => handleDeleteClick(row.showId)}>
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </TableContainer>
           <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={rows.length}
+            count={totalRows}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Paper>
-        {/* Add/Edit Movie Dialog */}
-        <Dialog
-          open={showForm}
-          onClose={() => setShowForm(false)}
-          maxWidth="md"
-          fullWidth
-        >
-          <DialogTitle sx={{ backgroundColor: "#C4453C", color: "#FDF2CD" }}>
-            {editMode ? "Edit Movie" : "Add New Movie"}
-          </DialogTitle>
-          <DialogContent
-            dividers
-            sx={{ backgroundColor: "#2F2A26", color: "#FDF2CD" }}
-          >
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+
+
+        {/* Add/Edit Dialog */}
+        <Dialog open={showForm} onClose={() => setShowForm(false)} maxWidth="md" fullWidth>
+          <DialogTitle>{editMode ? 'Edit Movie' : 'Add New Movie'}</DialogTitle>
+          <DialogContent dividers>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+
               {baseColumns.map((field) => (
                 <TextField
                   key={field}
@@ -442,7 +348,9 @@ function Admin() {
           </DialogActions>
         </Dialog>
       </Box>
+
     </>
+
   );
 }
 export default Admin;
