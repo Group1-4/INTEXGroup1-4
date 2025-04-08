@@ -42,10 +42,13 @@ const Privacy: React.FC = () => {
 
       {/* Main content */}
       <main className="privacy-content">
-      <button className="print-button" onClick={() => window.print()}>
-      🖶 Print
-      </button>
-        <h1>CineNiche Privacy Policy</h1>
+      <div className="print-button-wrapper">
+        <button className="print-button" onClick={() => window.print()}>
+          🖶 Print
+        </button>
+      </div>
+
+      <h1>CineNiche Privacy Policy</h1>
 
         <Section id="data-we-collect" title="What data do we collect?">
           <ul>
