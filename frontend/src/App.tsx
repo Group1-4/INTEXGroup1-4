@@ -7,6 +7,7 @@ import Privacy from "./pages/Privacy";
 import RegisterPage from "./pages/RegisterPage";
 import GlobalFooter from "./components/GlobalFooter";
 import Header from "./components/GlobalHeader";
+import Footer from "./components/GlobalFooter";
 function App() {
   return (
     <>
@@ -22,6 +23,7 @@ function App() {
           <Route path="/footer" element={<GlobalFooter />}></Route>
         </Routes>
       </Router>
+      <Footer />
     </>
   );
 }
