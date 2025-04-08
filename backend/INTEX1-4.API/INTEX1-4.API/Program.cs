@@ -43,6 +43,15 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 builder.Services.AddScoped<IUserClaimsPrincipalFactory<IdentityUser>, CustomUserClaimsPrincipalFactory>();
 
+builder.Services.ConfigureApplicationCookie(options =>
+    {
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SameSite = SameSiteMode.None;// change after adding https for production
+        options.Cookie.Name = ".AspNetCore.Identity.Application";
+        options.LoginPath = "/login";
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    }
+);
 
 builder.Services.AddCors(options =>
 {
@@ -51,6 +60,7 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy.AllowAnyOrigin()
+                .AllowCredentials()
                 .AllowAnyMethod()
                 .AllowAnyHeader();
         });
@@ -78,7 +88,12 @@ app.MapPost("/logout", async (HttpContext context, SignInManager<IdentityUser> s
     await signInManager.SignOutAsync();
     
     // Ensure authentication cookie is removed
-    context.Response.Cookies.Delete(".AspNetCore.Identity.Application");
+    context.Response.Cookies.Delete(".AspNetCore.Identity.Application", new CookieOptions
+    {
+        HttpOnly = true,
+        Secure = true,
+        SameSite = SameSiteMode.None
+    });
 
     return Results.Ok(new { message = "Logout successful" });
 }).RequireAuthorization();
