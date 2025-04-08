@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("INTEX1-4.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4d5bf40ea954073db5b1023b9934d5bebbf25376")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e19fbc75711b8c0dab60a6147c8d90846615d8f7")]
 [assembly: System.Reflection.AssemblyProductAttribute("INTEX1-4.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("INTEX1-4.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
