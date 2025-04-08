@@ -7,7 +7,7 @@ namespace INTEX1_4.API.Data
     {
         [Key]
         [Column("show_id")]
-        public int ShowId { get; set; }
+        public string ShowId { get; set; }
 
         [Column("type")]
         public string? Type { get; set; }
