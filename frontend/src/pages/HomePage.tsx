@@ -7,6 +7,8 @@ import {
     AccordionDetails,
   } from "@mui/material";
   import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+  import CookieConsent from "react-cookie-consent";
+  
   function HomePage() {
     return (
       <Box
