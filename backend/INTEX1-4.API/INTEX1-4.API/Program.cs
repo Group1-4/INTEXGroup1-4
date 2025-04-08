@@ -13,6 +13,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<MoviesDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("MoviesConnection")));
 
+builder.Services.AddDbContext<ContentDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("ContentConnection")));
+
+builder.Services.AddDbContext<CollabDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("CollabConnection")));
+
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(
