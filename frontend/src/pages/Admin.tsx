@@ -2,14 +2,24 @@ import React, { useEffect, useState } from 'react';
 import {
   Paper, Table, TableBody, TableCell, TableContainer,
   TableHead, TablePagination, TableRow, Button, Box, Typography,
-  Dialog, DialogTitle, DialogContent, DialogActions, TextField
+  Dialog, DialogTitle, DialogContent, DialogActions, TextField, FormGroup, FormControlLabel, Checkbox
 } from '@mui/material';
 import { Movie } from '../types/Movie';
-import { fetchMovies, addMovie } from '../api/MoviesAPI';
+import { fetchMovies, addMovie, deleteMovie, updateMovie } from '../api/MoviesAPI';
 
 const baseColumns = [
   'type', 'title', 'director', 'cast', 'country',
-  'releaseYear', 'rating', 'duration', 'description', 'category'
+  'releaseYear', 'rating', 'duration', 'description'
+];
+
+const allCategoryFields = [
+  "Action", "Adventure", "Anime Series International TV Shows", "British TV Shows Docuseries International TV Shows",
+  "Children", "Comedies", "Comedies Dramas International Movies", "Comedies International Movies",
+  "Comedies Romantic Movies", "Crime TV Shows Docuseries", "Documentaries", "Documentaries International Movies",
+  "Docuseries", "Dramas", "Dramas International Movies", "Dramas Romantic Movies", "Family Movies", "Fantasy",
+  "Horror Movies", "International Movies Thrillers", "International TV Shows Romantic TV Shows TV Dramas",
+  "Kids' TV", "Language TV Shows", "Musicals", "Nature TV", "Reality TV", "Spirituality", "TV Action",
+  "TV Comedies", "TV Dramas", "Talk Shows TV Comedies", "Thrillers"
 ];
 
 function Admin() {
@@ -17,10 +27,14 @@ function Admin() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [showForm, setShowForm] = useState(false);
-  const [newMovie, setNewMovie] = useState<Movie>({
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [selectedMovieId, setSelectedMovieId] = useState<number | null>(null);
+  const [editMode, setEditMode] = useState(false);
+  const [newMovie, setNewMovie] = useState<any>({
     showId: 0, title: '', type: '', director: '', cast: '',
     country: '', releaseYear: 0, rating: 0, duration: 0,
-    description: '', category: ''
+    description: '',
+    ...Object.fromEntries(allCategoryFields.map((c) => [c, 0]))
   });
 
   useEffect(() => {
@@ -61,25 +75,69 @@ function Admin() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const typedValue = ['releaseYear', 'rating', 'duration'].includes(name) ? Number(value) : value;
-    setNewMovie((prev) => ({ ...prev, [name]: typedValue }));
+    setNewMovie((prev: any) => ({ ...prev, [name]: typedValue }));
+  };
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+    setNewMovie((prev: any) => ({ ...prev, [name]: checked ? 1 : 0 }));
   };
 
   const handleFormSubmit = async () => {
+    const movieToSend = { ...newMovie };
     try {
-      const response = await addMovie(newMovie);
-      if (response && response.success) {
-        setRows((prev) => [...prev, { ...newMovie, showId: response.newId }]);
+      if (editMode) {
+        await updateMovie(movieToSend);
+        setRows((prev) => prev.map((m) => (m.showId === newMovie.showId ? { ...movieToSend, category: getCategoryString(movieToSend) } : m)));
+      } else {
+        const response = await addMovie(movieToSend);
+        if (response && response.success) {
+          setRows((prev) => [...prev, { ...movieToSend, showId: response.newId, category: getCategoryString(movieToSend) }]);
+        }
       }
     } catch (error) {
-      console.error('Error adding movie:', error);
+      console.error('Error saving movie:', error);
     } finally {
       setNewMovie({
         showId: 0, title: '', type: '', director: '', cast: '',
         country: '', releaseYear: 0, rating: 0, duration: 0,
-        description: '', category: ''
+        description: '',
+        ...Object.fromEntries(allCategoryFields.map((c) => [c, 0]))
       });
+      setEditMode(false);
       setShowForm(false);
     }
+  };
+
+  const getCategoryString = (movie: any) =>
+    allCategoryFields.filter((cat) => movie[cat] === 1).join(', ');
+
+  const handleDeleteClick = (id: number) => {
+    setSelectedMovieId(id);
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (selectedMovieId !== null) {
+      try {
+        await deleteMovie(selectedMovieId);
+        setRows((prev) => prev.filter((movie) => movie.showId !== selectedMovieId));
+      } catch (error) {
+        console.error('Error deleting movie:', error);
+      } finally {
+        setDeleteConfirmOpen(false);
+        setSelectedMovieId(null);
+      }
+    }
+  };
+
+  const handleEditClick = (movie: any) => {
+    setNewMovie({
+      ...movie,
+      ...Object.fromEntries(allCategoryFields.map((c) => [c, movie[c] ?? 0]))
+    });
+    setEditMode(true);
+    setShowForm(true);
   };
 
   return (
@@ -88,7 +146,7 @@ function Admin() {
         CineNiche Movie Administration
       </Typography>
 
-      <Button variant="contained" onClick={() => setShowForm(true)} sx={{ mb: 2 }}>
+      <Button variant="contained" onClick={() => { setShowForm(true); setEditMode(false); }} sx={{ mb: 2 }}>
         Add Movie
       </Button>
 
@@ -97,7 +155,7 @@ function Admin() {
           <Table stickyHeader aria-label="movie table">
             <TableHead>
               <TableRow>
-                {[...baseColumns, 'actions'].map((col) => (
+                {[...baseColumns, 'category', 'actions'].map((col) => (
                   <TableCell key={col}>
                     {col === 'actions' ? 'Actions' : col.charAt(0).toUpperCase() + col.slice(1)}
                   </TableCell>
@@ -108,16 +166,16 @@ function Admin() {
               {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, idx) => (
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.showId || idx}>
-                    {baseColumns.map((col) => (
+                    {[...baseColumns, 'category'].map((col) => (
                       <TableCell key={col}>
                         {String(row[col as keyof Movie])}
                       </TableCell>
                     ))}
                     <TableCell>
-                      <Button variant="outlined" size="small" sx={{ mr: 1 }}>
+                      <Button variant="outlined" size="small" sx={{ mr: 1 }} onClick={() => handleEditClick(row)}>
                         Edit
                       </Button>
-                      <Button variant="outlined" color="error" size="small">
+                      <Button variant="outlined" color="error" size="small" onClick={() => handleDeleteClick(row.showId)}>
                         Delete
                       </Button>
                     </TableCell>
@@ -137,8 +195,9 @@ function Admin() {
         />
       </Paper>
 
+      {/* Add/Edit Movie Dialog */}
       <Dialog open={showForm} onClose={() => setShowForm(false)} maxWidth="md" fullWidth>
-        <DialogTitle>Add New Movie</DialogTitle>
+        <DialogTitle>{editMode ? 'Edit Movie' : 'Add New Movie'}</DialogTitle>
         <DialogContent dividers>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {baseColumns.map((field) => (
@@ -146,11 +205,27 @@ function Admin() {
                 key={field}
                 label={field.charAt(0).toUpperCase() + field.slice(1)}
                 name={field}
-                value={String(newMovie[field as keyof Movie] ?? '')}
+                value={String(newMovie[field] ?? '')}
                 onChange={handleInputChange}
                 fullWidth
               />
             ))}
+            <Typography variant="subtitle1">Categories</Typography>
+            <FormGroup>
+              {allCategoryFields.map((cat) => (
+                <FormControlLabel
+                  key={cat}
+                  control={
+                    <Checkbox
+                      checked={newMovie[cat] === 1}
+                      onChange={handleCheckboxChange}
+                      name={cat}
+                    />
+                  }
+                  label={cat}
+                />
+              ))}
+            </FormGroup>
           </Box>
         </DialogContent>
         <DialogActions>
@@ -158,7 +233,23 @@ function Admin() {
             Cancel
           </Button>
           <Button onClick={handleFormSubmit} variant="contained">
-            Submit
+            {editMode ? 'Update' : 'Submit'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteConfirmOpen} onClose={() => setDeleteConfirmOpen(false)}>
+        <DialogTitle>Confirm Deletion</DialogTitle>
+        <DialogContent dividers>
+          Are you sure you want to delete this movie?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteConfirmOpen(false)} color="inherit">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmDelete} color="error" variant="contained">
+            Delete
           </Button>
         </DialogActions>
       </Dialog>

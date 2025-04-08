@@ -41,3 +41,28 @@ export const addMovie = async (movie: Movie): Promise<{ success: boolean; newId:
     }
   };
 
+  export const deleteMovie = async (id: number): Promise<void> => {
+    try {
+      await fetch(`${api_url}/Movies/DeleteMovie/${id}`, {
+        method: 'DELETE',
+      });
+    } catch (error) {
+      console.error('Error deleting movie:', error);
+      throw error;
+    }
+  };
+
+  export const updateMovie = async (movie: any): Promise<void> => {
+    try {
+      await fetch(`${api_url}/Movies/UpdateMovie/${movie.showId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(movie)
+      });
+    } catch (error) {
+      console.error("Error updating movie:", error);
+      throw error;
+    }
+  };
+  
+  
