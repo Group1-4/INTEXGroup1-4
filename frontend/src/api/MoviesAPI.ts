@@ -108,15 +108,23 @@ export const updateMovie = async (movie: Movie): Promise<boolean> => {
 export const fetchMoviesCard = async (
   page: number,
   pageSize: number = 20,
-  selectedCategories: string[] = []
+  selectedCategories: string[] = [],
+  searchField: string = "",
+  searchQuery: string = ""
 ): Promise<FetchMoviesCardsResponse> => {
-  const categoryQuery =
-    selectedCategories.length > 0
-      ? `?categories=${encodeURIComponent(selectedCategories.join(","))}`
-      : "";
+  const params = new URLSearchParams();
+
+  if (selectedCategories.length > 0) {
+    params.append("categories", selectedCategories.join(","));
+  }
+
+  if (searchField && searchQuery) {
+    params.append("searchField", searchField);
+    params.append("searchQuery", searchQuery);
+  }
 
   const response = await fetch(
-    `${API_URL}/Movies/MovieList/${page}/${pageSize}${categoryQuery}`,
+    `${API_URL}/Movies/MovieList/${page}/${pageSize}?${params.toString()}`,
     { credentials: "include" }
   );
 
@@ -126,6 +134,7 @@ export const fetchMoviesCard = async (
 
   return await response.json();
 };
+
 
 
 
