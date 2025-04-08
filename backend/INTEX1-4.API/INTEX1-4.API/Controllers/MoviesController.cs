@@ -49,7 +49,7 @@ public class MoviesController : ControllerBase
         return NoContent();
     }
     [HttpPut("UpdateMovie/{id}")]
-    public IActionResult UpdateMovie(int id, [FromBody] Movie updatedMovie)
+    public IActionResult UpdateMovie(string id, [FromBody] Movie updatedMovie)
     {
         if (id != updatedMovie.ShowId)
             return BadRequest("ID mismatch.");
