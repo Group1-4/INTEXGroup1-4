@@ -36,7 +36,7 @@ public class MoviesController : ControllerBase
     }
     
     [HttpDelete("DeleteMovie/{id}")]
-    public IActionResult DeleteMovie(int id)
+    public IActionResult DeleteMovie(string id)
     {
         var movie = _context.movies_titles.Find(id);
         if (movie == null)
@@ -49,7 +49,7 @@ public class MoviesController : ControllerBase
         return NoContent();
     }
     [HttpPut("UpdateMovie/{id}")]
-    public IActionResult UpdateMovie(int id, [FromBody] Movie updatedMovie)
+    public IActionResult UpdateMovie(string id, [FromBody] Movie updatedMovie)
     {
         if (id != updatedMovie.ShowId)
             return BadRequest("ID mismatch.");

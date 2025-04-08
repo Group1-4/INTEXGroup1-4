@@ -15,7 +15,7 @@ namespace INTEX1_4.API.Data
     }
 
     [Table("ContentRecommendations")]
-    public class ContentRecommendationBase : ContentRecommendation { }
+    public class ContentRecommendationBase : ContentRecommendation {}
 
     [Table("ContentRecommendationsAction")]
     public class ContentRecommendationAction : ContentRecommendation { }
@@ -24,7 +24,7 @@ namespace INTEX1_4.API.Data
     public class ContentRecommendationComedies : ContentRecommendation { }
 
     [Table("ContentRecommendationsDramas")]
-    public class ContentRecommendationDramas : ContentRecommendation { }
+    public class ContentRecommendationDramas : ContentRecommendation {}
 
     [Table("ContentRecommendationsFantasy")]
     public class ContentRecommendationFantasy : ContentRecommendation { }
