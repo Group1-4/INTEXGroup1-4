@@ -1,16 +1,4 @@
-#root {
-  /* max-width: 1280px; */
-  margin: 0 auto;
-  /* padding: 2rem; */
-  text-align: center;
-}
-.h1 {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #FDF2CD;
-  margin-bottom: 1rem;
-}
-/* App.css */
+/* Reset & base styles */
 html,
 body,
 #root {
@@ -20,40 +8,80 @@ body,
   width: 100%;
   overflow-x: hidden;
 }
-/* Header styles for CineNiche */
+
+/* Optional h1 heading style (used on pages like Admin Portal title) */
+.h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #FDF2CD;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* === Header Styles === */
+
 .cine-header {
-  width: 100%; /* ← Use this instead of 100vw */
-  margin: 0;
+  width: 100%;
   padding: 12px 24px;
   background-color: #C4453C;
   color: #FDF2CD;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: static;
-  top: 0;
-  z-index: 1000;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
 }
+
+/* Logo (left side) */
 .cine-logo {
   display: flex;
   align-items: center;
+  gap: 12px;
 }
-.cine-logo img {
-  height: 80px; /* or however tall you want it in the header */
-  width: auto; /* maintains aspect ratio */
+
+.logo-icon {
+  height: 60px;
+  width: auto;
   object-fit: contain;
   display: block;
 }
-.header-text {
-  font-size: 1.8rem;
-  font-weight: bold;
-  font-family:
-    "Arial Rounded MT Bold", sans-serif; /* Customize font if needed */
+
+/* Header buttons and icons (right side) */
+.header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
 }
-.profile-icon img {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  padding: 4px;
+
+.admin-title-top-right {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #FFF1C2;
+}
+
+.header-button {
+  background-color: #FDF2CD;
+  color: #c0392b;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+.header-button:hover {
+  background-color: #f0e6d2;
+}
+
+/* SVG profile icon wrapper */
+.profile-icon svg {
+  width: 50px;
+  height: 50px;
+}
+
+.button-row {
+  display: flex;
+  gap: 10px;
 }

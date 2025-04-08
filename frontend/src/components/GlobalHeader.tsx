@@ -13,14 +13,14 @@ const Header: React.FC = () => {
     switch (path) {
       case "/":
         return (
-          <>
+          <div className="button-row">
             <Link to="/register">
               <button className="header-button">Sign Up</button>
             </Link>
             <Link to="/login">
               <button className="header-button">Log In</button>
             </Link>
-          </>
+          </div>
         );
       case "/movies":
       case "/admin":
@@ -65,31 +65,18 @@ const Header: React.FC = () => {
 
   return (
     <header className="cine-header">
-      <div
-        className="cine-logo"
-        style={{ display: "flex", alignItems: "center" }}
-      >
-        <a href="/">
+      <div className="cine-logo">
+        <Link to="/">
           <img
             src="/header-logo.png"
             alt="CineNiche Logo"
             className="logo-icon"
           />
-        </a>
-        {isAdmin && (
-          <span
-            className="admin-title"
-            style={{ color: "#FFF1C2", marginLeft: "10px", fontSize: "1.2rem" }}
-          >
-            - Admin Portal
-          </span>
-        )}
+        </Link>
       </div>
 
-      <div
-        className="header-right"
-        style={{ display: "flex", gap: "10px", alignItems: "center" }}
-      >
+      <div className="header-right">
+        {isAdmin && <div className="admin-title-top-right">Admin Portal</div>}
         {renderRightSide()}
       </div>
     </header>
