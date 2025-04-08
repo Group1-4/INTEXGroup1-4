@@ -30,7 +30,7 @@ builder.Services.AddDbContext<CollabDbContext>(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("IdentityConnection")));
 
-
+//show this for the Configure ASP.NET Identity portion of the rubric
 builder.Services.Configure<IdentityOptions>(options =>
 {
     // Default Password settings.
