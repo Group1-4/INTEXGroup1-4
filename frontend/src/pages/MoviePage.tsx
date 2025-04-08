@@ -1,6 +1,13 @@
+import MovieListCards from "../components/MovieListCards";
+
 function MoviePage () {
 return (
-<>moviepage</>
+<>
+<MovieListCards />
+
+
+
+</>
 );
 }
 export default MoviePage

@@ -37,7 +37,7 @@ function Register() {
       // clear error message
       setError('');
       // post data to the /register api
-      fetch('https://localhost:5000/register', {
+      fetch('https://localhost:4000/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
