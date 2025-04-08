@@ -4,7 +4,7 @@ import Admin from './pages/Admin'
 import Login from './pages/LoginPage'
 import MoviePage from './pages/MoviePage'
 import Privacy from './pages/Privacy'
-import Signup from './pages/Signup'
+import RegisterPage from './pages/RegisterPage'
 
 function App() {
 
@@ -16,9 +16,9 @@ function App() {
         <Route path='/' element={<HomePage />}></Route>
         <Route path='/admin' element={< Admin />}></Route>
         <Route path='/login' element={< Login />}></Route>
+        <Route path='/register' element={< RegisterPage />}></Route>
         <Route path='/movies' element={< MoviePage />}></Route>
         <Route path='/privacy' element={< Privacy />}></Route>
-        <Route path='/signup' element={< Signup />}></Route>
       </Routes>
     </Router>
 

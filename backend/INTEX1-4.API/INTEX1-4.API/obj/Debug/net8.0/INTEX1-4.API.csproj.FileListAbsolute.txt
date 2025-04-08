@@ -133,3 +133,9 @@
 /Users/chloecloud/Desktop/INTEX1-4/backend/INTEX1-4.API/INTEX1-4.API/obj/Debug/net8.0/INTEX1-4.API.pdb
 /Users/chloecloud/Desktop/INTEX1-4/backend/INTEX1-4.API/INTEX1-4.API/obj/Debug/net8.0/INTEX1-4.API.genruntimeconfig.cache
 /Users/chloecloud/Desktop/INTEX1-4/backend/INTEX1-4.API/INTEX1-4.API/obj/Debug/net8.0/ref/INTEX1-4.API.dll
+/Users/chloecloud/Desktop/INTEX1-4/backend/INTEX1-4.API/INTEX1-4.API/bin/Debug/net8.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+/Users/chloecloud/Desktop/INTEX1-4/backend/INTEX1-4.API/INTEX1-4.API/bin/Debug/net8.0/Azure.AI.OpenAI.dll
+/Users/chloecloud/Desktop/INTEX1-4/backend/INTEX1-4.API/INTEX1-4.API/bin/Debug/net8.0/Azure.Core.dll
+/Users/chloecloud/Desktop/INTEX1-4/backend/INTEX1-4.API/INTEX1-4.API/bin/Debug/net8.0/OpenAI.dll
+/Users/chloecloud/Desktop/INTEX1-4/backend/INTEX1-4.API/INTEX1-4.API/bin/Debug/net8.0/System.ClientModel.dll
+/Users/chloecloud/Desktop/INTEX1-4/backend/INTEX1-4.API/INTEX1-4.API/bin/Debug/net8.0/System.Memory.Data.dll

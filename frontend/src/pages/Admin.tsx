@@ -5,6 +5,7 @@ import {
 } from '@mui/material';
 import { Movie } from '../types/Movie'; // adjust path if needed
 
+
 const baseColumns = [
   'type', 'title', 'director', 'cast', 'country',
   'releaseYear', 'rating', 'duration', 'description', 'category'
@@ -29,6 +30,7 @@ function Admin() {
           );
 
           return {
+            
             ...item,
             category: categoryKeys.join(', ')
           };
