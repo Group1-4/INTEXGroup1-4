@@ -3,6 +3,7 @@
   margin: 0 auto;
   /* padding: 2rem; */
   text-align: center;
+  background-color: #2c2724 ;/* Dark background for the entire app */
 }
 .h1 {
   font-size: 2rem;

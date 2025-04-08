@@ -7,13 +7,14 @@ const HeroCard: React.FC = () => {
     <>
     <Box
   sx={{
-    backgroundColor: "#2F2A26",
-    minHeight: "100vh",
+    backgroundColor: "#2c2724",
+    // minHeight: "100vh",
     display: "flex",
     alignItems: "flex-start", // align to the top
     justifyContent: "center",
     px: 2,
-    pt: 6, // adjust this to control top spacing (e.g., pt: 2, pt: 4, etc.)
+    pt: 6, // padding top for spacing
+    pb: 4, // padding bottom for spacing
   }}
 >
       {/* Card with image background */}
@@ -46,12 +47,12 @@ const HeroCard: React.FC = () => {
             height: "100%",
             width: "100%",
             background: `linear-gradient(
-  to top,
-  rgba(0.0, 0, 0.0, 0.85) 0%,
-  rgba(0.0, 0, 0, 0.75) 40%,
-  rgba(0, 0, 0, 0.5) 75%,
-  rgba(0, 0, 0, 0.3) 100%
-)`,
+                                          to top,
+                                          rgba(0.0, 0, 0.0, 0.85) 0%,
+                                          rgba(0.0, 0, 0, 0.75) 40%,
+                                          rgba(0, 0, 0, 0.5) 75%,
+                                          rgba(0, 0, 0, 0.3) 100%
+                                        )`,
             zIndex: 1,
           }}
         />
@@ -112,6 +113,50 @@ const HeroCard: React.FC = () => {
           </Box>
         </Box>
       </Box>
+      </Box>
+      {/* Informational Card */}
+      <Box
+        sx={{
+          backgroundColor: "#FDF2CD",
+          color: "#2F2A26",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          px: 4,
+          py: 3,
+          borderRadius: "12px",
+          boxShadow: `0 6px 12px rgba(196, 69, 60, 0.3)`,
+          mb: 4,
+          width: "100%",
+          maxWidth: "600px",
+        }}
+      >
+        {/* Text Block */}
+        <Box>
+          <Typography variant="h6" fontWeight="bold">
+            Discover curated indie gems
+          </Typography>
+          <Typography variant="body2">
+            Handpicked selections tailored for true cinephiles.
+          </Typography>
+        </Box>
+
+        {/* Button */}
+        <Button
+          variant="contained"
+          sx={{
+            backgroundColor: "#C4453C",
+            color: "#FDF2CD",
+            fontWeight: "bold",
+            ml: 2,
+            "&:hover": {
+              backgroundColor: "#A73930",
+            },
+          }}
+          href="/learn-more"
+        >
+          Learn More
+        </Button>
       </Box>
       {/* Accordion Section */}
       <Box sx={{ width: "100%", maxWidth: "600px", mt: 4 }}>
