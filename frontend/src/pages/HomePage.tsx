@@ -33,14 +33,23 @@ import {
           Watch with us for only $5.99 a month!
         </Typography>
         <Button
+          component="a"
+          href="/register"
           variant="contained"
           sx={{
             mt: 1,
-            backgroundColor: "#C4453C",
-            color: "#FDF2CD",
-            fontWeight: "bold",
+            backgroundColor: "#C4453C !important",
+            color: "#FDF2CD !important",
+            fontWeight: "bold !important",
+            textDecoration: "none !important",         // No underline
             "&:hover": {
-              backgroundColor: "#A73930",
+              backgroundColor: "#A73930 !important",
+              color: "#FDF2CD !important" ,             // Ensures color doesn’t change on hover
+              textDecoration: "none !important",       // Prevents underline on hover
+            },
+            "&:visited": {
+              color: "#FDF2CD !important",             // Ensures visited link color stays off-white
+              textDecoration: "none !important",
             },
           }}
         >
