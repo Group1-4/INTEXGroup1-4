@@ -5,11 +5,13 @@ const Header: React.FC = () => {
   return (
     <header className="cine-header">
       <div className="cine-logo">
+      <a href="/">
         <img
           src="/public/header-logo.png"
           alt="CineNiche Logo"
           className="logo-icon"
         />
+        </a>
       </div>
       <div className="profile-icon">
         <svg
