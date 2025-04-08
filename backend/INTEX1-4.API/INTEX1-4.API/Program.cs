@@ -19,6 +19,14 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<MoviesDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("MoviesConnection")));
 
+
+builder.Services.AddDbContext<ContentDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("ContentConnection")));
+
+builder.Services.AddDbContext<CollabDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("CollabConnection")));
+
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("IdentityConnection")));
 
@@ -34,6 +42,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 
 builder.Services.AddScoped<IUserClaimsPrincipalFactory<IdentityUser>, CustomUserClaimsPrincipalFactory>();
+
 
 builder.Services.AddCors(options =>
 {
