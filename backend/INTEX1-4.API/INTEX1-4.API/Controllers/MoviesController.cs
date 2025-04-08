@@ -63,4 +63,22 @@ public class MoviesController : ControllerBase
 
         return NoContent();
     }
+    [HttpGet ("MovieDetails/{id}")]
+    public IActionResult MovieDetails(string id) // this gets and returns all the movies in the db
+    {
+        var existing = _context.movies_titles.Find(id);
+        return Ok(existing);
+    }
+
+    [HttpGet("MovieList")]
+    public IActionResult MovieList() // need to add pagination
+    {
+        var movies = _context.movies_titles
+            .Select(m => new { m.ShowId, m.Title })
+            .ToList();
+
+        return Ok(movies);
+    }  
+    
+    
 }
