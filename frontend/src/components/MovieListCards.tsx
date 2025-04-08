@@ -3,7 +3,8 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import OneMovieCard from './1MovieCard';
 import { MovieCard } from '../types/MovieCard';
 import { fetchMoviesCard } from '../api/MoviesAPI';
-import CategoryFilter from './CategoryFilter'; // 👈 Import the filter
+import CategoryFilter from './CategoryFilter';
+import SearchBar from './SearchBar'; // 👈 Add this
 
 const PAGE_SIZE = 20;
 
@@ -11,12 +12,25 @@ const MovieList: React.FC = () => {
   const [movies, setMovies] = useState<MovieCard[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]); // 👈 Track selected filters
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+  // 👇 New search state
+  const [searchField, setSearchField] = useState<string>('title');
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   const loadMoreMovies = async (currentPage = page) => {
     try {
-      const res = await fetchMoviesCard(currentPage, PAGE_SIZE, selectedCategories);
-      setMovies(prev => currentPage === 1 ? res.movies : [...prev, ...res.movies]);
+      const res = await fetchMoviesCard(
+        currentPage,
+        PAGE_SIZE,
+        selectedCategories,
+        searchField,
+        searchQuery
+      );
+
+      setMovies(prev =>
+        currentPage === 1 ? res.movies : [...prev, ...res.movies]
+      );
       setHasMore(res.hasMore);
       setPage(prev => prev + 1);
     } catch (error) {
@@ -25,7 +39,7 @@ const MovieList: React.FC = () => {
     }
   };
 
-  // Load first page or refresh on filter change
+  // Refresh on category OR search change
   useEffect(() => {
     const refreshMovies = async () => {
       setPage(1);
@@ -33,12 +47,25 @@ const MovieList: React.FC = () => {
       await loadMoreMovies(1);
     };
     refreshMovies();
-  }, [selectedCategories]);
+  }, [selectedCategories, searchField, searchQuery]);
 
   return (
     <div>
+      {/* 👇 Search input with dropdown */}
+      <SearchBar
+        searchField={searchField}
+        searchQuery={searchQuery}
+        onSearchChange={(field, query) => {
+          setSearchField(field);
+          setSearchQuery(query);
+        }}
+      />
+
       {/* 👇 Category checkboxes */}
-      <CategoryFilter selected={selectedCategories} onChange={setSelectedCategories} />
+      <CategoryFilter
+        selected={selectedCategories}
+        onChange={setSelectedCategories}
+      />
 
       <InfiniteScroll
         dataLength={movies.length}

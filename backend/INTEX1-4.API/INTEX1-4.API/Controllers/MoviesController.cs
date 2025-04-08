@@ -82,50 +82,74 @@ public class MoviesController : ControllerBase
 
 
     [HttpGet("MovieList/{page}/{pageSize}")]
-    public IActionResult MovieList(int page = 1, int pageSize = 20, [FromQuery] string? categories = null)
+public IActionResult MovieList(
+    int page = 1,
+    int pageSize = 20,
+    [FromQuery] string? categories = null,
+    [FromQuery] string? searchField = null,
+    [FromQuery] string? searchQuery = null
+)
+{
+    var query = _context.movies_titles.AsQueryable();
+
+    // 🔍 Search by selected field
+    if (!string.IsNullOrEmpty(searchField) && !string.IsNullOrEmpty(searchQuery))
     {
-        var query = _context.movies_titles.AsQueryable();
+        var searchLower = searchQuery.ToLower();
 
-        if (!string.IsNullOrEmpty(categories))
+        switch (searchField.ToLower())
         {
-            var selectedCategories = categories.Split(',')
-                .Select(c => c.Trim())
-                .ToList();
+            case "title":
+                query = query.Where(m => m.Title != null && m.Title.ToLower().Contains(searchLower));
+                break;
 
-            // Use reflection to get all property names of the Movie class
-            var movieProps = typeof(Movie).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            case "director":
+                query = query.Where(m => m.Director != null && m.Director.ToLower().Contains(searchLower));
+                break;
 
-            foreach (var inputCategory in selectedCategories)
+            case "cast":
+                query = query.Where(m => m.Cast != null && m.Cast.ToLower().Contains(searchLower));
+                break;
+        }
+    }
+
+    // 🏷 Category filtering (same as before with reflection)
+    if (!string.IsNullOrEmpty(categories))
+    {
+        var selectedCategories = categories.Split(',').Select(c => c.Trim()).ToList();
+        var movieProps = typeof(Movie).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+        foreach (var inputCategory in selectedCategories)
+        {
+            var matchedProp = movieProps.FirstOrDefault(p =>
+                string.Equals(p.Name, inputCategory, StringComparison.OrdinalIgnoreCase));
+
+            if (matchedProp != null)
             {
-                var matchedProp = movieProps
-                    .FirstOrDefault(p => string.Equals(p.Name, inputCategory, StringComparison.OrdinalIgnoreCase));
-
-                if (matchedProp != null)
-                {
-                    // Use EF.Property to dynamically filter
-                    query = query.Where(m => EF.Property<int?>(m, matchedProp.Name) == 1);
-                }
+                query = query.Where(m => EF.Property<int?>(m, matchedProp.Name) == 1);
             }
         }
-
-        var totalMovies = query.Count();
-
-        var movies = query
-            .OrderBy(m => m.Title)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .Select(m => new { m.ShowId, m.Title })
-            .ToList();
-
-        var hasMore = (page * pageSize) < totalMovies;
-
-        return Ok(new
-        {
-            Movies = movies,
-            HasMore = hasMore
-        });
     }
 
+    var totalMovies = query.Count();
+
+    var movies = query
+        .OrderBy(m => m.Title)
+        .Skip((page - 1) * pageSize)
+        .Take(pageSize)
+        .Select(m => new { m.ShowId, m.Title })
+        .ToList();
+
+    var hasMore = (page * pageSize) < totalMovies;
+
+    return Ok(new
+    {
+        Movies = movies,
+        HasMore = hasMore
+    });
+}
+
     }
+
 
     
