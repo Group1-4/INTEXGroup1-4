@@ -37,3 +37,5 @@ node_modules/
 
 # VS Code Workspace Settings (optional - allow if sharing)
 !.vscode/settings.json
+
+.vs/
