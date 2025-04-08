@@ -1,7 +1,8 @@
 using INTEX1_4.API.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
-
+using Microsoft.EntityFrameworkCore;
+using System.Reflection; // needed for reflection
 [Route("[controller]")]
 [ApiController]
 public class MoviesController : ControllerBase
@@ -25,7 +26,7 @@ public class MoviesController : ControllerBase
         return Ok(new { movies, total });
     }
 
-    
+
     [HttpPost("AddMovie")]
     public IActionResult AddMovie([FromBody] Movie newMovie)
     {
@@ -40,7 +41,7 @@ public class MoviesController : ControllerBase
         // return the new ID back to the client
         return Ok(new { id = newMovie.ShowId });
     }
-    
+
     [HttpDelete("DeleteMovie/{id}")]
     public IActionResult DeleteMovie(string id)
     {
@@ -54,6 +55,7 @@ public class MoviesController : ControllerBase
         _context.SaveChanges();
         return NoContent();
     }
+
     [HttpPut("UpdateMovie/{id}")]
     public IActionResult UpdateMovie(string id, [FromBody] Movie updatedMovie)
     {
@@ -69,19 +71,46 @@ public class MoviesController : ControllerBase
 
         return NoContent();
     }
-    [HttpGet ("MovieDetails/{id}")]
+
+    [HttpGet("MovieDetails/{id}")]
     public IActionResult MovieDetails(string id) // this gets and returns all the movies in the db
     {
         var existing = _context.movies_titles.Find(id);
         return Ok(existing);
     }
 
-    [HttpGet("MovieList/{page}/{pageSize}")]
-    public IActionResult MovieList(int page = 1, int pageSize = 20)
-    {
-        var totalMovies = _context.movies_titles.Count();
 
-        var movies = _context.movies_titles
+
+    [HttpGet("MovieList/{page}/{pageSize}")]
+    public IActionResult MovieList(int page = 1, int pageSize = 20, [FromQuery] string? categories = null)
+    {
+        var query = _context.movies_titles.AsQueryable();
+
+        if (!string.IsNullOrEmpty(categories))
+        {
+            var selectedCategories = categories.Split(',')
+                .Select(c => c.Trim())
+                .ToList();
+
+            // Use reflection to get all property names of the Movie class
+            var movieProps = typeof(Movie).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            foreach (var inputCategory in selectedCategories)
+            {
+                var matchedProp = movieProps
+                    .FirstOrDefault(p => string.Equals(p.Name, inputCategory, StringComparison.OrdinalIgnoreCase));
+
+                if (matchedProp != null)
+                {
+                    // Use EF.Property to dynamically filter
+                    query = query.Where(m => EF.Property<int?>(m, matchedProp.Name) == 1);
+                }
+            }
+        }
+
+        var totalMovies = query.Count();
+
+        var movies = query
             .OrderBy(m => m.Title)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
@@ -92,10 +121,11 @@ public class MoviesController : ControllerBase
 
         return Ok(new
         {
-            Movies = movies, // match frontend expectation
+            Movies = movies,
             HasMore = hasMore
         });
     }
 
+    }
+
     
-}
