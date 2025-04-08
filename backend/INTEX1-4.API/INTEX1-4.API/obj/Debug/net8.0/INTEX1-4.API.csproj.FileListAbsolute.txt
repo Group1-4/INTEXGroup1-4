@@ -268,3 +268,9 @@
 /Users/cooperdavis/Desktop/INTEXGroup1-4/backend/INTEX1-4.API/INTEX1-4.API/obj/Debug/net8.0/INTEX1-4.API.pdb
 /Users/cooperdavis/Desktop/INTEXGroup1-4/backend/INTEX1-4.API/INTEX1-4.API/obj/Debug/net8.0/INTEX1-4.API.genruntimeconfig.cache
 /Users/cooperdavis/Desktop/INTEXGroup1-4/backend/INTEX1-4.API/INTEX1-4.API/obj/Debug/net8.0/ref/INTEX1-4.API.dll
+/Users/cooperdavis/Desktop/INTEXGroup1-4/backend/INTEX1-4.API/INTEX1-4.API/bin/Debug/net8.0/Azure.AI.OpenAI.dll
+/Users/cooperdavis/Desktop/INTEXGroup1-4/backend/INTEX1-4.API/INTEX1-4.API/bin/Debug/net8.0/Azure.Core.dll
+/Users/cooperdavis/Desktop/INTEXGroup1-4/backend/INTEX1-4.API/INTEX1-4.API/bin/Debug/net8.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+/Users/cooperdavis/Desktop/INTEXGroup1-4/backend/INTEX1-4.API/INTEX1-4.API/bin/Debug/net8.0/OpenAI.dll
+/Users/cooperdavis/Desktop/INTEXGroup1-4/backend/INTEX1-4.API/INTEX1-4.API/bin/Debug/net8.0/System.ClientModel.dll
+/Users/cooperdavis/Desktop/INTEXGroup1-4/backend/INTEX1-4.API/INTEX1-4.API/bin/Debug/net8.0/System.Memory.Data.dll
