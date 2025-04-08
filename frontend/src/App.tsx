@@ -11,8 +11,8 @@ import Footer from "./components/GlobalFooter";
 function App() {
   return (
     <>
-      <Header />
       <Router>
+        <Header />
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
           <Route path="/admin" element={<Admin />}></Route>
