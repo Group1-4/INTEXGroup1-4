@@ -7,8 +7,8 @@ import {
     AccordionDetails,
   } from "@mui/material";
   import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-  import CookieConsent from "react-cookie-consent";
-  
+  import CookieConsentBanner from '../components/CookieConsentBanner';
+
   function HomePage() {
     return (
       <Box
@@ -80,7 +80,9 @@ import {
             </Accordion>
           ))}
         </Box>
+        <CookieConsentBanner />
       </Box>
+      
     );
   }
   export default HomePage;

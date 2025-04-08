@@ -8,7 +8,7 @@ import RegisterPage from "./pages/RegisterPage";
 import GlobalFooter from "./components/GlobalFooter";
 import Header from "./components/GlobalHeader";
 import Footer from "./components/GlobalFooter";
-import CookieConsent from "react-cookie-consent";
+
 function App() {
   return (
     <>
@@ -16,7 +16,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
-          <CookieConsent>This website uses cookies to enhance the user experience.</CookieConsent>
+          
           <Route path="/admin" element={<Admin />}></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/register" element={<RegisterPage />}></Route>
