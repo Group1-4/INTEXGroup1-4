@@ -5,6 +5,7 @@ import Login from './pages/LoginPage'
 import MoviePage from './pages/MoviePage'
 import Privacy from './pages/Privacy'
 import RegisterPage from './pages/RegisterPage'
+import GlobalFooter from './components/GlobalFooter'
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
         <Route path='/register' element={< RegisterPage />}></Route>
         <Route path='/movies' element={< MoviePage />}></Route>
         <Route path='/privacy' element={< Privacy />}></Route>
+        <Route path='/footer' element={< GlobalFooter />}></Route>
       </Routes>
     </Router>
 
