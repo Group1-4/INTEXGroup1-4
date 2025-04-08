@@ -3496,19 +3496,19 @@
     ]
   },
   "packageFolders": {
-    "/Users/chloecloud/.nuget/packages/": {}
+    "/Users/cooperdavis/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/chloecloud/Desktop/INTEX1-4/backend/INTEX1-4.API/INTEX1-4.API/INTEX1-4.API.csproj",
+      "projectUniqueName": "/Users/cooperdavis/Desktop/INTEXGroup1-4/backend/INTEX1-4.API/INTEX1-4.API/INTEX1-4.API.csproj",
       "projectName": "INTEX1-4.API",
-      "projectPath": "/Users/chloecloud/Desktop/INTEX1-4/backend/INTEX1-4.API/INTEX1-4.API/INTEX1-4.API.csproj",
-      "packagesPath": "/Users/chloecloud/.nuget/packages/",
-      "outputPath": "/Users/chloecloud/Desktop/INTEX1-4/backend/INTEX1-4.API/INTEX1-4.API/obj/",
+      "projectPath": "/Users/cooperdavis/Desktop/INTEXGroup1-4/backend/INTEX1-4.API/INTEX1-4.API/INTEX1-4.API.csproj",
+      "packagesPath": "/Users/cooperdavis/.nuget/packages/",
+      "outputPath": "/Users/cooperdavis/Desktop/INTEXGroup1-4/backend/INTEX1-4.API/INTEX1-4.API/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/chloecloud/.nuget/NuGet/NuGet.Config"
+        "/Users/cooperdavis/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -3526,6 +3526,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -3584,7 +3589,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.101/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.406/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
