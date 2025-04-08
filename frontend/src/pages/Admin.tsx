@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import {
   Paper, Table, TableBody, TableCell, TableContainer,
-  TableHead, TablePagination, TableRow, Button, Box, Typography
+  TableHead, TablePagination, TableRow, Button, Box, Typography,
+  Dialog, DialogTitle, DialogContent, DialogActions, TextField
 } from '@mui/material';
 import { Movie } from '../types/Movie';
+import { fetchMovies, addMovie } from '../api/MoviesAPI';
 
 const baseColumns = [
   'type', 'title', 'director', 'cast', 'country',
@@ -14,13 +16,17 @@ function Admin() {
   const [rows, setRows] = useState<Movie[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [showForm, setShowForm] = useState(false);
+  const [newMovie, setNewMovie] = useState<Movie>({
+    showId: 0, title: '', type: '', director: '', cast: '',
+    country: '', releaseYear: 0, rating: 0, duration: 0,
+    description: '', category: ''
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://localhost:5000/Movies');
-        const data: Movie[] = await response.json();
-
+        const data = await fetchMovies();
         const knownFields = new Set(baseColumns.concat(['showId']));
 
         const formattedRows = data.map((item) => {
@@ -52,11 +58,39 @@ function Admin() {
     setPage(0);
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const typedValue = ['releaseYear', 'rating', 'duration'].includes(name) ? Number(value) : value;
+    setNewMovie((prev) => ({ ...prev, [name]: typedValue }));
+  };
+
+  const handleFormSubmit = async () => {
+    try {
+      const response = await addMovie(newMovie);
+      if (response && response.success) {
+        setRows((prev) => [...prev, { ...newMovie, showId: response.newId }]);
+      }
+    } catch (error) {
+      console.error('Error adding movie:', error);
+    } finally {
+      setNewMovie({
+        showId: 0, title: '', type: '', director: '', cast: '',
+        country: '', releaseYear: 0, rating: 0, duration: 0,
+        description: '', category: ''
+      });
+      setShowForm(false);
+    }
+  };
+
   return (
     <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', p: 2 }}>
-      <Typography variant="h4">
+      <Typography variant="h4" sx={{ mb: 2 }}>
         CineNiche Movie Administration
       </Typography>
+
+      <Button variant="contained" onClick={() => setShowForm(true)} sx={{ mb: 2 }}>
+        Add Movie
+      </Button>
 
       <Paper sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         <TableContainer sx={{ flex: 1 }}>
@@ -76,7 +110,7 @@ function Admin() {
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.showId || idx}>
                     {baseColumns.map((col) => (
                       <TableCell key={col}>
-                        {row[col as keyof Movie] as string}
+                        {String(row[col as keyof Movie])}
                       </TableCell>
                     ))}
                     <TableCell>
@@ -102,6 +136,32 @@ function Admin() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
+
+      <Dialog open={showForm} onClose={() => setShowForm(false)} maxWidth="md" fullWidth>
+        <DialogTitle>Add New Movie</DialogTitle>
+        <DialogContent dividers>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {baseColumns.map((field) => (
+              <TextField
+                key={field}
+                label={field.charAt(0).toUpperCase() + field.slice(1)}
+                name={field}
+                value={String(newMovie[field as keyof Movie] ?? '')}
+                onChange={handleInputChange}
+                fullWidth
+              />
+            ))}
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowForm(false)} color="inherit">
+            Cancel
+          </Button>
+          <Button onClick={handleFormSubmit} variant="contained">
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

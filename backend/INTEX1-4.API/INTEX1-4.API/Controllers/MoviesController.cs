@@ -19,4 +19,20 @@ public class MoviesController : ControllerBase
         var movies = _context.movies_titles.ToList();
         return Ok(movies);
     }
+    
+    [HttpPost("AddMovie")]
+    public IActionResult AddMovie([FromBody] Movie newMovie)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        _context.movies_titles.Add(newMovie);
+        _context.SaveChanges();
+
+        // return the new ID back to the client
+        return Ok(new { id = newMovie.ShowId });
+    }
+
 }
