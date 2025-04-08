@@ -5,7 +5,7 @@ import {
   Dialog, DialogTitle, DialogContent, DialogActions, TextField
 } from '@mui/material';
 import { Movie } from '../types/Movie';
-import { fetchMovies, addMovie } from '../api/MoviesAPI';
+import { fetchMovies, addMovie, deleteMovie } from '../api/MoviesAPI';
 
 const baseColumns = [
   'type', 'title', 'director', 'cast', 'country',
@@ -17,6 +17,8 @@ function Admin() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [showForm, setShowForm] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [selectedMovieId, setSelectedMovieId] = useState<number | null>(null);
   const [newMovie, setNewMovie] = useState<Movie>({
     showId: 0, title: '', type: '', director: '', cast: '',
     country: '', releaseYear: 0, rating: 0, duration: 0,
@@ -82,6 +84,25 @@ function Admin() {
     }
   };
 
+  const handleDeleteClick = (id: number) => {
+    setSelectedMovieId(id);
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (selectedMovieId !== null) {
+      try {
+        await deleteMovie(selectedMovieId);
+        setRows((prev) => prev.filter((movie) => movie.showId !== selectedMovieId));
+      } catch (error) {
+        console.error('Error deleting movie:', error);
+      } finally {
+        setDeleteConfirmOpen(false);
+        setSelectedMovieId(null);
+      }
+    }
+  };
+
   return (
     <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', p: 2 }}>
       <Typography variant="h4" sx={{ mb: 2 }}>
@@ -117,7 +138,7 @@ function Admin() {
                       <Button variant="outlined" size="small" sx={{ mr: 1 }}>
                         Edit
                       </Button>
-                      <Button variant="outlined" color="error" size="small">
+                      <Button variant="outlined" color="error" size="small" onClick={() => handleDeleteClick(row.showId)}>
                         Delete
                       </Button>
                     </TableCell>
@@ -137,6 +158,7 @@ function Admin() {
         />
       </Paper>
 
+      {/* Add Movie Dialog */}
       <Dialog open={showForm} onClose={() => setShowForm(false)} maxWidth="md" fullWidth>
         <DialogTitle>Add New Movie</DialogTitle>
         <DialogContent dividers>
@@ -159,6 +181,22 @@ function Admin() {
           </Button>
           <Button onClick={handleFormSubmit} variant="contained">
             Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteConfirmOpen} onClose={() => setDeleteConfirmOpen(false)}>
+        <DialogTitle>Confirm Deletion</DialogTitle>
+        <DialogContent dividers>
+          Are you sure you want to delete this movie?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteConfirmOpen(false)} color="inherit">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmDelete} color="error" variant="contained">
+            Delete
           </Button>
         </DialogActions>
       </Dialog>

@@ -41,3 +41,14 @@ export const addMovie = async (movie: Movie): Promise<{ success: boolean; newId:
     }
   };
 
+  export const deleteMovie = async (id: number): Promise<void> => {
+    try {
+      await fetch(`${api_url}/Movies/DeleteMovie/${id}`, {
+        method: 'DELETE',
+      });
+    } catch (error) {
+      console.error('Error deleting movie:', error);
+      throw error;
+    }
+  };
+  
