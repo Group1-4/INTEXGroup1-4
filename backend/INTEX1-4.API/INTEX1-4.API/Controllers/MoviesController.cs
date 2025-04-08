@@ -48,7 +48,19 @@ public class MoviesController : ControllerBase
         _context.SaveChanges();
         return NoContent();
     }
+    [HttpPut("UpdateMovie/{id}")]
+    public IActionResult UpdateMovie(int id, [FromBody] Movie updatedMovie)
+    {
+        if (id != updatedMovie.ShowId)
+            return BadRequest("ID mismatch.");
 
+        var existing = _context.movies_titles.Find(id);
+        if (existing == null)
+            return NotFound(new { message = "Movie not found" });
 
+        _context.Entry(existing).CurrentValues.SetValues(updatedMovie);
+        _context.SaveChanges();
 
+        return NoContent();
+    }
 }
