@@ -13,12 +13,18 @@ public class MoviesController : ControllerBase
         _context = temp;
     }
 
-    [HttpGet ("GetMovies")]
-    public IActionResult Get() // this gets and returns all the movies in the db
+    [HttpGet("GetMovies")]
+    public IActionResult Get(int page = 1, int pageSize = 10)
     {
-        var movies = _context.movies_titles.ToList();
-        return Ok(movies);
+        var total = _context.movies_titles.Count();
+        var movies = _context.movies_titles
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        return Ok(new { movies, total });
     }
+
     
     [HttpPost("AddMovie")]
     public IActionResult AddMovie([FromBody] Movie newMovie)
@@ -36,7 +42,7 @@ public class MoviesController : ControllerBase
     }
     
     [HttpDelete("DeleteMovie/{id}")]
-    public IActionResult DeleteMovie(int id)
+    public IActionResult DeleteMovie(string id)
     {
         var movie = _context.movies_titles.Find(id);
         if (movie == null)
@@ -70,15 +76,27 @@ public class MoviesController : ControllerBase
         return Ok(existing);
     }
 
-    [HttpGet("MovieList")]
-    public IActionResult MovieList() // need to add pagination
+    [HttpGet("MovieList/{page}/{pageSize}")]
+    public IActionResult MovieList(int page = 1, int pageSize = 20)
     {
+        var totalMovies = _context.movies_titles.Count();
+
         var movies = _context.movies_titles
+            .OrderBy(m => m.Title)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .Select(m => new { m.ShowId, m.Title })
             .ToList();
 
-        return Ok(movies);
-    }  
+        var hasMore = (page * pageSize) < totalMovies;
+
+        return Ok(new
+        {
+            Movies = movies, // match frontend expectation
+            HasMore = hasMore
+        });
+    }
+
     
     
 }
