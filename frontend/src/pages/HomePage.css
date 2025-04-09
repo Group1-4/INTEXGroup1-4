@@ -1,0 +1,11 @@
+.homepage-background {
+    background: linear-gradient(
+      135deg,
+      #2c2724 0%,
+      #2c2724 25%,
+      #2a2421 50%,
+      #342d2a 75%,
+      #551A1C 100%
+    );
+  }
+  

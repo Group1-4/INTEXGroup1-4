@@ -3,6 +3,14 @@
   margin: 0 auto;
   /* padding: 2rem; */
   text-align: center;
+  background: linear-gradient(
+    135deg,
+    #2c2724 0%,
+    #2c2724 25%,
+    #2a2421 50%,
+    #342d2a 75%,
+    #551A1C 100%
+  );
 }
 .h1 {
   font-size: 2rem;
