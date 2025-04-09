@@ -1,10 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import React, { useEffect, useState, useRef } from 'react';
 import OneMovieCard from './1MovieCard';
 import { MovieCard } from '../types/MovieCard';
-import { fetchMovies } from '../api/MoviesAPI';
-import CategoryFilter from './CategoryFilter';
-import SearchBar from './SearchBar';
 import MovieDetails from './MovieDetails'; // 👈 Import real component
 
 // MUI
@@ -18,6 +14,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { TransitionProps } from "@mui/material/transitions";
+import { fetchMoviesCard } from '../api/MoviesAPI';
 
 const PAGE_SIZE = 20;
 
