@@ -70,7 +70,7 @@ const HeroCard: React.FC = () => {
           }}
         >
           <Typography variant="h2" fontWeight="bold" gutterBottom>
-            Unlimited movies, TV shows, and more
+          Tailored for You<br /> From Classics to Today’s Favorites 
           </Typography>
           <Typography variant="h6" sx={{ mb: 2 }}>
             Starts at $5.99. Cancel anytime.
