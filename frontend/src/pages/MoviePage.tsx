@@ -53,7 +53,8 @@ const MainPage = () => {
 
   return (
     <div className="main-container">
-      <h1>Welcome back, Joe!</h1><br />
+      <h1>Welcome back, Joe!</h1>
+      <br />
       {renderCarousel("Previously Watched", previouslyWatched)}
       {renderCarousel("Recommended For You", recommended)}
       {renderCarousel("Action", action)}
