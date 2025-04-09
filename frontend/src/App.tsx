@@ -22,7 +22,7 @@ function App() {
           <Route path="/movies" element={<MoviePage />}></Route>
           <Route path="/privacy" element={<Privacy />}></Route>
           <Route path="/footer" element={<GlobalFooter />}></Route>
-          <Route path="/movielist" element={<MovieListPage.tsx />}></Route>
+          <Route path="/movielist" element={<MovieListPage />}></Route>
         </Routes>
       </Router>
       <Footer />
