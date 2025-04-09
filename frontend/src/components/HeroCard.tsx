@@ -28,7 +28,7 @@ const HeroCard: React.FC = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundImage: `url('/250movies.jpeg')`,
+          backgroundImage: `url('/VerticalCinemaVibes.png')`, // Replace with your image path
           backgroundSize: "cover",
           backgroundPosition: "center",
           boxShadow: `
@@ -47,10 +47,10 @@ const HeroCard: React.FC = () => {
             width: "100%",
             background: `linear-gradient(
                                           to top,
-                                          rgba(0.0, 0, 0.0, 0.7) 0%,
-                                          rgba(0.0, 0, 0, 0.85) 40%,
-                                          rgba(0, 0, 0, 0.75) 75%,
-                                          rgba(0, 0, 0, 0.4) 100%
+                                          rgba(0.0, 0, 0.0, 0.3) 0%,
+                                          rgba(0.0, 0, 0, 0.60) 20%,
+                                          rgba(0, 0, 0, 0.45) 55%,
+                                          rgba(0, 0, 0, 0.2) 80%
                                         )`,
             zIndex: 1,
           }}
@@ -66,7 +66,12 @@ const HeroCard: React.FC = () => {
             px: 4,
           }}
         >
-          <Typography variant="h2" fontWeight="bold" gutterBottom>
+          <Typography variant="h2" fontWeight="bold" gutterBottom
+          sx={{
+            fontFamily: 'MagicRetro, sans-serif',
+            fontSize: '3rem',
+            color: '#FDF2CD',
+          }}>
           Tailored for You<br /> From Classics to Today’s Favorites 
           </Typography>
           <Typography variant="h6" sx={{ mb: 2 }}>
@@ -100,26 +105,30 @@ const HeroCard: React.FC = () => {
             />
             <Button
               variant="contained"
-                sx={{
-                  backgroundColor: "#C4453C !important",
+              sx={{
+                backgroundColor: "#D52429 !important",
+                color: "#FDF2CD !important",
+                fontWeight: "bold",
+                px: 4,
+                textDecoration: "none !important", // no underline
+                transition: "transform 0.2s ease, background-color 0.2s ease", // smooth animation
+                "&:hover": {
+                  backgroundColor: "#D52429 !important",
+                  border: "1px solid #FDF2CD",
+                  color: "#D52429",
+                  textDecoration: "none",
+                  transform: "scale(1.06)", // slight enlargement
+                },
+                "&:visited": {
                   color: "#FDF2CD !important",
-                  fontWeight: "bold",
-                  px: 4,
-                  textDecoration: "none !important", // no underline
-                  "&:hover": {
-                    backgroundColor: "#A73930 !important",
-                    color: "#FDF2CD", // stays off-white
-                    textDecoration: "none", // no underline on hover
-                  },
-                  "&:visited": {
-                    color: "#FDF2CD !important", // stays off-white after click
-                    textDecoration: "none",
-                  },
-                }}
+                  textDecoration: "none",
+                },
+              }}
               href="/register"
-            >
+              >
               Get Started
             </Button>
+
           </Box>
         </Box>
       </Box>
@@ -144,16 +153,16 @@ const HeroCard: React.FC = () => {
             transition: "transform 0.3s ease, box-shadow 0.3s ease",
             "&:hover": {
               transform: "scale(1.03)",
-              boxShadow: "0 8px 20px rgba(196, 69, 60, 0.4)", // optional: glow on hover
+              boxShadow: "0 8px 20px rgba(213, 36, 41, 0.4)", // optional: glow on hover
             },
           }}
       >
         {/* Text Block */}
         <Box>
-          <Typography variant="h6" fontWeight="bold">
+          <Typography variant="h6" fontWeight="bold" sx={{ color: "#6C3F18" }}>
             Discover classic and new favorites
           </Typography>
-          <Typography variant="body2" sx={{ color: "#FDF2CD" }}>
+          <Typography variant="body2" sx={{ color: "#6C3F18" }}>
             Handpicked selections tailored for true cinephiles.
           </Typography>
         </Box>
@@ -162,13 +171,14 @@ const HeroCard: React.FC = () => {
         <Button
           variant="contained"
           sx={{
-            backgroundColor: "#C4453C !important",
+            backgroundColor: "#D52429 !important",
             color: "#FDF2CD !important",
             fontWeight: "bold",
             px: 4,
             textDecoration: "none !important", // no underline
             "&:hover": {
-              backgroundColor: "#A73930 !important",
+              backgroundColor: "#D52429 !important",
+              border: "1px solid #FDF2CD",
               color: "#FDF2CD", // stays off-white
               textDecoration: "none", // no underline on hover
             },

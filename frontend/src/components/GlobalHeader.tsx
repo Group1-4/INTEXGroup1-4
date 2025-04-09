@@ -7,7 +7,7 @@ const Header: React.FC = () => {
       <div className="cine-logo">
         <a href="/">
           <img
-            src="/public/header-logo.png"
+            src="/header-logo.png"
             alt="CineNiche Logo"
             className="logo-icon"
           />
