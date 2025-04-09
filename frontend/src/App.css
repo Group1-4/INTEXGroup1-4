@@ -101,3 +101,48 @@ body,
   border-radius: 50%;
   padding: 4px;
 }
+
+/* Style the card container */
+.movie-card {
+  flex: 0 0 auto;
+  width: 150px;
+  text-align: center;
+}
+
+/* Style the movie poster images */
+.movie-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover; /* fills the space while keeping aspect ratio */
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+}
+
+/* For the horizontal carousels */
+.carousel {
+  display: flex;
+  overflow-x: auto;
+  gap: 15px;
+  padding: 10px 0;
+  scrollbar-width: none; /* Firefox */
+}
+
+.carousel::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+/* For the full movie grid below */
+.all-movies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.all-movies .movie-card {
+  width: 150px;
+}
+
+/* Loader trigger div */
+.loading-trigger {
+  height: 10px;
+}
