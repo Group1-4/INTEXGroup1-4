@@ -176,7 +176,7 @@ const MovieList: React.FC = () => {
               <CloseIcon />
             </IconButton>
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              {selectedMovieTitle}
+              {/* {selectedMovieTitle} */}
             </Typography>
           </Toolbar>
         </AppBar>
