@@ -29,6 +29,7 @@ import {
 } from "../api/MoviesAPI";
 import "../App.css";
 import AuthorizeView from "../components/Authorizeview";
+import { RequireRole } from "../components/RequireRole";
 const baseColumns = [
   "type",
   "title",
@@ -217,7 +218,7 @@ function Admin() {
   };
   return (
     <>
-    <AuthorizeView>
+    <RequireRole role="Admin">
       <Box
         sx={{ height: "100vh", display: "flex", flexDirection: "column", p: 2 }}
       >
@@ -448,7 +449,7 @@ function Admin() {
           </DialogActions>
         </Dialog>
       </Box>
-      </AuthorizeView>
+      </RequireRole> 
     </>
   );
 }

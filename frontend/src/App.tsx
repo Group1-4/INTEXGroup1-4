@@ -9,9 +9,11 @@ import GlobalFooter from "./components/GlobalFooter";
 import Header from "./components/GlobalHeader";
 import Footer from "./components/GlobalFooter";
 import MovieListPage from "./pages/MovieListPage"
+import AuthorizeView from "./components/Authorizeview";
 function App() {
   return (
     <>
+    <AuthorizeView>
       <Router>
         <Header />
         <Routes>
@@ -26,6 +28,7 @@ function App() {
         </Routes>
       </Router>
       <Footer />
+      </AuthorizeView>
     </>
   );
 }

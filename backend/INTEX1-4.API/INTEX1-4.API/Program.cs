@@ -118,8 +118,15 @@ app.MapGet("/pingauth", (ClaimsPrincipal user) =>
     }
 
     var email = user.FindFirstValue(ClaimTypes.Email) ?? "unknown@example.com";
-    return Results.Json(new { email = email });
+    var roles = user.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
+
+    return Results.Json(new
+    {
+        email,
+        roles
+    });
 }).RequireAuthorization();
+
 // Register route
 app.MapPost("/signup", async (
     UserManager<IdentityUser> userManager,

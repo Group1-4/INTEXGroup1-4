@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./MoviePage.css";
 import MovieList from "../components/MovieListCards";
+import { RequireRole } from "../components/RequireRole";
 
 const MainPage = () => {
   const [movies, setMovies] = useState([]);
@@ -52,6 +53,7 @@ const MainPage = () => {
   );
 
   return (
+    <RequireRole role="User">
     <div className="main-container">
       <h1>Welcome back, Joe!</h1>
       <br />
@@ -66,6 +68,7 @@ const MainPage = () => {
         <MovieList />
       </div>
     </div>
+    </RequireRole>
   );
 };
 
