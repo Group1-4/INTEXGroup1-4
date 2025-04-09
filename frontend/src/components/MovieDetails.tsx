@@ -82,7 +82,7 @@ const MovieDetails: React.FC<Props> = ({ movieId }) => {
   const creamOpaque = 'rgba(245, 245, 220, 0.9)'; // Opaque cream color (PapayaWhip with 90% opacity)
 
   return (
-    <div className="min-h-screen bg-image text-white py-5" style={{ backgroundImage: `url('/images/your-background-image.jpg')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}>
+    <div className="min-h-screen bg-image text-white py-5" style={{ backgroundImage: `url('./SquiglyStripes.png')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}>
       <div className="container">
         <div className="row mb-4 rounded p-3" style={{ backgroundColor: creamOpaque }}>
           {/* Movie Poster Column */}
