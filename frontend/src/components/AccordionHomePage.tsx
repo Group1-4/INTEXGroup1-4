@@ -8,7 +8,7 @@ import {
   Paper,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import "../pages/HomePage.css"; // Import your CSS file here
+import "../pages/HomePage.css";
 
 const cardContents = [
   {
@@ -26,6 +26,39 @@ const cardContents = [
   {
     title: "Exclusive Content",
     description: "Access movies and shows you won't find anywhere else.",
+  },
+];
+
+const faqs = [
+  {
+    title: "What is CineNiche?",
+    description:
+      "CineNiche is a streaming platform dedicated to curated cinema — from indie gems and international classics to documentaries and experimental shorts.",
+  },
+  {
+    title: "How much does CineNiche cost?",
+    description:
+      "Plans start at just $5.99/month. No hidden fees, no contracts. Watch on any supported device with a single monthly payment.",
+  },
+  {
+    title: "Where can I watch?",
+    description:
+      "Watch from anywhere via cineniche.com or our mobile and smart TV apps. You can even download titles to watch offline.",
+  },
+  {
+    title: "How do I cancel?",
+    description:
+      "Cancel online anytime with just a couple clicks. No cancellation fees, no stress — you’re always in control.",
+  },
+  {
+    title: "What can I watch on CineNiche?",
+    description:
+      "Enjoy a handpicked library of indie films, festival winners, international features, documentaries, and more.",
+  },
+  {
+    title: "Is CineNiche suitable for kids?",
+    description:
+      "Yes! CineNiche offers a family-friendly section with age-appropriate films. Parental controls are available for peace of mind.",
   },
 ];
 
@@ -67,14 +100,20 @@ const AccordionHomePage: React.FC = () => {
             <Typography variant="h6" fontWeight="bold" gutterBottom>
               {card.title}
             </Typography>
-            <Typography variant="body2">{card.description}</Typography>
+            <Typography variant="body2" sx={{ color: "#FDF2CD" }}>
+              {card.description}
+            </Typography>
           </Paper>
         ))}
       </Box>
 
+
       {/* Accordion Section */}
-      <Box sx={{ width: "100%", maxWidth: "600px", mx: "auto", mt: 4 }}>
-        {["FAQ's", "Privacy", "Contact Us"].map((title, index) => (
+      <Box sx={{ width: "100%", maxWidth: { xs: "92%"}, mx: "auto", mt: 4 }}>
+      <h2 style={{ textAlign: "center", color: "#FDF2CD" }}>
+        Frequently Asked Questions
+      </h2>
+        {faqs.map((faq, index) => (
           <Accordion
             key={index}
             sx={{
@@ -85,12 +124,10 @@ const AccordionHomePage: React.FC = () => {
             }}
           >
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>{title}</Typography>
+              <Typography fontWeight="bold">{faq.title}</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Typography>
-                Placeholder content for {title.toLowerCase()}.
-              </Typography>
+              <Typography>{faq.description}</Typography>
             </AccordionDetails>
           </Accordion>
         ))}
