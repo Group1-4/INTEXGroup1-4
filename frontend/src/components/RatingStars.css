@@ -1,0 +1,27 @@
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+.rating-stars {
+    display: inline-flex;
+  }
+  
+  .star {
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+    margin-right: 0.3rem; /* Add some spacing between stars */
+  }
+  
+  .star:hover {
+    transform: scale(1.2);
+  }
+  /* ... existing styles ... */
+
+.star-empty {
+    color: #ccc; /* Muted color for unrated state */
+  }
+  
+  .star-filled {
+    color: gold; /* Vibrant color for rated state */
+  }
+  
+  
