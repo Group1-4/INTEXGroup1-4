@@ -31,6 +31,8 @@ body,
 /* Header styles for CineNiche */
 .cine-header {
   width: 100%; /* ← Use this instead of 100vw */
+  max-height: 75px;
+  overflow: hidden; /* Optional: hide overflow if content exceeds max-height */
   margin: 0;
   padding: 12px 24px;
   background-color: #C4453C;
@@ -48,7 +50,7 @@ body,
   align-items: center;
 }
 .cine-logo img {
-  height: 80px; /* or however tall you want it in the header */
+  height: 70px; /* or however tall you want it in the header */
   width: auto; /* maintains aspect ratio */
   object-fit: contain;
   display: block;
@@ -59,6 +61,40 @@ body,
   font-family:
     "Arial Rounded MT Bold", sans-serif; /* Customize font if needed */
 }
+
+.auth-buttons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-right: 1rem;
+}
+
+.header-btn {
+  color: #551A1C;
+  text-decoration: none;
+  font-weight: bold;
+  border: 1px solid #FDF2CD;
+  border-radius: 6px;
+  padding: 6px 12px;
+  transition: all 0.2s ease-in-out;
+  background-color: #FDF2CD;
+  text-decoration: none !important;
+  transition: all 0.2s ease-in-out; /* smooth hover effect */
+}
+
+.header-btn:hover {
+  background-color: #FDF2CD;
+  color: #551A1C;
+  transform: scale(1.06); /* Slight enlargement */
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* spacing between buttons and profile icon */
+}
+
+
 .profile-icon img {
   width: 24px;
   height: 24px;
