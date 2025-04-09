@@ -1,0 +1,60 @@
+.main-container {
+  padding: 20px;
+  background-color: #2d2424;
+  color: #fff;
+  font-family: sans-serif;
+}
+
+h1, h2 {
+  color: #ffe8d6;
+}
+
+.carousel-section {
+  margin-bottom: 30px;
+}
+
+.carousel {
+  display: flex;
+  overflow-x: auto;
+  gap: 10px;
+  padding: 10px 0;
+  scrollbar-width: none; /* Firefox */
+}
+
+.carousel::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+.movie-card {
+  flex: 0 0 auto;
+  width: 150px;
+  text-align: center;
+}
+
+.movie-card img {
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+}
+
+.search-section {
+  margin-top: 40px;
+}
+
+.search-section input {
+  padding: 8px;
+  width: 100%;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  border: none;
+}
+
+.all-movies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.all-movies .movie-card {
+  width: 150px;
+}

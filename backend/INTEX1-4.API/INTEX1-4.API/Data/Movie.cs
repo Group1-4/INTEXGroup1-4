@@ -25,7 +25,7 @@ namespace INTEX1_4.API.Data
         public string? Country { get; set; }
 
         [Column("release_year")]
-        public int? ReleaseYear { get; set; }
+        public string? ReleaseYear { get; set; }
 
         [Column("rating")]
         public string? Rating { get; set; }
