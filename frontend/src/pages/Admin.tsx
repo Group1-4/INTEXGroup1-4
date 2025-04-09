@@ -94,12 +94,14 @@ function Admin() {
     description: "",
     ...Object.fromEntries(allCategoryFields.map((c) => [c, 0])),
   });
+  const [total, setTotal] = useState(0);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetchMovies();
+        const { movies, total } = await fetchMovies(page, rowsPerPage);
         const knownFields = new Set(baseColumns.concat(["showId"]));
-        const formattedRows = data.map((item) => {
+        const formattedRows = movies.map((item) => {
           const categoryKeys = Object.keys(item).filter(
             (key) => !knownFields.has(key) && item[key as keyof Movie] === 1
           );
@@ -109,12 +111,15 @@ function Admin() {
           };
         });
         setRows(formattedRows);
+        setTotal(total);
       } catch (error) {
         console.error("Error fetching movies:", error);
       }
     };
+  
     fetchData();
-  }, []);
+  }, [page, rowsPerPage]);
+  
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
@@ -324,12 +329,13 @@ function Admin() {
           <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={rows.length}
+            count={total} // <-- use backend total here
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
+
         </Paper>
         {/* Add/Edit Movie Dialog */}
         <Dialog
