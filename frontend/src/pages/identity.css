@@ -1,54 +1,112 @@
-body {
-  background: #564F4B;
-  background: linear-gradient(to right, #564F4B, #564F4B);
+/* Global Body Styles */
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: "Netflix Sans", Helvetica Neue, Segoe UI, Roboto, Ubuntu, sans-serif;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
-.btn-login {
-  font-size: 0.9rem;
-  letter-spacing: 0.05rem;
-  padding: 0.75rem 1rem;
+
+/* Full-page container using an image from the public folder as background, with a dark overlay */
+.netflix-login-container {
+  position: relative;
+  background: url('/250movies.jpeg') no-repeat center center;
+  background-size: cover;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
-.btn-google {
-  color: white !important;
-  background-color: #EA4335 !important;
+
+/* Dark overlay using a pseudo-element */
+.netflix-login-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); /* Adjust overlay opacity as needed */
+  z-index: 1;
 }
-.btn-facebook {
-  color: white !important;
-  background-color: #3B5998 !important;
+
+/* Cream Opaque Card Styling */
+.netflix-login-card {
+  position: relative;
+  z-index: 2;
+  background-color: rgba(255, 253, 208, 0.9); /* Cream tone (90% opacity) */
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 350px;
+  color: #333;  /* Dark text for contrast */
 }
-.card-body {
-  min-width: 400px;
-}
-.error {
-  color: red;
-  font-weight: bold;
+
+.netflix-login-card h1 {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
   text-align: center;
-  margin-top: 10px;
 }
-.h1 {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #FDF2CD;
+
+/* Input Field Styling */
+.netflix-login-card .form-control {
+  background-color: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-bottom: 1px solid #8c8c8c;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  color: #333;
+  width: 100%;
+}
+
+.netflix-login-card .form-control::placeholder {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+/* Stacked Checkbox Group */
+.checkbox-group {
+  display: block;
   margin-bottom: 1rem;
 }
-.btn-login {
-  font-size: 0.9rem;
-  letter-spacing: 0.05rem;
-  padding: 0.75rem 1rem;
+
+.checkbox-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: #666;
 }
-.btn-google {
-  color: white !important;
-  background-color: #EA4335 !important;
-}
-.btn-facebook {
-  color: white !important;
-  background-color: #3B5998 !important;
-}
-.card-body {
-  min-width: 400px;
-}
-.error {
-  color: red;
+
+/* Retro Red Button Styles with extra spacing */
+button.btn {
+  background-color: #C4453C;  /* Retro red */
+  color: #fff;
+  border: 2px solid transparent;
+  padding: 0.75rem;
   font-weight: bold;
+  text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+  margin-top: 1rem;  /* Increased margin-top to space buttons farther apart from elements above */
+}
+
+button.btn:hover {
+  background-color: #A01818;  /* A slightly darker retro red for hover */
+  border-color: #A01818;
+  transform: translateY(-2px);
+}
+
+
+/* Error Message Styling */
+.error {
+  color: #e87c03;
+  margin-top: 1rem;
+  font-size: 0.9rem;
   text-align: center;
-  margin-top: 10px;
 }

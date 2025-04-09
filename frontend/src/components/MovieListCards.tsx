@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import OneMovieCard from './1MovieCard';
 import { MovieCard } from '../types/MovieCard';
-import { fetchMoviesCard } from '../api/MoviesAPI';
+import { fetchMovies } from '../api/MoviesAPI';
 import CategoryFilter from './CategoryFilter';
 import SearchBar from './SearchBar';
 import MovieDetails from './MovieDetails'; // 👈 Import real component
@@ -41,7 +41,7 @@ const MovieList: React.FC = () => {
 
   const loadMoreMovies = async (currentPage = page) => {
     try {
-      const res = await fetchMoviesCard(
+      const res = await fetchMovies(
         currentPage,
         PAGE_SIZE,
         selectedCategories,
