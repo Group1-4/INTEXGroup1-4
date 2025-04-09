@@ -1,21 +1,24 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Identity.css';
 
 function Register() {
-  // state variables for email and passwords
+  // State variables for email and passwords
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const navigate = useNavigate();
-
-  // state variable for error messages
+  // State variable for error messages
   const [error, setError] = useState('');
+  // State variable for toggling show/hide password
+  const [showPassword, setShowPassword] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleLoginClick = () => {
     navigate('/login');
   };
 
-  // handle change events for input fields
+  // Handle change events for input fields
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (name === 'email') setEmail(value);
@@ -23,10 +26,15 @@ function Register() {
     if (name === 'confirmPassword') setConfirmPassword(value);
   };
 
-  // handle submit event for the form
+  // Toggle password visibility
+  const toggleShowPassword = () => {
+    setShowPassword((prevState) => !prevState);
+  };
+
+  // Handle submit event for the form
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // validate email and passwords
+    // Validate email and passwords
     if (!email || !password || !confirmPassword) {
       setError('Please fill in all fields.');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -34,100 +42,81 @@ function Register() {
     } else if (password !== confirmPassword) {
       setError('Passwords do not match.');
     } else {
-      // clear error message
       setError('');
-      // post data to the /register api
-      fetch('https://localhost:4000/register', {
+      // Post data to the /register API
+      fetch('https://localhost:5000/register', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            email: email,
-            password: password,
-          }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
+        .then((data) => {
+          console.log(data);
+          if (data.ok) setError('Successful registration. Please log in.');
+          else setError('Error registering.');
         })
-          //.then((response) => response.json())
-          .then((data) => {
-            // handle success or error from the server
-            console.log(data);
-            if (data.ok) setError('Successful registration. Please log in.');
-            else setError('Error registering.');
-          })
-          .catch((error) => {
-            // handle network error
-            console.error(error);
-            setError('Error registering.');
-          });
-      }
-    };
-  
-    return (
-      <div className="container">
-        <div className="row">
-          <div className="card border-0 shadow rounded-3 ">
-            <div className="card-body p-4 p-sm-5">
-              <h5 className="card-title text-center mb-5 fw-light fs-5">
-                Register
-              </h5>
-              <form onSubmit={handleSubmit}>
-                <div className="form-floating mb-3">
-                  <input
-                    className="form-control"
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={email}
-                    onChange={handleChange}
-                  />
-                  <label htmlFor="email">Email address</label>
-                </div>
-                <div className="form-floating mb-3">
-                <input
-                  className="form-control"
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={password}
-                  onChange={handleChange}
-                />
-                <label htmlFor="password">Password</label>
-              </div>
-              <div className="form-floating mb-3">
-                <input
-                  className="form-control"
-                  type="password"
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  value={confirmPassword}
-                  onChange={handleChange}
-                />
-                <label htmlFor="confirmPassword">Confirm Password</label>
-              </div>
+        .catch((error) => {
+          console.error(error);
+          setError('Error registering.');
+        });
+    }
+  };
 
-              <div className="d-grid mb-2">
-                <button
-                  className="btn btn-primary btn-login text-uppercase fw-bold"
-                  type="submit"
-                >
-                  Register
-                </button>
-              </div>
-              <div className="d-grid mb-2">
-                <button
-                    className="btn btn-primary btn-login text-uppercase fw-bold"
-                    onClick={handleLoginClick}
-                  >
-                    Go to Login
-                  </button>
-                </div>
-              </form>
-              <strong>{error && <p className="error">{error}</p>}</strong>
-            </div>
+  return (
+    <div className="netflix-login-container">
+      <div className="netflix-login-card">
+        <h1>Register</h1>
+        <form onSubmit={handleSubmit}>
+          <input
+            className="form-control"
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Email address"
+            value={email}
+            onChange={handleChange}
+          />
+          <input
+            className="form-control"
+            type={showPassword ? 'text' : 'password'}
+            id="password"
+            name="password"
+            placeholder="Password"
+            value={password}
+            onChange={handleChange}
+          />
+          <input
+            className="form-control"
+            type={showPassword ? 'text' : 'password'}
+            id="confirmPassword"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={handleChange}
+          />
+          {/* Centered Show/Hide Password Checkbox */}
+          <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+            <input
+              type="checkbox"
+              id="showPassword"
+              checked={showPassword}
+              onChange={toggleShowPassword}
+              style={{ marginRight: '0.5rem' }}
+            />
+            <label htmlFor="showPassword" style={{ color: '#333', fontSize: '0.9rem' }}>
+              Show Password
+            </label>
           </div>
-        </div>
+          <button className="btn" type="submit">
+            Register
+          </button>
+        </form>
+        {error && <p className="error">{error}</p>}
+        <button className="btn" onClick={handleLoginClick}>
+          Go to Login
+        </button>
       </div>
-    );
-  }
-  
-  export default Register;
+    </div>
+  );
+}
+
+export default Register;

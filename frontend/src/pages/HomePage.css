@@ -1,0 +1,11 @@
+.homepage-background {
+  background: linear-gradient(
+    135deg,
+    #6C3F18 0%,      /* Dark Brown */
+    #915018 20%,     /* Light Brown */
+    #EC8922 40%,     /* Yellow */
+    #F1602C 60%,     /* Orange */
+    #D52429 80%,     /* Primary Red */
+    #2A9D8F 100%     /* Teal */
+  );
+}

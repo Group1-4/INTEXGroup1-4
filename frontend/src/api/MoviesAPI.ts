@@ -1,7 +1,7 @@
 import { Movie } from "../types/Movie";
 import { MovieCard } from "../types/MovieCard";
 
-const API_URL = "https://localhost:4000";
+const API_URL = "http://localhost:4000";
 
 // ----- Shared Types -----
 interface FetchMoviesResponse {
@@ -107,26 +107,36 @@ export const updateMovie = async (movie: Movie): Promise<boolean> => {
 
 export const fetchMoviesCard = async (
   page: number,
-  pageSize: number = 20
-
+  pageSize: number = 20,
+  selectedCategories: string[] = [],
+  searchField: string = "",
+  searchQuery: string = ""
 ): Promise<FetchMoviesCardsResponse> => {
-  try {
-    const response = await fetch(
-      `${API_URL}/Movies/MovieList/${page}/${pageSize}`,
-      { credentials: "include" }
-    );
+  const params = new URLSearchParams();
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch movie cards: ${response.status}`);
-    }
-
-    const data: FetchMoviesCardsResponse = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching movie cards:", error);
-    throw error;
+  if (selectedCategories.length > 0) {
+    params.append("categories", selectedCategories.join(","));
   }
+
+  if (searchField && searchQuery) {
+    params.append("searchField", searchField);
+    params.append("searchQuery", searchQuery);
+  }
+
+  const response = await fetch(
+    `${API_URL}/Movies/MovieList/${page}/${pageSize}?${params.toString()}`,
+    { credentials: "include" }
+  );
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch movie cards: ${response.status}`);
+  }
+
+  return await response.json();
 };
+
+
+
 
 export const fetchMoviesPaginated = async (page: number, pageSize: number): Promise<{ movies: Movie[], total: number }> => {
   const response = await fetch(`${API_URL}/Movies/GetMovies?page=${page}&pageSize=${pageSize}`, {
@@ -134,6 +144,45 @@ export const fetchMoviesPaginated = async (page: number, pageSize: number): Prom
   });
 
   if (!response.ok) throw new Error('Failed to fetch paginated movies');
+
+  return await response.json();
+};
+
+
+// fetch movie details for product page
+
+export const fetchMovieDetails = async (id: string): Promise<MovieCard> => {
+  const response = await fetch(`${API_URL}/Movies/MovieDetails/${id}`, {
+    credentials: "include"
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch movie details: ${response.status}`);
+  }
+
+  return await response.json();
+};
+
+
+// product details recommendations
+export interface MovieRecommendation {
+  showId: string;
+  title: string;
+  similarity: number;
+}
+
+export const fetchRecommendations = async (id: string): Promise<MovieRecommendation[]> => {
+  const response = await fetch(`${API_URL}/Recommender/ContentBased/${id}`, {
+    credentials: "include"
+  });
+
+  if (response.status === 404) {
+    return []; // ⛔️ No recommendations — return empty list
+  }
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch recommendations: ${response.status}`);
+  }
 
   return await response.json();
 };
