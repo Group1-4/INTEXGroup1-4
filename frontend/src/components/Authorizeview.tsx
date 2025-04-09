@@ -22,7 +22,7 @@ function AuthorizeView(props: { children: React.ReactNode }) {
         //console.log('AuthorizeView: Raw Response:', response);
 
         const contentType = response.headers.get('content-type');
-
+                                                            
         // Ensure response is JSON before parsing
         if (!contentType || !contentType.includes('application/json')) {
           throw new Error('Invalid response format from server');

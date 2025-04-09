@@ -89,7 +89,7 @@ const AccordionHomePage: React.FC = () => {
               width: { xs: "100%", sm: "45%", md: "22%" },
               padding: 3,
               textAlign: "left",
-              color: "#FDF2CD",
+              color: "#6C3F18",
               transition: "transform 0.3s ease",
               "&:hover": {
                 transform: "scale(1.03)",
@@ -100,7 +100,7 @@ const AccordionHomePage: React.FC = () => {
             <Typography variant="h6" fontWeight="bold" gutterBottom>
               {card.title}
             </Typography>
-            <Typography variant="body2" sx={{ color: "#FDF2CD" }}>
+            <Typography variant="body2" sx={{ color: "#6C3F18" }}>
               {card.description}
             </Typography>
           </Paper>
@@ -110,27 +110,32 @@ const AccordionHomePage: React.FC = () => {
 
       {/* Accordion Section */}
       <Box sx={{ width: "100%", maxWidth: { xs: "92%"}, mx: "auto", mt: 4 }}>
-      <h2 style={{ textAlign: "center", color: "#FDF2CD" }}>
+      <h2 style={{ textAlign: "center", color: "#6C3F18" }}>
         Frequently Asked Questions
       </h2>
-        {faqs.map((faq, index) => (
-          <Accordion
-            key={index}
-            sx={{
-              backgroundColor: "#FDF2CD",
-              color: "#2F2A26",
-              mb: 1,
-              borderRadius: "8px",
-            }}
-          >
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography fontWeight="bold">{faq.title}</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Typography>{faq.description}</Typography>
-            </AccordionDetails>
-          </Accordion>
-        ))}
+      {faqs.map((faq, index) => (
+  <Accordion
+    key={index}
+    sx={{backgroundColor: "#FDF2CD",
+      color: "#6C3F18",
+      mb: 1,
+      borderRadius: "8px",
+      transition: "none !important", // prevent scale transition
+      "&:hover": {
+        backgroundColor: "#FDF2CD !important", // prevent color change
+        transform: "none !important",          // prevent enlargement
+        boxShadow: "none !important",          // prevent added shadow
+      },
+    }}
+  >
+    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+      <Typography fontWeight="bold">{faq.title}</Typography>
+    </AccordionSummary>
+    <AccordionDetails>
+      <Typography>{faq.description}</Typography>
+    </AccordionDetails>
+  </Accordion>
+))}
       </Box>
     </>
   );

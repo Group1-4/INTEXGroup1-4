@@ -1,24 +1,25 @@
+/* ROOT + GLOBAL BACKGROUND */
 #root {
-  /* max-width: 1280px; */
   margin: 0 auto;
-  /* padding: 2rem; */
   text-align: center;
   background: linear-gradient(
     135deg,
-    #2c2724 0%,
-    #2c2724 25%,
-    #2a2421 50%,
-    #342d2a 75%,
-    #551A1C 100%
+    #FDF2CD 0%,
+    #FDF2CD 25%,
+    #EC8922 65%,
+    #F1602C 85%,
+    #D52429 100%
   );
 }
+
+/* Headings */
 .h1 {
   font-size: 2rem;
   font-weight: bold;
   color: #FDF2CD;
   margin-bottom: 1rem;
 }
-/* App.css */
+
 html,
 body,
 #root {
@@ -28,14 +29,15 @@ body,
   width: 100%;
   overflow-x: hidden;
 }
-/* Header styles for CineNiche */
+
+/* HEADER STYLING */
 .cine-header {
-  width: 100%; /* ← Use this instead of 100vw */
+  width: 100%;
   max-height: 75px;
-  overflow: hidden; /* Optional: hide overflow if content exceeds max-height */
+  overflow: hidden;
   margin: 0;
   padding: 12px 24px;
-  background-color: #C4453C;
+  background-color: #D52429; /* Primary Red */
   color: #FDF2CD;
   display: flex;
   justify-content: space-between;
@@ -45,23 +47,26 @@ body,
   z-index: 1000;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+
 .cine-logo {
   display: flex;
   align-items: center;
 }
+
 .cine-logo img {
-  height: 70px; /* or however tall you want it in the header */
-  width: auto; /* maintains aspect ratio */
+  height: 250px;
+  width: auto;
   object-fit: contain;
   display: block;
 }
+
 .header-text {
   font-size: 1.8rem;
   font-weight: bold;
-  font-family:
-    "Arial Rounded MT Bold", sans-serif; /* Customize font if needed */
+  font-family: "Arial Rounded MT Bold", sans-serif;
 }
 
+/* AUTH BUTTONS */
 .auth-buttons {
   display: flex;
   gap: 1rem;
@@ -70,31 +75,32 @@ body,
 }
 
 .header-btn {
-  color: #551A1C;
+  color: #6C3F18; /* Dark Brown text */
   text-decoration: none;
   font-weight: bold;
   border: 1px solid #FDF2CD;
   border-radius: 6px;
   padding: 6px 12px;
+  background-color: #FDF2CD; /* Offwhite background */
   transition: all 0.2s ease-in-out;
-  background-color: #FDF2CD;
   text-decoration: none !important;
-  transition: all 0.2s ease-in-out; /* smooth hover effect */
 }
 
 .header-btn:hover {
-  background-color: #FDF2CD;
-  color: #551A1C;
-  transform: scale(1.06); /* Slight enlargement */
+  background-color: #fff4d3; /* Teal hover */
+  color: #FDF2CD;
+  transform: scale(1.06);
+  text-decoration: none;
 }
 
+/* CONTAINER FOR BUTTONS + ICON */
 .header-right {
   display: flex;
   align-items: center;
-  gap: 1rem; /* spacing between buttons and profile icon */
+  gap: 1rem;
 }
 
-
+/* PROFILE ICON (SVG or IMG) */
 .profile-icon img {
   width: 24px;
   height: 24px;
@@ -102,47 +108,9 @@ body,
   padding: 4px;
 }
 
-/* Style the card container */
-.movie-card {
-  flex: 0 0 auto;
-  width: 150px;
-  text-align: center;
-}
-
-/* Style the movie poster images */
-.movie-card img {
-  width: 100%;
-  height: 220px;
-  object-fit: cover; /* fills the space while keeping aspect ratio */
-  border-radius: 8px;
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
-}
-
-/* For the horizontal carousels */
-.carousel {
-  display: flex;
-  overflow-x: auto;
-  gap: 15px;
-  padding: 10px 0;
-  scrollbar-width: none; /* Firefox */
-}
-
-.carousel::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
-}
-
-/* For the full movie grid below */
-.all-movies {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-}
-
-.all-movies .movie-card {
-  width: 150px;
-}
-
-/* Loader trigger div */
-.loading-trigger {
-  height: 10px;
+@font-face {
+  font-family: 'MagicRetro';
+  src: url('/Magic Retro.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
 }
