@@ -11,4 +11,6 @@ public class MoviesDbContext : DbContext
         
     }
     public DbSet<Movie> movies_titles { get; set; }
+    public DbSet<MoviesUser> movies_users { get; set; }
+    public DbSet<MovieRating> movies_ratings { get; set; }
 }
