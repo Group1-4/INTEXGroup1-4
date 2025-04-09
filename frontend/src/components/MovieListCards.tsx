@@ -1,8 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
-import OneMovieCard from "./1MovieCard";
-import { MovieCard } from "../types/MovieCard";
-import { fetchMoviesCard } from "../api/MoviesAPI";
-import MovieDetails from "./MovieDetails";
+import React, { useEffect, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import OneMovieCard from './1MovieCard';
+import { MovieCard } from '../types/MovieCard';
+import { fetchMovies } from '../api/MoviesAPI';
+import CategoryFilter from './CategoryFilter';
+import SearchBar from './SearchBar';
+import MovieDetails from './MovieDetails'; // 👈 Import real component
 
 // MUI
 import {
