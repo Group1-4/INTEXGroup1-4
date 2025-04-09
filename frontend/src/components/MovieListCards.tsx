@@ -1,10 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import React, { useEffect, useState, useRef } from 'react';
 import OneMovieCard from './1MovieCard';
 import { MovieCard } from '../types/MovieCard';
-import { fetchMoviesCard } from '../api/MoviesAPI';
-import CategoryFilter from './CategoryFilter';
-import SearchBar from './SearchBar';
 import MovieDetails from './MovieDetails'; // 👈 Import real component
 
 // MUI
@@ -14,10 +10,11 @@ import {
   Toolbar,
   IconButton,
   Typography,
-  Slide
-} from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { TransitionProps } from '@mui/material/transitions';
+  Slide,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { TransitionProps } from "@mui/material/transitions";
+import { fetchMoviesCard } from '../api/MoviesAPI';
 
 const PAGE_SIZE = 20;
 
@@ -30,83 +27,135 @@ const Transition = React.forwardRef(function Transition(
 
 const MovieList: React.FC = () => {
   const [movies, setMovies] = useState<MovieCard[]>([]);
-  const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [searchField, setSearchField] = useState<string>('title');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchField, setSearchField] = useState<string>("title");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const [selectedMovieId, setSelectedMovieId] = useState<string | null>(null);
-  const [selectedMovieTitle, setSelectedMovieTitle] = useState<string | null>(null);
+  const [selectedMovieTitle, setSelectedMovieTitle] = useState<string | null>(
+    null
+  );
 
-  const loadMoreMovies = async (currentPage = page) => {
+  const loaderRef = useRef<HTMLDivElement | null>(null);
+  const pageRef = useRef(1); // 🔁 Persistent page tracker
+
+  const loadMoreMovies = async (pageToLoad = pageRef.current) => {
     try {
       const res = await fetchMoviesCard(
-        currentPage,
+        pageToLoad,
         PAGE_SIZE,
         selectedCategories,
         searchField,
         searchQuery
       );
 
-      setMovies(prev =>
-        currentPage === 1 ? res.movies : [...prev, ...res.movies]
+      setMovies((prev) =>
+        pageToLoad === 1 ? res.movies : [...prev, ...res.movies]
       );
       setHasMore(res.hasMore);
-      setPage(prev => prev + 1);
+
+      pageRef.current = pageToLoad + 1; // ✅ advance page for next fetch
     } catch (error) {
-      console.error('Error loading more movies:', error);
+      console.error("Error loading more movies:", error);
       setHasMore(false);
     }
   };
 
+  // Initial load or search/filter change
   useEffect(() => {
-    const refreshMovies = async () => {
-      setPage(1);
-      setMovies([]);
-      await loadMoreMovies(1);
-    };
-    refreshMovies();
+    setMovies([]);
+    pageRef.current = 1;
+    loadMoreMovies(1);
   }, [selectedCategories, searchField, searchQuery]);
+
+  // IntersectionObserver for infinite scroll
+  useEffect(() => {
+    const currentLoader = loaderRef.current;
+    if (!currentLoader) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          console.log("Loader visible. Loading page", pageRef.current);
+          loadMoreMovies(pageRef.current);
+        }
+      },
+      { threshold: 1 }
+    );
+
+    observer.observe(currentLoader);
+
+    return () => {
+      if (currentLoader) observer.unobserve(currentLoader);
+    };
+  }, [hasMore]);
 
   return (
     <div>
-      <SearchBar
-        searchField={searchField}
-        searchQuery={searchQuery}
-        onSearchChange={(field, query) => {
-          setSearchField(field);
-          setSearchQuery(query);
+      {/* Filters */}
+      <div className="filter-dropdown-bar">
+        <input
+          className="search-input"
+          type="text"
+          placeholder="Search movies..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+
+        <select
+          className="dropdown"
+          value={selectedCategories[0] || ""}
+          onChange={(e) =>
+            setSelectedCategories(e.target.value ? [e.target.value] : [])
+          }
+        >
+          <option value="">All Categories</option>
+          <option value="action">Action</option>
+          <option value="comedies">Comedy</option>
+          <option value="dramas">Drama</option>
+          <option value="documentaries">Documentary</option>
+          <option value="horrorMovies">Horror</option>
+          <option value="thrillers">Thriller</option>
+          <option value="fantasy">Fantasy</option>
+        </select>
+
+        <button
+          className="reset-button"
+          onClick={() => {
+            setSearchQuery("");
+            setSelectedCategories([]);
+          }}
+        >
+          Reset
+        </button>
+      </div>
+
+      {/* Movie grid */}
+      <div className="movie-grid">
+        {movies.map((movie) => (
+          <OneMovieCard
+            key={movie.showId}
+            movie={movie}
+            onClick={() => {
+              setSelectedMovieId(movie.showId.toString());
+              setSelectedMovieTitle(movie.title ?? "Movie Details");
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Infinite scroll loader trigger */}
+      <div
+        ref={loaderRef}
+        style={{
+          height: "50px",
+          marginTop: "20px",
+          backgroundColor: "transparent", // You can make this red to test
         }}
-      />
+      ></div>
 
-      <CategoryFilter
-        selected={selectedCategories}
-        onChange={setSelectedCategories}
-      />
-
-      <InfiniteScroll
-        dataLength={movies.length}
-        next={() => loadMoreMovies()}
-        hasMore={hasMore}
-        loader={<p className="text-center py-4 text-gray-500">Loading...</p>}
-      >
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 p-4">
-          {movies.map(movie => (
-            <OneMovieCard
-              key={movie.showId}
-              movie={movie}
-              onClick={() => {
-                setSelectedMovieId(movie.showId.toString());
-                setSelectedMovieTitle(movie.title ?? 'Movie Details');
-              }}
-              
-
-            />
-          ))}
-        </div>
-      </InfiniteScroll>
-
+      {/* Modal for movie details */}
       <Dialog
         fullScreen
         open={!!selectedMovieId}
@@ -114,18 +163,21 @@ const MovieList: React.FC = () => {
           setSelectedMovieId(null);
           setSelectedMovieTitle(null);
         }}
-        
         TransitionComponent={Transition}
       >
-        <AppBar sx={{ position: 'relative', backgroundColor: '#111' }}>
+        <AppBar sx={{ position: "relative", backgroundColor: "#111" }}>
           <Toolbar>
-            <IconButton edge="start" color="inherit" onClick={() => setSelectedMovieId(null)} aria-label="close">
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={() => setSelectedMovieId(null)}
+              aria-label="close"
+            >
               <CloseIcon />
             </IconButton>
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
               {selectedMovieTitle}
             </Typography>
-
           </Toolbar>
         </AppBar>
         {selectedMovieId && <MovieDetails movieId={selectedMovieId} />}
