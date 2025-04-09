@@ -5,7 +5,8 @@
   font-family: sans-serif;
 }
 
-h1, h2 {
+h1,
+h2 {
   color: #ffe8d6;
 }
 
@@ -57,4 +58,117 @@ h1, h2 {
 
 .all-movies .movie-card {
   width: 150px;
+}
+
+.movie-list-wrapper {
+  margin-top: 40px;
+}
+
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+  padding: 16px;
+}
+
+.filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  margin: 0 16px 16px 16px;
+  background-color: #3a2f2f; /* matches your dark red/brown palette */
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.filter-bar input,
+.filter-bar select {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  background-color: #fff;
+  color: #333;
+}
+
+.filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #3a2f2f;
+  padding: 16px;
+  border-radius: 12px;
+  margin: 16px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.search-container,
+.category-container {
+  flex: 1;
+  min-width: 200px;
+}
+
+.search-container input {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: none;
+  background-color: #FDF2CD;
+}
+
+.filter-dropdown-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px;
+  margin: 16px;
+  background-color: #3a2f2f;
+  border-radius: 10px;
+  align-items: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+}
+
+.search-input {
+  flex: 2;
+  min-width: 200px;
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+  font-size: 1rem;
+  background-color: #FDF2CD;
+}
+
+.dropdown {
+  flex: 1;
+  min-width: 150px;
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+  background-color: #FDF2CD;
+  color: #333;
+  font-size: 1rem;
+}
+
+.reset-button {
+  padding: 8px 12px;
+  background-color: #d62828;
+  color: #FDF2CD;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.movie-title {
+  color: #FDF2CD;
+}
+
+h1, h2, h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  color: #FDF2CD !important;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
