@@ -1,8 +1,11 @@
 
 using INTEX1_4.API.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
+
+namespace INTEX1_4.API.Controllers;
 
 [Route("[controller]")]
 [ApiController]
@@ -11,12 +14,20 @@ public class RecommenderController : ControllerBase
     private readonly ContentDbContext _contentDb;
     private readonly CollabDbContext _collabDb;
     private readonly MoviesDbContext _context;
+    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UsersCollabDbContext _usersCollabDb;
 
-    public RecommenderController(ContentDbContext contentDb, CollabDbContext collabDb, MoviesDbContext temp)
+
+    public RecommenderController(
+        ContentDbContext contentDb,
+        CollabDbContext collabDb,
+        MoviesDbContext temp,
+        UsersCollabDbContext usersCollabDb)
     {
         _contentDb = contentDb;
         _collabDb = collabDb;
         _context = temp;
+        _usersCollabDb = usersCollabDb;
     }
 
     [HttpGet("ContentBased/{id}")]
@@ -95,5 +106,113 @@ public class RecommenderController : ControllerBase
 
         return Ok(results);
     }
+    
+    [Authorize]
+    [HttpGet("recentlywatched")]
+    public async Task<IActionResult> GetRecentlyWatched()
+    {
+        // 1. Get signed-in user's email
+        var user = await _userManager.GetUserAsync(User);
+        var email = user?.Email;
 
+        if (email == null)
+        {
+            return Unauthorized("No signed-in user.");
+        }
+
+        // 2. Get UserId and Name from movies_users using email
+        var movieUser = await _context.movies_users
+            .FirstOrDefaultAsync(mu => mu.Email == email);
+
+        if (movieUser == null)
+        {
+            return NotFound("User not found in movies_users.");
+        }
+
+        var userId = movieUser.UserId;
+        var name = movieUser.Name;
+
+        // 3. Get all ShowIds the user has rated
+        var ratedShowIds = await _context.movies_ratings
+            .Where(r => r.UserId == userId)
+            .Select(r => r.ShowId)
+            .ToListAsync();
+
+        // 4. Join with movies_titles to get movie titles
+        var ratedMovies = await _context.movies_titles
+            .Where(m => ratedShowIds.Contains(m.ShowId))
+            .Select(m => new
+            {
+                m.ShowId,
+                m.Title
+            })
+            .ToListAsync();
+
+        // 5. Return name and rated movie info
+        return Ok(new
+        {
+            Name = name,
+            RatedMovies = ratedMovies
+        });
+    }
+
+
+    [Authorize]
+    [HttpGet("collab-user-recs")]
+    public async Task<IActionResult> GetUserBasedCollaborativeRecommendations()
+    {
+        // 1. Get the logged-in user's email
+        var user = await _userManager.GetUserAsync(User);
+        var email = user?.Email;
+
+        if (email == null)
+        {
+            return Unauthorized("No signed-in user.");
+        }
+
+        // 2. Find user_id from movies_users using email
+        var movieUser = await _context.movies_users
+            .FirstOrDefaultAsync(mu => mu.Email == email);
+
+        if (movieUser == null)
+        {
+            return NotFound("User not found in movies_users.");
+        }
+
+        var userId = movieUser.UserId;
+
+        // 3. Look up the recommendations in UsersCollab
+        var recEntry = await _usersCollabDb.UsersCollab
+            .FirstOrDefaultAsync(uc => uc.UserId == userId);
+
+        if (recEntry == null)
+        {
+            return NotFound("No collaborative recommendations found for this user.");
+        }
+
+        // 4. Extract the 10 recommended show IDs
+        var recommendedShowIds = new List<string?>
+            {
+                recEntry.Rec1, recEntry.Rec2, recEntry.Rec3, recEntry.Rec4, recEntry.Rec5,
+                recEntry.Rec6, recEntry.Rec7, recEntry.Rec8, recEntry.Rec9, recEntry.Rec10
+            }
+            .Where(id => !string.IsNullOrEmpty(id))
+            .ToList();
+
+        // 5. Query movies_titles to get titles
+        var results = await _context.movies_titles
+            .Where(m => recommendedShowIds.Contains(m.ShowId))
+            .Select(m => new
+            {
+                m.ShowId,
+                m.Title
+            })
+            .ToListAsync();
+
+        return Ok(results);
+    }
+
+    
+    
 }
+// bottom brace

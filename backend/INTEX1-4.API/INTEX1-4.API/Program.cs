@@ -23,6 +23,9 @@ builder.Services.AddDbContext<MoviesDbContext>(options =>
 builder.Services.AddDbContext<ContentDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("ContentConnection")));
 
+builder.Services.AddDbContext<UsersCollabDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("UserCollabConnection")));
+
 builder.Services.AddDbContext<CollabDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("CollabConnection")));
 
