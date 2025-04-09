@@ -1,0 +1,20 @@
+/* Scoped FAQ Accordion Styling */
+.faq-accordion {
+    background-color: #FDF2CD !important;
+    color: #6C3F18 !important;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+  
+  .faq-accordion:hover {
+    background-color: #FDF2CD !important;
+    transform: scale(1.01);
+    box-shadow: 0 4px 10px rgba(213, 36, 41, 0.1);
+  }
+  
+  .MuiAccordionSummary-content,
+  .MuiAccordionDetails-root {
+    color: #6C3F18 !important;
+  }
+  

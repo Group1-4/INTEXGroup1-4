@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import "../pages/HomePage.css";
+import "./AccordionHomePage.css";
 
 const cardContents = [
   {
@@ -109,34 +110,22 @@ const AccordionHomePage: React.FC = () => {
 
 
       {/* Accordion Section */}
-      <Box sx={{ width: "100%", maxWidth: { xs: "92%"}, mx: "auto", mt: 4 }}>
-      <h2 style={{ textAlign: "center", color: "#6C3F18" }}>
-        Frequently Asked Questions
-      </h2>
-      {faqs.map((faq, index) => (
-  <Accordion
-    key={index}
-    sx={{backgroundColor: "#FDF2CD",
-      color: "#6C3F18",
-      mb: 1,
-      borderRadius: "8px",
-      transition: "none !important", // prevent scale transition
-      "&:hover": {
-        backgroundColor: "#FDF2CD !important", // prevent color change
-        transform: "none !important",          // prevent enlargement
-        boxShadow: "none !important",          // prevent added shadow
-      },
-    }}
-  >
-    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-      <Typography fontWeight="bold">{faq.title}</Typography>
-    </AccordionSummary>
-    <AccordionDetails>
-      <Typography>{faq.description}</Typography>
-    </AccordionDetails>
-  </Accordion>
-))}
+      <Box sx={{ width: "100%", maxWidth: { xs: "92%" }, mx: "auto", mt: 4, fontFamily: 'CreatoDisplay' }}>
+        <h2 className="FAQ-Header">
+          Frequently Asked Questions
+        </h2>
+        {faqs.map((faq, index) => (
+          <Accordion key={index} className="faq-accordion !important">
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography fontWeight="bold">{faq.title}</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>{faq.description}</Typography>
+            </AccordionDetails>
+          </Accordion>
+        ))}
       </Box>
+      <Box sx={{ height: "20px" }} />
     </>
   );
 };

@@ -214,7 +214,7 @@ function Admin() {
       <Box
         sx={{ height: "100vh", display: "flex", flexDirection: "column", p: 2 }}
       >
-        <h1 style={{ color: "#FDF2CD" }}>CineNiche Admin Portal</h1>
+        <h1 className="Admin" >CineNiche Admin Portal</h1>
         <Button
           variant="contained"
           onClick={() => {
