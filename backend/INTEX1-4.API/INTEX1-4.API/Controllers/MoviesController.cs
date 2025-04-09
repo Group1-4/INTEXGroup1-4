@@ -3,7 +3,8 @@ using INTEX1_4.API.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection; // needed for reflection
+using System.Reflection;
+using Microsoft.AspNetCore.Authorization; // needed for reflection
 [Route("[controller]")]
 [ApiController]
 public class MoviesController : ControllerBase
@@ -14,7 +15,7 @@ public class MoviesController : ControllerBase
     {
         _context = temp;
     }
-
+    [Authorize]
     [HttpGet("GetMovies")]
     public IActionResult Get(int page = 1, int pageSize = 10)
     {

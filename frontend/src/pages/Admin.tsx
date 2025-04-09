@@ -28,6 +28,7 @@ import {
   updateMovie,
 } from "../api/MoviesAPI";
 import "../App.css";
+import AuthorizeView from "../components/Authorizeview";
 const baseColumns = [
   "type",
   "title",
@@ -216,6 +217,7 @@ function Admin() {
   };
   return (
     <>
+    <AuthorizeView>
       <Box
         sx={{ height: "100vh", display: "flex", flexDirection: "column", p: 2 }}
       >
@@ -275,9 +277,7 @@ function Admin() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, idx) => (
+                {rows.map((row, idx) => (
                     <TableRow
                       hover
                       role="checkbox"
@@ -448,6 +448,7 @@ function Admin() {
           </DialogActions>
         </Dialog>
       </Box>
+      </AuthorizeView>
     </>
   );
 }
