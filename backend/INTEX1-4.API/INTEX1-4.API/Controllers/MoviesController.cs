@@ -148,8 +148,28 @@ public IActionResult MovieList(
         HasMore = hasMore
     });
 }
+    public async Task<IActionResult> GetRatedMovies(int userId)
+    {
+        var titles = await _context.movies_ratings
+            .Where(r => r.UserId == userId)
+            .Join(_context.movies_titles,
+                rating => rating.ShowId,
+                title => title.ShowId,
+                (rating, title) => new
+                {
+                    title.ShowId,
+                    title.Title,
+                    rating.Rating
+                })
+            .ToListAsync();
 
+        return Ok(titles);
     }
+    
+
+
+
+} //bottom bracket don't delete
 
 
     
