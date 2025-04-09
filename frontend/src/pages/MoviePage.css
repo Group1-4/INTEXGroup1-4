@@ -232,3 +232,36 @@ h1, h2, h3 {
 .movie-card:hover img {
   box-shadow: 0 0 12px rgba(253, 242, 205, 0.6); /* Cream glow around image only */
 }
+
+/* Tabs container styled like a nav bar */
+.tabs {
+  display: flex;
+  justify-content: flex-start;
+  border-bottom: 2px solid #2A9D8F; /* Teal bottom border */
+  margin-bottom: 20px;
+}
+
+/* Each tab looks like a nav item */
+.tab {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #FDF2CD; /* Cream text */
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: border-bottom 0.3s ease, color 0.3s ease;
+}
+
+/* On hover: keep text cream, underline teal */
+.tab:hover {
+  color: #FDF2CD;
+  border-bottom: 3px solid #2A9D8F;
+}
+
+/* Active tab gets an underline and teal text */
+.tab.active {
+  color: #2A9D8F;
+  border-bottom: 3px solid #2A9D8F;
+}
