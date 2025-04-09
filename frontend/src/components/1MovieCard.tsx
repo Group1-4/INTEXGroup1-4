@@ -13,7 +13,7 @@ const OneMovieCard: React.FC<Props> = ({ movie, onClick }) => {
   const [imgSrc, setImgSrc] = useState(posterUrl);
 
   const handleImageError = () => {
-    setImgSrc('/fallback-poster.jpg');
+    setImgSrc('/fallback-poster.png'); // Path to your fallback image
   };
 
   return (
