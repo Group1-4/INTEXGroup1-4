@@ -14,6 +14,7 @@ namespace INTEX1_4.API.Controllers;
 
 [Route("[controller]")]
 [ApiController]
+[Authorize(Roles = "User")]
 public class RecommenderController : ControllerBase
 {
     private readonly ContentDbContext _contentDb;
