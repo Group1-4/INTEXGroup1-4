@@ -1,7 +1,7 @@
 import { Movie } from "../types/Movie";
 import { MovieCard } from "../types/MovieCard";
 
-const API_URL = "https://localhost:4000";
+const API_URL = "http://localhost:4000";
 
 // ----- Shared Types -----
 interface FetchMoviesResponse {
