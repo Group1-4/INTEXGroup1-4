@@ -1,3 +1,5 @@
+
+
 namespace INTEX1_4.API.Data;
 
 using System.ComponentModel.DataAnnotations.Schema;
@@ -12,4 +14,8 @@ public class MovieRating
 
     [Column("rating")]
     public int Rating { get; set; }
+    
+    
 }
+
+

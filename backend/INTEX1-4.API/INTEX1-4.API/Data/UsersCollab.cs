@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace INTEX1_4.API.Data
@@ -5,6 +6,7 @@ namespace INTEX1_4.API.Data
     [Table("UsersCollab")]
     public class UsersCollab
     {
+        [Key]
         [Column("user_id")]
         public int UserId { get; set; }
 

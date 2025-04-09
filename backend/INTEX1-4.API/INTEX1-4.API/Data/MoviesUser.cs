@@ -1,9 +1,12 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace INTEX1_4.API.Data;
 
 using System.ComponentModel.DataAnnotations.Schema;
 
 public class MoviesUser
 {
+    [Key]
     [Column("user_id")]
     public int UserId { get; set; }
 
