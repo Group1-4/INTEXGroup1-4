@@ -107,35 +107,49 @@ const AccordionHomePage: React.FC = () => {
         ))}
       </Box>
 
-
       {/* Accordion Section */}
-      <Box sx={{ width: "100%", maxWidth: { xs: "92%"}, mx: "auto", mt: 4 }}>
-      <h2 style={{ textAlign: "center", color: "#6C3F18" }}>
-        Frequently Asked Questions
-      </h2>
-      {faqs.map((faq, index) => (
-  <Accordion
-    key={index}
-    sx={{backgroundColor: "#FDF2CD",
-      color: "#6C3F18",
-      mb: 1,
-      borderRadius: "8px",
-      transition: "none !important", // prevent scale transition
-      "&:hover": {
-        backgroundColor: "#FDF2CD !important", // prevent color change
-        transform: "none !important",          // prevent enlargement
-        boxShadow: "none !important",          // prevent added shadow
-      },
-    }}
-  >
-    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-      <Typography fontWeight="bold">{faq.title}</Typography>
-    </AccordionSummary>
-    <AccordionDetails>
-      <Typography>{faq.description}</Typography>
-    </AccordionDetails>
-  </Accordion>
-))}
+      <Box sx={{ width: "100%", maxWidth: { xs: "92%" }, mx: "auto", mt: 4 }}>
+        <h2 style={{ textAlign: "center", color: "#6C3F18" }}>
+          Frequently Asked Questions
+        </h2>
+        {faqs.map((faq, index) => (
+          <Accordion
+            key={index}
+            sx={{
+              backgroundColor: "#FDF2CD",
+              color: "#6C3F18",
+              mb: 1,
+              borderRadius: "8px",
+              boxShadow: "none",
+              "&:before": {
+                display: "none", // remove default divider line
+              },
+              "&:hover": {
+                backgroundColor: "#FDF2CD",
+                boxShadow: "none",
+              },
+              "& .MuiAccordionSummary-root": {
+                backgroundColor: "#FDF2CD",
+                "&:hover": {
+                  backgroundColor: "#FDF2CD",
+                  color: "#6C3F18",
+                },
+              },
+              "& .MuiAccordionDetails-root": {
+                backgroundColor: "#FDF2CD",
+              },
+            }}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon sx={{ color: "#6C3F18" }} />}
+            >
+              <Typography fontWeight="bold">{faq.title}</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>{faq.description}</Typography>
+            </AccordionDetails>
+          </Accordion>
+        ))}
       </Box>
     </>
   );
