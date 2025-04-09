@@ -1,11 +1,12 @@
 import { Movie } from "../types/Movie";
 import { MovieCard } from "../types/MovieCard";
 
-const API_URL = "http://localhost:4000";
+const API_URL = "https://localhost:4000";
 
 // ----- Shared Types -----
 interface FetchMoviesResponse {
   movies: Movie[];
+  total: number;
 }
 
 interface FetchMoviesCardsResponse {
@@ -20,23 +21,25 @@ interface AddMovieResponse {
 
 // ----- API Functions -----
 
-export const fetchMovies = async (): Promise<Movie[]> => {
-  try {
-    const response = await fetch(`${API_URL}/Movies/GetMovies`, {
+export const fetchMovies = async (
+  page: number,
+  pageSize: number
+): Promise<{ movies: Movie[]; total: number }> => {
+  const response = await fetch(
+    `${API_URL}/Movies/GetMovies?page=${page + 1}&pageSize=${pageSize}`,
+    {
       credentials: "include",
-    });
-
-    if (!response.ok) {
-      throw new Error(`Fetch failed with status: ${response.status}`);
     }
+  );
 
-    const data: Movie[] = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching movies:", error);
-    throw error;
+  if (!response.ok) {
+    throw new Error(`Fetch failed with status: ${response.status}`);
   }
+
+  return await response.json();
 };
+
+
 
 
 export const addMovie = async (movie: Movie): Promise<AddMovieResponse> => {
