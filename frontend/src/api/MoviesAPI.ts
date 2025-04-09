@@ -147,3 +147,43 @@ export const fetchMoviesPaginated = async (page: number, pageSize: number): Prom
 
   return await response.json();
 };
+
+
+// fetch movie details for product page
+
+export const fetchMovieDetails = async (id: string): Promise<MovieCard> => {
+  const response = await fetch(`${API_URL}/Movies/MovieDetails/${id}`, {
+    credentials: "include"
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch movie details: ${response.status}`);
+  }
+
+  return await response.json();
+};
+
+
+// product details recommendations
+export interface MovieRecommendation {
+  showId: string;
+  title: string;
+  similarity: number;
+}
+
+export const fetchRecommendations = async (id: string): Promise<MovieRecommendation[]> => {
+  const response = await fetch(`${API_URL}/Recommender/ContentBased/${id}`, {
+    credentials: "include"
+  });
+
+  if (response.status === 404) {
+    return []; // ⛔️ No recommendations — return empty list
+  }
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch recommendations: ${response.status}`);
+  }
+
+  return await response.json();
+};
+
