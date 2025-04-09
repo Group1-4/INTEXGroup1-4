@@ -52,3 +52,15 @@ body {
   text-align: center;
   margin-top: 10px;
 }
+/* Cream background for the login card */
+.cream-bg {
+  background-color: #fffdd0 !important;  /* #fffdd0 is a light cream color */
+}
+
+/* Custom button class to make the buttons less wide */
+.btn-narrow {
+  width: auto !important;       /* Allows buttons to size based on content */
+  max-width: 180px;             /* Adjust max-width to your preference */
+  margin-left: auto;
+  margin-right: auto;
+}
