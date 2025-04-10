@@ -110,13 +110,19 @@ const AccordionHomePage: React.FC = () => {
 
 
       {/* Accordion Section */}
-      <Box sx={{ width: "100%", maxWidth: { xs: "92%" }, mx: "auto", mt: 4, fontFamily: 'CreatoDisplay' }}>
-        <h2 className="FAQ-Header">
-          Frequently Asked Questions
-        </h2>
+
+      <Box className="faq-container">
+        <h2 className="FAQ-Header">Frequently Asked Questions</h2>
         {faqs.map((faq, index) => (
-          <Accordion key={index} className="faq-accordion !important">
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Accordion
+            key={index}
+            className="faq-accordion"
+            disableGutters
+            elevation={0}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon sx={{ color: "#6C3F18" }} />}
+            >
               <Typography fontWeight="bold">{faq.title}</Typography>
             </AccordionSummary>
             <AccordionDetails>

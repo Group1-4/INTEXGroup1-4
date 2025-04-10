@@ -22,7 +22,7 @@ function AuthorizeView(props: { children: React.ReactNode }) {
         //console.log('AuthorizeView: Raw Response:', response);
 
         const contentType = response.headers.get('content-type');
-
+                                                            
         // Ensure response is JSON before parsing
         if (!contentType || !contentType.includes('application/json')) {
           throw new Error('Invalid response format from server');
@@ -43,7 +43,7 @@ function AuthorizeView(props: { children: React.ReactNode }) {
       }
     }
 
-    fetchWithRetry('https://localhost:5000/pingauth', {
+    fetchWithRetry('https://localhost:4000/pingauth', {
       method: 'GET',
       credentials: 'include',
     });

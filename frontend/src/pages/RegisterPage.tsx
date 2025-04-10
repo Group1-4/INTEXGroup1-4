@@ -44,7 +44,7 @@ function Register() {
     } else {
       setError('');
       // Post data to the /register API
-      fetch('https://localhost:5000/register', {
+      fetch('https://localhost:4000/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
