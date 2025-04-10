@@ -1,4 +1,3 @@
-// src/components/CookieConsentBanner.tsx
 import React from 'react';
 import CookieConsent from 'react-cookie-consent';
 
@@ -18,16 +17,8 @@ const CookieConsentBanner: React.FC = () => {
         color: "#000000",
         display: "flex",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "center", // This might need adjustment for button placement
       }}
-      // Add a custom style for the button wrapper to stack buttons vertically
-      // buttonWrapperStyle={{
-      //   display: "flex",
-      //   flexDirection: "column", // stack buttons on top of each other
-      //   alignItems: "center",
-      //   gap: "10px",             // adds space between the buttons
-      //   marginTop: "15px",
-      // }}
       buttonStyle={{
         color: "#FFFFFF",
         fontSize: "14px",
@@ -35,6 +26,7 @@ const CookieConsentBanner: React.FC = () => {
         width: "120px",
         padding: "8px 12px",
         backgroundColor: "#A67C52", // Warm brown for accept button
+        marginLeft: "10px",       // Add some space between buttons
       }}
       declineButtonStyle={{
         color: "#FFFFFF",
@@ -43,6 +35,7 @@ const CookieConsentBanner: React.FC = () => {
         borderRadius: "4px",
         width: "120px",
         padding: "8px 12px",
+        marginLeft: "10px",       // Add some space between buttons
       }}
       onAccept={() => {
         console.log("Cookie consent accepted!");
@@ -52,7 +45,7 @@ const CookieConsentBanner: React.FC = () => {
       }}
     >
       <span>
-        We use cookies to enhance your browsing experience, analyze site traffic, and personalize content and ads. 
+        We use cookies to enhance your browsing experience, analyze site traffic, and personalize content and ads.
         By clicking "Accept," you consent to our use of cookies. If you click "Decline," non-essential cookies will not be activated.
         For more details, please refer to our{" "}
         <a
