@@ -52,7 +52,7 @@ function LoginPage() {
         body: JSON.stringify({
           email,
           password,
-          rememberme, // ✅ this tells Identity to persist login
+          rememberMe: rememberme, // ✅ this tells Identity to persist login
         }),
       });
   
