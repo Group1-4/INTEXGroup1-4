@@ -48,7 +48,7 @@ const Privacy: React.FC = () => {
         </button>
       </div>
 
-      <h1>CineNiche Privacy Policy</h1>
+      <h1 className="privacy-container">CineNiche Privacy Policy</h1>
 
         <Section id="data-we-collect" title="What data do we collect?">
           <ul>
@@ -193,7 +193,7 @@ type SectionProps = {
 
 const Section: React.FC<SectionProps> = ({ id, title, children }) => (
   <section id={id} className="mb-5">
-    <h2 className="h4 mb-3">{title}</h2>
+    <h2 className="h4 mb-3" style={{ color: "#6C3F18" }}>{title}</h2>
     <div>{children}</div>
   </section>
 );

@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import "../pages/HomePage.css";
+import "./AccordionHomePage.css";
 
 const cardContents = [
   {
@@ -107,38 +108,17 @@ const AccordionHomePage: React.FC = () => {
         ))}
       </Box>
 
+
       {/* Accordion Section */}
-      <Box sx={{ width: "100%", maxWidth: { xs: "92%" }, mx: "auto", mt: 4 }}>
-        <h2 style={{ textAlign: "center", color: "#6C3F18" }}>
-          Frequently Asked Questions
-        </h2>
+
+      <Box className="faq-container">
+        <h2 className="FAQ-Header">Frequently Asked Questions</h2>
         {faqs.map((faq, index) => (
           <Accordion
             key={index}
-            sx={{
-              backgroundColor: "#FDF2CD",
-              color: "#6C3F18",
-              mb: 1,
-              borderRadius: "8px",
-              boxShadow: "none",
-              "&:before": {
-                display: "none", // remove default divider line
-              },
-              "&:hover": {
-                backgroundColor: "#FDF2CD",
-                boxShadow: "none",
-              },
-              "& .MuiAccordionSummary-root": {
-                backgroundColor: "#FDF2CD",
-                "&:hover": {
-                  backgroundColor: "#FDF2CD",
-                  color: "#6C3F18",
-                },
-              },
-              "& .MuiAccordionDetails-root": {
-                backgroundColor: "#FDF2CD",
-              },
-            }}
+            className="faq-accordion"
+            disableGutters
+            elevation={0}
           >
             <AccordionSummary
               expandIcon={<ExpandMoreIcon sx={{ color: "#6C3F18" }} />}
@@ -151,6 +131,7 @@ const AccordionHomePage: React.FC = () => {
           </Accordion>
         ))}
       </Box>
+      <Box sx={{ height: "20px" }} />
     </>
   );
 };
