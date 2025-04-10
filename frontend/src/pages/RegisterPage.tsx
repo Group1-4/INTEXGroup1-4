@@ -64,7 +64,7 @@ function Register() {
   // Handle Google login redirect
   const handleGoogleLogin = () => {
     // Redirect to your backend login route that initiates Google OAuth
-    window.location.href = 'http://localhost:5000/login'; // Replace with your backend URL
+    window.location.href = 'http://localhost:4000/login'; // Replace with your backend URL
   };
 
   return (
