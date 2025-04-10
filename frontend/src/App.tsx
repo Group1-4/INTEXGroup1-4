@@ -9,6 +9,7 @@ import GlobalFooter from "./components/GlobalFooter";
 import Header from "./components/GlobalHeader";
 import Footer from "./components/GlobalFooter";
 import MovieListPage from "./pages/MovieListPage"
+import ComingSoon from "./pages/ComingSoon";
 function App() {
   return (
     <>
@@ -24,6 +25,7 @@ function App() {
           <Route path="/privacy" element={<Privacy />}></Route>
           <Route path="/footer" element={<GlobalFooter />}></Route>
           <Route path="/movielist" element={<MovieListPage />}></Route>
+          <Route path="/comingsoon" element={<ComingSoon />}></Route>
         </Routes>
       </Router>
       <Footer />
