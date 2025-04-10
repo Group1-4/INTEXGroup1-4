@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import "../App.css";
 import { logoutUser } from "../api/MoviesAPI"; // 👈 Adjust if you put this elsewhere
 
-
 const Header: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -72,9 +71,9 @@ const Header: React.FC = () => {
         );
       case "/privacy":
         return (
-          <button className="header-button" onClick={() => navigate("/")}>
-            Get Started
-          </button>
+          <Link to="/register">
+            <button className="header-button">Get Started</button>
+          </Link>
         );
       default:
         return null;
