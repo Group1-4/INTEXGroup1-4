@@ -209,3 +209,26 @@ body,
   gap: 10px;
   align-items: center;
 }
+
+.profile-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* spacing between button and icon */
+}
+
+.profile-icon svg {
+  display: block;
+}
+
+.admin-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-label {
+  font-weight: bold;
+  font-size: 2rem;
+  color: #FDF2CD;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+}
