@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
+import { Movie } from "../types/Movie";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & { children: React.ReactElement },
@@ -57,12 +58,12 @@ const MainPage = () => {
         setUserName(firstName);
 
         const watchedMovies: MovieCard[] = await Promise.all(
-          watchedData.ratedMovies.map((m) => fetchMovieDetails(m.showId))
+          watchedData.ratedMovies.map((m: Movie) => fetchMovieDetails(m.showId))
         );
         setRecentlyWatched(watchedMovies);
 
         const topPicksFull: MovieCard[] = await Promise.all(
-          picksData.slice(0, 3).map((m) => fetchMovieDetails(m.showId))
+          picksData.slice(0, 3).map((m: Movie) => fetchMovieDetails(m.showId))
         );
         setTopPicks(topPicksFull);
 
@@ -72,16 +73,16 @@ const MainPage = () => {
             fetchRecommendations(topPicksFull[1].showId),
             fetchRecommendations(topPicksFull[2].showId),
           ]);
-
           const rel1 = await Promise.all(
-            rel1Raw.map((m) => fetchMovieDetails(m.showId))
+            rel1Raw.map((m: Movie) => fetchMovieDetails(m.showId))
           );
           const rel2 = await Promise.all(
-            rel2Raw.map((m) => fetchMovieDetails(m.showId))
+            rel2Raw.map((m: Movie) => fetchMovieDetails(m.showId))
           );
           const rel3 = await Promise.all(
-            rel3Raw.map((m) => fetchMovieDetails(m.showId))
+            rel3Raw.map((m: Movie) => fetchMovieDetails(m.showId))
           );
+          
 
           setRelated1(rel1);
           setRelated2(rel2);
