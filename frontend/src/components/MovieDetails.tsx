@@ -70,7 +70,7 @@ const MovieDetails: React.FC<Props> = ({ movieId: initialMovieId }) => {
   };
 
   const handleWatchNowClick = () => {
-    window.open("https://www.netflix.com/browse", "_blank");
+    window.open("/comingsoon", "_blank");
   };
 
   const handleRecommendationClick = (showId: string) => {
@@ -88,7 +88,7 @@ const MovieDetails: React.FC<Props> = ({ movieId: initialMovieId }) => {
   }
   if (!movie) return null;
 
-  const encodedTitle = encodeURIComponent(movie.title || "default-title");
+  const encodedTitle = encodeURIComponent(movie.title || "Title not Found");
   const posterUrl = `https://intexmovieposters14.blob.core.windows.net/posters/Movie%20Posters/${encodedTitle}.jpg`;
   const creamOpaque = "rgba(245, 245, 220, 0.9)";
   const turquoise = "#30D5C8";
