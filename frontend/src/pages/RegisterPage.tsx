@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './identity.css';
+import { API_URL } from '../api/MoviesAPI';
+
 
 function Register() {
   // State variables for email and passwords
@@ -44,7 +46,7 @@ function Register() {
     } else {
       setError('');
       // Post data to the /register API
-      fetch('https://localhost:4000/register', {
+      fetch(`${API_URL}/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),

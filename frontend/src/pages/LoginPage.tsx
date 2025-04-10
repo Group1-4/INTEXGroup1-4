@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './identity.css';
 import '@fortawesome/fontawesome-free/css/all.css';
+import { API_URL } from '../api/MoviesAPI';
 
 function LoginPage() {
   const [email, setEmail] = useState<string>('');
@@ -40,8 +41,8 @@ function LoginPage() {
     }
 
     const loginUrl = rememberme
-      ? 'https://localhost:4000/login?useCookies=true'
-      : 'https://localhost:4000/login?useSessionCookies=true';
+      ? `${API_URL}/login?useCookies=true`
+      : `${API_URL}/login?useSessionCookies=true`;
 
     try {
       const response = await fetch(loginUrl, {
