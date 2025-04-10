@@ -74,7 +74,7 @@ const HeroCard: React.FC = () => {
           }}>
           Tailored for You<br /> From Classics to Today’s Favorites 
           </Typography>
-          <Typography variant="h6" sx={{ mb: 2 }}>
+          <Typography variant="h6" sx={{ mb: 2, color: "#FDF2CD !important" }}>
             Starts at $5.99. Cancel anytime.
           </Typography>
           <Typography variant="body1" sx={{
