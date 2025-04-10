@@ -49,20 +49,22 @@ function Register() {
       fetch(`${API_URL}/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({
+          email,
+          password,
+          confirmPassword: password
+        }),
       })
-        .then((data) => {
-          console.log(data);
-          if (data.ok) setError('Successful registration. Please log in.');
-          else setError('Error registering.');
-        })
-        .catch((error) => {
-          console.error(error);
-          setError('Error registering.');
-        });
-    }
-  };
-
+      .then((data) => {
+        console.log(data);
+        if (data.ok) setError('Successful registration. Please log in.');
+        else setError('Error registering.');
+      })
+      .catch((error) => {
+        console.error(error);
+        setError('Error registering.');
+      });
+      
   return (
     <div className="netflix-login-container">
       <div className="netflix-login-card">
