@@ -27,7 +27,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchField, searchQuery, onSearc
       <select
         value={field}
         onChange={handleFieldChange}
-        className="border border-gray-300 rounded px-2 py-1"
+        className="px-2 py-1 rounded"
       >
         <option value="title">Title</option>
         <option value="director">Director</option>
@@ -38,7 +38,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchField, searchQuery, onSearc
         placeholder={`Search by ${field}`}
         value={query}
         onChange={handleQueryChange}
-        className="flex-grow border border-gray-300 rounded px-2 py-1"
+        className="flex-grow px-2 py-1 rounded !important"
       />
     </div>
   );

@@ -98,7 +98,7 @@ const MovieList: React.FC<MovieListProps> = ({ onMovieSelect }) => {
   return (
     <div>
       {/* Filters */}
-      <div className="filter-dropdown-bar">
+      <div className="filter-dropdown-bar scoped-searchbar">
         <input
           className="search-input"
           type="text"

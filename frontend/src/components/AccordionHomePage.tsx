@@ -112,7 +112,8 @@ const AccordionHomePage: React.FC = () => {
       {/* Accordion Section */}
 
       <Box className="faq-container">
-        <h2 className="FAQ-Header">Frequently Asked Questions</h2>
+        <h2 className="FAQ-Header !important"
+        >Frequently Asked Questions</h2>
         {faqs.map((faq, index) => (
           <Accordion
             key={index}
