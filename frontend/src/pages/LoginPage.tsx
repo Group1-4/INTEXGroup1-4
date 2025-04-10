@@ -69,7 +69,7 @@ function LoginPage() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:4000/signin-google'; // Backend URL that starts the Google OAuth flow
+    window.location.href = 'https://localhost:4000/signin-google'; // Backend URL that starts the Google OAuth flow
   };
   
 
