@@ -46,12 +46,14 @@ const HeroCard: React.FC = () => {
             height: "100%",
             width: "100%",
             background: `linear-gradient(
-                                          to top,
-                                          rgba(0.0, 0, 0.0, 0.3) 0%,
-                                          rgba(0.0, 0, 0, 0.60) 20%,
-                                          rgba(0, 0, 0, 0.45) 55%,
-                                          rgba(0, 0, 0, 0.2) 80%
-                                        )`,
+              to bottom,
+              rgba(0, 0, 0, 0.05) 0%,
+              rgba(0, 0, 0, 0.15) 15%,
+              rgba(0, 0, 0, 0.25) 35%,
+              rgba(0, 0, 0, 0.25) 70%,
+              rgba(0, 0, 0, 0.15) 80%,
+              rgba(0, 0, 0, 0.05) 100%
+            )`,
             zIndex: 1,
           }}
         />
@@ -106,7 +108,7 @@ const HeroCard: React.FC = () => {
             <Button
               variant="contained"
               sx={{
-                backgroundColor: "#D52429 !important",
+                backgroundColor: "#c0392b !important",
                 color: "#FDF2CD !important",
                 fontWeight: "bold",
                 px: 4,
@@ -145,7 +147,7 @@ const HeroCard: React.FC = () => {
             px: 4,
             py: 3,
             borderRadius: "12px",
-            border: "1px solid rgba(253, 242, 205, 0.35)",
+            border: "1px solid rgba(220, 207, 166, 0.8)",
             mb: 4,
             width: "100%",
             maxWidth: "1000px",
@@ -172,7 +174,7 @@ const HeroCard: React.FC = () => {
         <Button
           variant="contained"
           sx={{
-            backgroundColor: "#D52429 !important",
+            backgroundColor: "#c0392b !important",
             color: "#FDF2CD !important",
             fontWeight: "bold",
             px: 4,
@@ -188,7 +190,7 @@ const HeroCard: React.FC = () => {
               textDecoration: "none",
             },
           }}
-          href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+          href="/comingsoon"
         >
           Learn More
         </Button>

@@ -29,6 +29,7 @@ import {
 } from "../api/MoviesAPI";
 import "../App.css";
 import AuthorizeView from "../components/Authorizeview";
+
 const baseColumns = [
   "type",
   "title",
@@ -40,6 +41,7 @@ const baseColumns = [
   "duration",
   "description",
 ];
+
 const allCategoryFields = [
   "Action",
   "Adventure",
@@ -74,13 +76,14 @@ const allCategoryFields = [
   "Talk Shows TV Comedies",
   "Thrillers",
 ];
+
 function Admin() {
   const [rows, setRows] = useState<Movie[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [showForm, setShowForm] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [selectedMovieId, setSelectedMovieId] = useState<number | null>(null);
+  const [selectedMovieId, setSelectedMovieId] = useState<string | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [newMovie, setNewMovie] = useState<any>({
     showId: 0,
@@ -96,6 +99,12 @@ function Admin() {
     ...Object.fromEntries(allCategoryFields.map((c) => [c, 0])),
   });
   const [total, setTotal] = useState(0);
+  const [selectedFieldText, setSelectedFieldText] = useState<string | null>(
+    null
+  );
+  const [selectedFieldTitle, setSelectedFieldTitle] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -117,28 +126,31 @@ function Admin() {
         console.error("Error fetching movies:", error);
       }
     };
-  
+
     fetchData();
   }, [page, rowsPerPage]);
-  
-  const handleChangePage = (event: unknown, newPage: number) => {
+
+  const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
+
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewMovie((prev: any) => ({ ...prev, [name]: value }));
   };
-  
+
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
     setNewMovie((prev: any) => ({ ...prev, [name]: checked ? 1 : 0 }));
   };
+
   const handleFormSubmit = async () => {
     const movieToSend = { ...newMovie };
     try {
@@ -155,12 +167,12 @@ function Admin() {
         const response = await addMovie(movieToSend);
         if (response && response.success) {
           setRows((prev) => [
-            ...prev,
             {
               ...movieToSend,
               showId: response.newId,
               category: getCategoryString(movieToSend),
             },
+            ...prev,
           ]);
         }
       }
@@ -174,23 +186,25 @@ function Admin() {
         director: "",
         cast: "",
         country: "",
-        releaseYear: "", // ✅ now a string
-        rating: "",      // ✅ now a string
-        duration: "",    // ✅ now a string
+        releaseYear: "",
+        rating: "",
+        duration: "",
         description: "",
         ...Object.fromEntries(allCategoryFields.map((c) => [c, 0])),
       });
-      
+
       setEditMode(false);
       setShowForm(false);
     }
   };
+
   const getCategoryString = (movie: any) =>
     allCategoryFields.filter((cat) => movie[cat] === 1).join(", ");
-  const handleDeleteClick = (id: number) => {
+  const handleDeleteClick = (id: string) => {
     setSelectedMovieId(id);
     setDeleteConfirmOpen(true);
   };
+
   const handleConfirmDelete = async () => {
     if (selectedMovieId !== null) {
       try {
@@ -206,6 +220,7 @@ function Admin() {
       }
     }
   };
+
   const handleEditClick = (movie: any) => {
     setNewMovie({
       ...movie,
@@ -214,249 +229,531 @@ function Admin() {
     setEditMode(true);
     setShowForm(true);
   };
+
   return (
     <>
-    <AuthorizeView>
-      <Box
-        sx={{ height: "100vh", display: "flex", flexDirection: "column", p: 2 }}
-      >
+      <AuthorizeView>
         <Box
-  sx={{
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    mb: 2,
-  }}
->
-  <Typography variant="h4" className="Admin" sx={{ fontWeight: "bold" }}>
-    CineNiche Admin Portal
-  </Typography>
-  <Button
-    variant="contained"
-    onClick={() => {
-      setShowForm(true);
-      setEditMode(false);
-    }}
-    sx={{
-      backgroundColor: "#2A9D8F",
-      color: "#FDF2CD",
-      paddingX: 2,
-      minWidth: "auto", // makes it naturally sized to the content
-      "&:hover": {
-        backgroundColor: "#EC8922",
-      },
-    }}
-  >
-    Add Movie
-  </Button>
-</Box>
-        <Paper
           sx={{
-            flex: 1,
+            height: "100vh",
             display: "flex",
             flexDirection: "column",
-            overflow: "hidden",
+            p: 2,
+            backgroundColor: "#FDF2CD",
           }}
         >
-          <TableContainer
+          <Box
             sx={{
-              flex: 1,
-              backgroundColor: "#FDF2CD", // cream background
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              mb: 2,
             }}
           >
-            <Table stickyHeader aria-label="movie table">
-              <TableHead>
-                <TableRow>
-                  {[...baseColumns, "category", "actions"].map((col) => (
-                    <TableCell
-                      key={col}
-                      sx={{
-                        color: "#FDF2CD",
-                        fontWeight: "bold",
-                        backgroundColor: "#F1602C", // header cell color
-                      }}
-                    >
-                      {col === "actions"
-                        ? "Actions"
-                        : col.charAt(0).toUpperCase() + col.slice(1)}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row, idx) => (
+            <Button
+              variant="contained"
+              onClick={() => {
+                setShowForm(true);
+                setEditMode(false);
+              }}
+              sx={{
+                backgroundColor: "#2A9D8F",
+                color: "#FDF2CD",
+                paddingX: 2,
+                minWidth: "auto",
+                boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                "&:hover": {
+                  backgroundColor: "#EC8922",
+                },
+              }}
+            >
+              Add Movie
+            </Button>
+          </Box>
+          <Paper
+            sx={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              overflow: "hidden",
+              boxShadow: "0px 3px 8px rgba(0, 0, 0, 0.15)",
+              borderRadius: "8px",
+            }}
+          >
+            <TableContainer
+              sx={{
+                flex: 1,
+                backgroundColor: "#FDF2CD",
+              }}
+            >
+              <Table stickyHeader aria-label="movie table">
+                <TableHead>
+                  <TableRow>
+                    {[...baseColumns, "category", "actions"].map((col) => (
+                      <TableCell
+                        key={col}
+                        sx={{
+                          color: "#FDF2CD",
+                          fontWeight: "bold",
+                          backgroundColor: "#A6442E", // Changed to match the red header color
+                          textTransform: "uppercase",
+                          fontSize: "0.85rem",
+                          letterSpacing: "0.5px",
+                          padding: "12px 16px",
+                        }}
+                      >
+                        {col === "actions"
+                          ? "Actions"
+                          : col.charAt(0).toUpperCase() + col.slice(1)}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {rows.map((row, idx) => (
                     <TableRow
                       hover
                       role="checkbox"
                       tabIndex={-1}
                       key={row.showId || idx}
                       sx={{
-                        backgroundColor: "#FFF9E2", // optional row background
+                        backgroundColor: idx % 2 === 0 ? "#FFF9E2" : "#FDF2CD", // Alternating row colors
                         "&:hover": {
                           backgroundColor: "#FDEEBB",
                         },
+                        transition: "background-color 0.2s",
                       }}
                     >
-                      {[...baseColumns, "category"].map((col) => (
-                        <TableCell key={col} sx={{ color: "#2F2A26" }}>
-                          {String(row[col as keyof Movie])}
-                        </TableCell>
-                      ))}
-                      <TableCell>
-                        <Button
-                          variant="outlined"
-                          size="small"
+                      {[...baseColumns, "category"].map((col) => {
+                        const cellValue = String(row[col as keyof Movie]);
+
+                        if (["description", "cast"].includes(col)) {
+                          return (
+                            <TableCell
+                              key={col}
+                              sx={{
+                                color: "#6C3F18",
+                                maxWidth: 200,
+                                padding: "10px 16px",
+                                borderBottom:
+                                  "1px solid rgba(166, 68, 46, 0.15)",
+                              }}
+                            >
+                              <Box
+                                component="span"
+                                sx={{
+                                  display: "inline-block",
+                                  whiteSpace: "nowrap",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                  maxWidth: "160px",
+                                  verticalAlign: "middle",
+                                }}
+                              >
+                                {cellValue}
+                              </Box>
+                              {cellValue.length > 60 && (
+                                <Button
+                                  onClick={() => {
+                                    setSelectedFieldTitle(
+                                      col.charAt(0).toUpperCase() + col.slice(1)
+                                    );
+                                    setSelectedFieldText(cellValue);
+                                  }}
+                                  size="small"
+                                  sx={{
+                                    ml: 1,
+                                    color: "#2A9D8F",
+                                    textTransform: "none",
+                                    minWidth: 0,
+                                    padding: "2px 8px",
+                                    borderRadius: "12px",
+                                    fontSize: "0.75rem",
+                                    fontWeight: "bold",
+                                    "&:hover": {
+                                      backgroundColor:
+                                        "rgba(42, 157, 143, 0.1)",
+                                    },
+                                  }}
+                                >
+                                  View
+                                </Button>
+                              )}
+                            </TableCell>
+                          );
+                        }
+
+                        return (
+                          <TableCell
+                            key={col}
+                            sx={{
+                              color: "#6C3F18",
+                              padding: "10px 16px",
+                              borderBottom: "1px solid rgba(166, 68, 46, 0.15)",
+                            }}
+                          >
+                            {cellValue}
+                          </TableCell>
+                        );
+                      })}
+
+                      <TableCell
+                        sx={{
+                          borderBottom: "1px solid rgba(166, 68, 46, 0.15)",
+                          padding: "8px 16px",
+                        }}
+                      >
+                        <Box
                           sx={{
-                            mr: 1,
-                            color: "#C4453C",
-                            borderColor: "#C4453C",
-                            "&:hover": {
-                              backgroundColor: "#FDF2CD",
-                              borderColor: "#A73930",
-                            },
+                            display: "flex",
+                            flexDirection: "column", // stack vertically
+                            gap: 1, // vertical space between buttons (theme spacing unit)
+                            width: "fit-content", // shrink to button width; or use fixed width like "120px"
                           }}
-                          onClick={() => handleEditClick(row)}
                         >
-                          Edit
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          color="error"
-                          size="small"
-                          onClick={() => handleDeleteClick(row.showId)}
-                        >
-                          Delete
-                        </Button>
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            sx={{
+                              mr: 1,
+                              width: "70px",
+                              color: "#2A9D8F", // Edit text color
+                              borderColor: "#2A9D8F", // Edit border color
+                              "&:hover": {
+                                backgroundColor: "#2A9D8F", // fill on hover
+                                borderColor: "#F1602C",     // border on hover
+                                color: "#FDF2CD",           // text on hover
+                              },
+                            }}
+                            onClick={() => handleEditClick(row)}
+                          >
+                            Edit
+                          </Button>
+
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            sx={{
+                              width: "70px",
+                              color: "#c0392b",            // Delete text color
+                              borderColor: "#c0392b",      // Delete border color
+                              "&:hover": {
+                                backgroundColor: "#c0392b", // fill on hover
+                                borderColor: "#EC8922",     // border on hover
+                                color: "#FDF2CD",           // text on hover
+                              },
+                            }}
+                            onClick={() => handleDeleteClick(row.showId)}
+                          >
+                            Delete
+                          </Button>
+                        </Box>
                       </TableCell>
                     </TableRow>
                   ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
-            component="div"
-            count={total} // <-- use backend total here
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-
-        </Paper>
-        {/* Add/Edit Movie Dialog */}
-        <Dialog
-          open={showForm}
-          onClose={() => setShowForm(false)}
-          maxWidth="md"
-          fullWidth
-        >
-          <DialogTitle sx={{ backgroundColor: "#C4453C", color: "#FDF2CD" }}>
-            {editMode ? "Edit Movie" : "Add New Movie"}
-          </DialogTitle>
-          <DialogContent
-            dividers
-            sx={{ backgroundColor: "#2F2A26", color: "#FDF2CD" }}
-          >
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              {baseColumns.map((field) => (
-                <TextField
-                  key={field}
-                  label={field.charAt(0).toUpperCase() + field.slice(1)}
-                  name={field}
-                  value={String(newMovie[field] ?? "")}
-                  onChange={handleInputChange}
-                  fullWidth
-                  sx={{
-                    input: { color: "#FDF2CD" },
-                    label: { color: "#FDF2CD" },
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: "#FDF2CD",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "#FDF2CD",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#FDF2CD",
-                      },
-                    },
-                  }}
-                />
-              ))}
-              <Typography variant="subtitle1" sx={{ color: "#FDF2CD" }}>
-                Categories
-              </Typography>
-              <FormGroup>
-                {allCategoryFields.map((cat) => (
-                  <FormControlLabel
-                    key={cat}
-                    control={
-                      <Checkbox
-                        checked={newMovie[cat] === 1}
-                        onChange={handleCheckboxChange}
-                        name={cat}
-                        sx={{
-                          color: "#FDF2CD",
-                          "&.Mui-checked": {
-                            color: "#C4453C",
-                          },
-                        }}
-                      />
-                    }
-                    label={<span style={{ color: "#FDF2CD" }}>{cat}</span>}
-                  />
-                ))}
-              </FormGroup>
-            </Box>
-          </DialogContent>
-          <DialogActions sx={{ backgroundColor: "#2F2A26" }}>
-            <Button
-              onClick={() => setShowForm(false)}
-              sx={{ color: "#C4453C", fontWeight: "bold" }}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleFormSubmit}
-              variant="contained"
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[10, 25, 100]}
+              component="div"
+              count={total}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
               sx={{
-                backgroundColor: "#C4453C",
+                backgroundColor: "#A6442E", // Matching header color
                 color: "#FDF2CD",
-                "&:hover": {
-                  backgroundColor: "#A73930",
+                ".MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows":
+                  {
+                    color: "#FDF2CD",
+                  },
+                ".MuiTablePagination-select": {
+                  color: "#FDF2CD",
+                },
+                ".MuiTablePagination-selectIcon": {
+                  color: "#FDF2CD",
+                },
+                ".MuiTablePagination-actions": {
+                  color: "#FDF2CD",
+                },
+                ".MuiIconButton-root": {
+                  color: "#FDF2CD",
+                  "&.Mui-disabled": {
+                    color: "rgba(253, 242, 205, 0.5)",
+                  },
+                  "&:hover": {
+                    backgroundColor: "rgba(253, 242, 205, 0.1)",
+                  },
+                },
+                ".MuiSelect-select": {
+                  paddingRight: "24px !important",
+                },
+                ".MuiSelect-icon": {
+                  color: "#FDF2CD",
+                },
+                ".MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#FDF2CD",
+                },
+                ".MuiInputBase-root:hover .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#FDF2CD",
                 },
               }}
+            />
+          </Paper>
+
+          {/* Add/Edit Movie Dialog */}
+          <Dialog
+            open={showForm}
+            onClose={() => setShowForm(false)}
+            maxWidth="md"
+            fullWidth
+            PaperProps={{
+              sx: {
+                borderRadius: "8px",
+                overflow: "hidden",
+              },
+            }}
+          >
+            <DialogTitle
+              sx={{
+                backgroundColor: "#A6442E", // Changed to match the header red color
+                color: "#FDF2CD",
+                fontWeight: "bold",
+                padding: "16px 24px",
+              }}
             >
-              {editMode ? "Update" : "Submit"}
-            </Button>
-          </DialogActions>
-        </Dialog>
-        {/* Delete Confirmation Dialog */}
-        <Dialog
-          open={deleteConfirmOpen}
-          onClose={() => setDeleteConfirmOpen(false)}
-        >
-          <DialogTitle>Confirm Deletion</DialogTitle>
-          <DialogContent dividers>
-            Are you sure you want to delete this movie?
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setDeleteConfirmOpen(false)} color="inherit">
-              Cancel
-            </Button>
-            <Button
-              onClick={handleConfirmDelete}
-              color="error"
-              variant="contained"
+              {editMode ? "Edit Movie" : "Add New Movie"}
+            </DialogTitle>
+            <DialogContent
+              dividers
+              sx={{
+                backgroundColor: "#2F2A26",
+                color: "#FDF2CD",
+                padding: "24px",
+              }}
             >
-              Delete
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Box>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                {baseColumns.map((field) => (
+                  <TextField
+                    key={field}
+                    label={field.charAt(0).toUpperCase() + field.slice(1)}
+                    name={field}
+                    value={String(newMovie[field] ?? "")}
+                    onChange={handleInputChange}
+                    fullWidth
+                    sx={{
+                      input: { color: "#FDF2CD" },
+                      label: { color: "#FDF2CD" },
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: "#FDF2CD",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#FDF2CD",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#FDF2CD",
+                        },
+                      },
+                    }}
+                  />
+                ))}
+                <Typography
+                  variant="subtitle1"
+                  sx={{
+                    color: "#FDF2CD",
+                    fontWeight: "bold",
+                    marginTop: 2,
+                    marginBottom: 1,
+                  }}
+                >
+                  Categories
+                </Typography>
+                <FormGroup>
+                  {allCategoryFields.map((cat) => (
+                    <FormControlLabel
+                      key={cat}
+                      control={
+                        <Checkbox
+                          checked={newMovie[cat] === 1}
+                          onChange={handleCheckboxChange}
+                          name={cat}
+                          sx={{
+                            color: "#FDF2CD",
+                            "&.Mui-checked": {
+                              color: "#EC8922", // Changed to orange for better visibility
+                            },
+                          }}
+                        />
+                      }
+                      label={<span style={{ color: "#FDF2CD" }}>{cat}</span>}
+                    />
+                  ))}
+                </FormGroup>
+              </Box>
+            </DialogContent>
+            <DialogActions
+              sx={{
+                backgroundColor: "#2F2A26",
+                padding: "16px 24px",
+              }}
+            >
+              <Button
+                onClick={() => setShowForm(false)}
+                sx={{
+                  color: "#FDF2CD",
+                  fontWeight: "bold",
+                  "&:hover": {
+                    backgroundColor: "rgba(253, 242, 205, 0.1)",
+                  },
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleFormSubmit}
+                variant="contained"
+                sx={{
+                  backgroundColor: "#2A9D8F", // Changed to teal for better contrast
+                  color: "#FDF2CD",
+                  fontWeight: "bold",
+                  "&:hover": {
+                    backgroundColor: "#238A7D",
+                  },
+                }}
+              >
+                {editMode ? "Update" : "Submit"}
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          {/* Delete Confirmation Dialog */}
+          <Dialog
+            open={deleteConfirmOpen}
+            onClose={() => setDeleteConfirmOpen(false)}
+            PaperProps={{
+              sx: {
+                borderRadius: "8px",
+                overflow: "hidden",
+              },
+            }}
+          >
+            <DialogTitle
+              sx={{
+                backgroundColor: "#A6442E",
+                color: "#FDF2CD",
+                fontWeight: "bold",
+              }}
+            >
+              Confirm Deletion
+            </DialogTitle>
+            <DialogContent
+              dividers
+              sx={{
+                padding: "24px",
+                color: "#6C3F18", // Dark brown for text
+              }}
+            >
+              <Typography>
+                Are you sure you want to delete this movie?
+              </Typography>
+            </DialogContent>
+            <DialogActions sx={{ padding: "16px" }}>
+              <Button
+                onClick={() => setDeleteConfirmOpen(false)}
+                sx={{
+                  color: "#6C3F18",
+                  fontWeight: "bold",
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleConfirmDelete}
+                variant="contained"
+                sx={{
+                  backgroundColor: "#A6442E",
+                  color: "#FDF2CD",
+                  fontWeight: "bold",
+                  "&:hover": {
+                    backgroundColor: "#8A3724",
+                  },
+                }}
+              >
+                Delete
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          {/* Full Text Dialog */}
+          <Dialog
+            open={!!selectedFieldText}
+            onClose={() => setSelectedFieldText(null)}
+            maxWidth="sm"
+            fullWidth
+            PaperProps={{
+              sx: {
+                borderRadius: "8px",
+                overflow: "hidden",
+              },
+            }}
+          >
+            <DialogTitle
+              sx={{
+                backgroundColor: "#A6442E",
+                color: "#FDF2CD",
+                fontWeight: "bold",
+              }}
+            >
+              {selectedFieldTitle}
+            </DialogTitle>
+            <DialogContent
+              dividers
+              sx={{
+                backgroundColor: "#FDF2CD", // Changed to match theme
+                color: "#6C3F18", // Dark brown text
+                padding: "24px",
+              }}
+            >
+              <Typography
+                sx={{
+                  color: "#6C3F18",
+                  whiteSpace: "pre-line",
+                  lineHeight: 1.6,
+                }}
+              >
+                {selectedFieldText}
+              </Typography>
+            </DialogContent>
+
+            <DialogActions
+              sx={{
+                backgroundColor: "#FDF2CD",
+                padding: "16px",
+              }}
+            >
+              <Button
+                onClick={() => setSelectedFieldText(null)}
+                variant="contained"
+                sx={{
+                  backgroundColor: "#2A9D8F", // Using teal for "Close" button
+                  color: "#FDF2CD",
+                  fontWeight: "bold",
+                  "&:hover": {
+                    backgroundColor: "#238A7D",
+                  },
+                }}
+              >
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </Box>
       </AuthorizeView>
     </>
   );
 }
+
 export default Admin;

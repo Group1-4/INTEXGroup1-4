@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import "./MoviePage.css";
 import MovieList from "../components/MovieListCards";
 import { fetchRecommendations, fetchMovieDetails } from "../api/MoviesAPI";
-import OneMovieCard from "../components/1MovieCard";
 import { MovieCard } from "../types/MovieCard";
 import MovieDetails from "../components/MovieDetails";
 
@@ -14,6 +13,8 @@ import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
+import { Movie } from "../types/Movie";
+import CarouselSection from "../components/CarouselSection";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & { children: React.ReactElement },
@@ -53,16 +54,16 @@ const MainPage = () => {
         const picksData = await picksRes.json();
 
         const fullName = watchedData.name ?? "Joe";
-        const firstName = fullName.split(" ")[0]; // takes first word before space
+        const firstName = fullName.split(" ")[0];
         setUserName(firstName);
 
         const watchedMovies: MovieCard[] = await Promise.all(
-          watchedData.ratedMovies.map((m) => fetchMovieDetails(m.showId))
+          watchedData.ratedMovies.map((m: Movie) => fetchMovieDetails(m.showId))
         );
         setRecentlyWatched(watchedMovies);
 
         const topPicksFull: MovieCard[] = await Promise.all(
-          picksData.slice(0, 3).map((m) => fetchMovieDetails(m.showId))
+          picksData.slice(0, 3).map((m: Movie) => fetchMovieDetails(m.showId))
         );
         setTopPicks(topPicksFull);
 
@@ -72,15 +73,14 @@ const MainPage = () => {
             fetchRecommendations(topPicksFull[1].showId),
             fetchRecommendations(topPicksFull[2].showId),
           ]);
-
           const rel1 = await Promise.all(
-            rel1Raw.map((m) => fetchMovieDetails(m.showId))
+            rel1Raw.map((m: Movie) => fetchMovieDetails(m.showId))
           );
           const rel2 = await Promise.all(
-            rel2Raw.map((m) => fetchMovieDetails(m.showId))
+            rel2Raw.map((m: Movie) => fetchMovieDetails(m.showId))
           );
           const rel3 = await Promise.all(
-            rel3Raw.map((m) => fetchMovieDetails(m.showId))
+            rel3Raw.map((m: Movie) => fetchMovieDetails(m.showId))
           );
 
           setRelated1(rel1);
@@ -95,25 +95,10 @@ const MainPage = () => {
     fetchAll();
   }, []);
 
-  const renderCarousel = (title: string, movieList: MovieCard[]) => (
-    <div className="carousel-section">
-      <h2>{title}</h2>
-      <div className="carousel">
-        {movieList.map((movie) => (
-          <OneMovieCard
-            key={movie.showId}
-            movie={movie}
-            onClick={() => {
-              setSelectedMovieId(movie.showId.toString());
-              setSelectedMovieTitle(movie.title ?? "Movie Details");
-            }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-
-  
+  const handleSelectMovie = (id: string, title: string) => {
+    setSelectedMovieId(id);
+    setSelectedMovieTitle(title);
+  };
 
   return (
     <div className="main-container">
@@ -134,36 +119,50 @@ const MainPage = () => {
 
       {activeTab === "tailored" && (
         <div className="tab-content">
-          <h1>Welcome back, {userName}!</h1>
+          <h1 className="welcome-head">Welcome back, {userName}!</h1>
           <br />
-          {renderCarousel("Recently Watched", recentlyWatched)}
-          {renderCarousel("Top Picks for You", topPicks)}
-          {topPicks.length > 0 &&
-            renderCarousel(
-              `Movies Related to "${topPicks[0]?.title}"`,
-              related1
-            )}
-          {topPicks.length > 1 &&
-            renderCarousel(
-              `Movies Related to "${topPicks[1]?.title}"`,
-              related2
-            )}
-          {topPicks.length > 2 &&
-            renderCarousel(
-              `Movies Related to "${topPicks[2]?.title}"`,
-              related3
-            )}
+          <CarouselSection
+            title="Recently Watched"
+            movieList={recentlyWatched}
+            onSelect={handleSelectMovie}
+          />
+          <CarouselSection
+            title="Top Picks for You"
+            movieList={topPicks}
+            onSelect={handleSelectMovie}
+          />
+          {topPicks.length > 0 && (
+            <CarouselSection
+              title={`Related to "${topPicks[0]?.title}"`}
+              movieList={related1}
+              onSelect={handleSelectMovie}
+            />
+          )}
+          {topPicks.length > 1 && (
+            <CarouselSection
+              title={`Related to "${topPicks[1]?.title}"`}
+              movieList={related2}
+              onSelect={handleSelectMovie}
+            />
+          )}
+          {topPicks.length > 2 && (
+            <CarouselSection
+              title={`Related to "${topPicks[2]?.title}"`}
+              movieList={related3}
+              onSelect={handleSelectMovie}
+            />
+          )}
         </div>
       )}
 
       {activeTab === "all" && (
         <div className="tab-content movie-list-wrapper">
-          <h2>All Movies</h2>
+          <h2 className="welcome-head">All Movies</h2>
           <MovieList />
         </div>
       )}
 
-      {/* Movie Details Model */}
+      {/* Movie Details Modal */}
       <Dialog
         fullScreen
         open={!!selectedMovieId}

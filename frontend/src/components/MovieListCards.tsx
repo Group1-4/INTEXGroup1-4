@@ -29,11 +29,11 @@ const MovieList: React.FC = () => {
   const [movies, setMovies] = useState<MovieCard[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [searchField, setSearchField] = useState<string>("title");
+  const [searchField, ] = useState<string>("title");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   const [selectedMovieId, setSelectedMovieId] = useState<string | null>(null);
-  const [selectedMovieTitle, setSelectedMovieTitle] = useState<string | null>(
+  const [, setSelectedMovieTitle] = useState<string | null>(
     null
   );
 

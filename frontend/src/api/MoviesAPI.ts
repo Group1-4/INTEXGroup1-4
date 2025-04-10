@@ -4,10 +4,10 @@ import { MovieCard } from "../types/MovieCard";
 const API_URL = "https://localhost:4000";
 
 // ----- Shared Types -----
-interface FetchMoviesResponse {
-  movies: Movie[];
-  total: number;
-}
+// interface FetchMoviesResponse {
+//   movies: Movie[];
+//   total: number;
+// }
 
 interface FetchMoviesCardsResponse {
   movies: MovieCard[];
@@ -68,7 +68,7 @@ export const addMovie = async (movie: Movie): Promise<AddMovieResponse> => {
   }
 };
 
-export const deleteMovie = async (id: number): Promise<boolean> => {
+export const deleteMovie = async (id: string): Promise<boolean> => {
   try {
     const response = await fetch(`${API_URL}/Movies/DeleteMovie/${id}`, {
       method: "DELETE",

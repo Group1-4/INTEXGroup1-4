@@ -46,7 +46,7 @@
 }
 
 .tile-header-color {
-    color: #6C3F18; /* Darker color for the tile headers */
+    color: #6C3F18 !important; /* Darker color for the tile headers */
 }
 
 .future-features-grid {
@@ -95,7 +95,7 @@
 }
 
 .considering {
-    background-color: #777;
+    background-color: #2A9D8F ;
     color: white;
 }
 

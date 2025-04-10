@@ -21,13 +21,13 @@ const CookieConsentBanner: React.FC = () => {
         justifyContent: "center",
       }}
       // Add a custom style for the button wrapper to stack buttons vertically
-      buttonWrapperStyle={{
-        display: "flex",
-        flexDirection: "column", // stack buttons on top of each other
-        alignItems: "center",
-        gap: "10px",             // adds space between the buttons
-        marginTop: "15px",
-      }}
+      // buttonWrapperStyle={{
+      //   display: "flex",
+      //   flexDirection: "column", // stack buttons on top of each other
+      //   alignItems: "center",
+      //   gap: "10px",             // adds space between the buttons
+      //   marginTop: "15px",
+      // }}
       buttonStyle={{
         color: "#FFFFFF",
         fontSize: "14px",
