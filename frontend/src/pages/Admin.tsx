@@ -703,7 +703,7 @@ function Admin() {
             <DialogTitle
               sx={{
                 backgroundColor: "#A6442E",
-                color: "#FDF2CD",
+                color: "#FDF2CD !important",
                 fontWeight: "bold",
               }}
             >
