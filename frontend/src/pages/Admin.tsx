@@ -174,12 +174,13 @@ function Admin() {
         director: "",
         cast: "",
         country: "",
-        releaseYear: 0,
-        rating: 0,
-        duration: 0,
+        releaseYear: "", // ✅ now a string
+        rating: "",      // ✅ now a string
+        duration: "",    // ✅ now a string
         description: "",
         ...Object.fromEntries(allCategoryFields.map((c) => [c, 0])),
       });
+      
       setEditMode(false);
       setShowForm(false);
     }
