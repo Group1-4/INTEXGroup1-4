@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Identity.css';
+import './identity.css';
 
 function Register() {
   // State variables for email and passwords
@@ -64,7 +64,7 @@ function Register() {
   return (
     <div className="netflix-login-container">
       <div className="netflix-login-card">
-        <h1>Register</h1>
+        <h1 className='login-h1'>Create an Account</h1>
         <form onSubmit={handleSubmit}>
           <input
             className="form-control"

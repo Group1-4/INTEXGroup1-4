@@ -167,12 +167,21 @@ h2 {
 }
 
 h1, h2, h3 {
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: 'CreatoDisplay', sans-serif;
   color: #FDF2CD !important;
   letter-spacing: 1px;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
 }
 
+.FAQ-Header {
+  color: #6C3F18 !important;       /* Dark brown */
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold !important;
+  margin-bottom: 1.5rem;
+  font-family: 'CreatoDisplay' !important;
+}
+=======
 /* Style the movie poster images */
 .movie-card img {
   width: 100%;
