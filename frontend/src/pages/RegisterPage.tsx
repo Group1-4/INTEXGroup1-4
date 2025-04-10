@@ -61,6 +61,12 @@ function Register() {
     }
   };
 
+  // Handle Google login redirect
+  const handleGoogleLogin = () => {
+    // Redirect to your backend login route that initiates Google OAuth
+    window.location.href = 'http://localhost:5000/login'; // Replace with your backend URL
+  };
+
   return (
     <div className="netflix-login-container">
       <div className="netflix-login-card">
@@ -114,6 +120,13 @@ function Register() {
         <button className="btn" onClick={handleLoginClick}>
           Go to Login
         </button>
+
+        {/* Google Login Button */}
+        <div className="google-login-container">
+          <button className="google-login-btn" onClick={handleGoogleLogin}>
+            <i className="fab fa-google"></i> Sign Up with Google
+          </button>
+        </div>
       </div>
     </div>
   );
