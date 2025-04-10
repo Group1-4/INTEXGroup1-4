@@ -403,42 +403,51 @@ function Admin() {
                           padding: "8px 16px",
                         }}
                       >
-                        <Button
-                          variant="outlined"
-                          size="small"
+                        <Box
                           sx={{
-                            mr: 1,
-                            color: "#F1602C",
-                            borderColor: "#F1602C",
-                            fontWeight: "bold",
-                            borderRadius: "4px",
-                            "&:hover": {
-                              backgroundColor: "rgba(241, 96, 44, 0.1)",
-                              borderColor: "#F1602C",
-                            },
+                            display: "flex",
+                            flexDirection: "column", // stack vertically
+                            gap: 1, // vertical space between buttons (theme spacing unit)
+                            width: "fit-content", // shrink to button width; or use fixed width like "120px"
                           }}
-                          onClick={() => handleEditClick(row)}
                         >
-                          Edit
-                        </Button>
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            sx={{
+                              mr: 1,
+                              width: "70px",
+                              color: "#2A9D8F", // Edit text color
+                              borderColor: "#2A9D8F", // Edit border color
+                              "&:hover": {
+                                backgroundColor: "#2A9D8F", // fill on hover
+                                borderColor: "#F1602C",     // border on hover
+                                color: "#FDF2CD",           // text on hover
+                              },
+                            }}
+                            onClick={() => handleEditClick(row)}
+                          >
+                            Edit
+                          </Button>
 
-                        <Button
-                          variant="outlined"
-                          size="small"
-                          sx={{
-                            color: "#A6442E",
-                            borderColor: "#A6442E",
-                            fontWeight: "bold",
-                            borderRadius: "4px",
-                            "&:hover": {
-                              backgroundColor: "rgba(166, 68, 46, 0.1)",
-                              borderColor: "#A6442E",
-                            },
-                          }}
-                          onClick={() => handleDeleteClick(row.showId)}
-                        >
-                          Delete
-                        </Button>
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            sx={{
+                              width: "70px",
+                              color: "#c0392b",            // Delete text color
+                              borderColor: "#c0392b",      // Delete border color
+                              "&:hover": {
+                                backgroundColor: "#c0392b", // fill on hover
+                                borderColor: "#EC8922",     // border on hover
+                                color: "#FDF2CD",           // text on hover
+                              },
+                            }}
+                            onClick={() => handleDeleteClick(row.showId)}
+                          >
+                            Delete
+                          </Button>
+                        </Box>
                       </TableCell>
                     </TableRow>
                   ))}
