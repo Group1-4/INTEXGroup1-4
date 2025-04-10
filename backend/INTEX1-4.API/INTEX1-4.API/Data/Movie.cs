@@ -7,34 +7,49 @@ namespace INTEX1_4.API.Data
     {
         [Key]
         [Column("show_id")]
+        [Required]
+        [StringLength(50)]
         public string ShowId { get; set; }
 
         [Column("type")]
+        [StringLength(50)]
         public string? Type { get; set; }
 
         [Column("title")]
+        [Required]
+        [StringLength(200)]
         public string? Title { get; set; }
 
         [Column("director")]
+        [StringLength(100)]
         public string? Director { get; set; }
 
         [Column("cast")]
+        [StringLength(500)]
         public string? Cast { get; set; }
 
         [Column("country")]
+        [StringLength(100)]
         public string? Country { get; set; }
 
         [Column("release_year")]
+        [StringLength(4)] // or make it int if you want stricter control
         public string? ReleaseYear { get; set; }
 
         [Column("rating")]
+        [StringLength(10)]
         public string? Rating { get; set; }
 
         [Column("duration")]
+        [StringLength(50)]
         public string? Duration { get; set; }
 
         [Column("description")]
+        [StringLength(1000)] // limit long HTML/JS inputs
         public string? Description { get; set; }
+
+        // You can leave category fields as-is (nullable ints), they’re low-risk.
+    
 
         // Category fields (nullable)
         [Column("Action")] public int? Action { get; set; }
