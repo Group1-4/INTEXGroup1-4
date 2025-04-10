@@ -79,7 +79,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("MyCorsPolicy", policy =>
     {
         policy.WithOrigins("http://localhost:5173",
-                "https://kind-wave-0d0fe0a1e.6.azurestaticapps.net/") // list all specific origins here
+                "https://kind-wave-0d0fe0a1e.6.azurestaticapps.net") // list all specific origins here
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
