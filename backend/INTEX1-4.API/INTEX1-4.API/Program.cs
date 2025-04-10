@@ -1,3 +1,4 @@
+using System;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,7 @@ using INTEX1_4.API.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication;
-
+using Microsoft.Extensions.Logging;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -114,29 +115,37 @@ app.MapGet("/signin-google", async (HttpContext context) =>
 
 
 
-// Google OAuth callback endpoint
-app.MapGet("/signin-google-callback", async (HttpContext context, SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager) =>
+app.MapGet("/signin-google-callback", async (HttpContext context, SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, ILogger<Program> logger) =>
 {
-    var result = await context.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
-
-    if (result?.Principal != null)
+    try
     {
-        var email = result.Principal?.FindFirstValue(ClaimTypes.Email);
-        var user = await userManager.FindByEmailAsync(email);
+        var result = await context.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
 
-        if (user == null)
+        if (result?.Principal != null)
         {
-            // If the user doesn't exist, create the user
-            user = new IdentityUser { UserName = email, Email = email };
-            await userManager.CreateAsync(user);
-        }
+            var email = result.Principal?.FindFirstValue(ClaimTypes.Email);
+            var user = await userManager.FindByEmailAsync(email);
 
-        await signInManager.SignInAsync(user, isPersistent: false);
-        context.Response.Redirect("/movies"); // Redirect to /movies page after successful login
+            if (user == null)
+            {
+                // If the user doesn't exist, create the user
+                user = new IdentityUser { UserName = email, Email = email };
+                await userManager.CreateAsync(user);
+            }
+
+            await signInManager.SignInAsync(user, isPersistent: false);
+            context.Response.Redirect("/movies"); // Redirect to /movies page after successful login
+        }
+        else
+        {
+            context.Response.Redirect("/login"); // Redirect back to login if authentication fails
+        }
     }
-    else
+    catch (Exception ex)
     {
-        context.Response.Redirect("/login"); // Redirect back to login if authentication fails
+        logger.LogError(ex, "Error during Google callback");
+        context.Response.StatusCode = 500;
+        await context.Response.WriteAsync($"Error: {ex.Message}");
     }
 });
 
