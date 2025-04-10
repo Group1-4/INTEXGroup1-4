@@ -32,11 +32,8 @@ function Register() {
   const toggleShowPassword = () => {
     setShowPassword((prevState) => !prevState);
   };
-
-  // Handle submit event for the form
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Validate email and passwords
     if (!email || !password || !confirmPassword) {
       setError('Please fill in all fields.');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -45,7 +42,6 @@ function Register() {
       setError('Passwords do not match.');
     } else {
       setError('');
-      // Post data to the /register API
       fetch(`${API_URL}/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -55,16 +51,17 @@ function Register() {
           confirmPassword: password
         }),
       })
-      .then((data) => {
-        console.log(data);
-        if (data.ok) setError('Successful registration. Please log in.');
-        else setError('Error registering.');
-      })
-      .catch((error) => {
-        console.error(error);
-        setError('Error registering.');
-      });
-      
+        .then((data) => {
+          console.log(data);
+          if (data.ok) setError('Successful registration. Please log in.');
+          else setError('Error registering.');
+        })
+        .catch((error) => {
+          console.error(error);
+          setError('Error registering.');
+        });
+    }
+  }; // ✅ <- this was missing
   return (
     <div className="netflix-login-container">
       <div className="netflix-login-card">
