@@ -9,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Globalization;
+using Microsoft.AspNetCore.Mvc;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
@@ -118,5 +120,43 @@ app.MapGet("/pingauth", (ClaimsPrincipal user) =>
     var email = user.FindFirstValue(ClaimTypes.Email) ?? "unknown@example.com";
     return Results.Json(new { email = email });
 }).RequireAuthorization();
+
+app.MapPost("/custom-login", async (
+    HttpContext context,
+    SignInManager<IdentityUser> signInManager,
+    UserManager<IdentityUser> userManager,
+    [FromBody] LoginRequest login
+) =>
+{
+    try
+    {
+        var user = await userManager.FindByEmailAsync(login.Email);
+        if (user == null)
+        {
+            return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);
+        }
+
+        var result = await signInManager.PasswordSignInAsync(
+            user,
+            login.Password,
+            login.RememberMe,
+            lockoutOnFailure: false);
+
+        if (result.Succeeded)
+        {
+            return Results.Ok(new { message = "Login successful" });
+        }
+
+        return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("Login failed:");
+        Console.WriteLine(ex);
+        return Results.Problem("An internal error occurred.");
+    }
+});
+
+
 
 app.Run();
