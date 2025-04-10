@@ -85,7 +85,7 @@ const AccordionHomePage: React.FC = () => {
             sx={{
               backgroundColor: "rgba(253, 238, 205, 0.1)",
               backdropFilter: "blur(6px)",
-              border: "1px solid rgba(253, 242, 205, 0.3)",
+              border: "1px solid rgba(220, 207, 166, 0.8)",
               borderRadius: "12px",
               width: { xs: "100%", sm: "45%", md: "22%" },
               padding: 3,

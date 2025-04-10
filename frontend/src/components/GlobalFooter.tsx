@@ -63,12 +63,12 @@ const GlobalFooter: React.FC = () => {
         <div className="footer-social">
             <ul>
                 <li className="icon-hover">
-                <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.facebook.com/groups/1199210663926081/posts/hey-rollers-lets-rick-roll-with-a-new-link/1199670603880087/" target="_blank" rel="noopener noreferrer">
                     <FaFacebookF />
                 </a>
                 </li>
                 <li className="icon-hover">
-                <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">
+                <a href="https://x.com/MIT_CSAIL/status/1363172815315214336?lang=en" target="_blank" rel="noopener noreferrer">
                     <FaXTwitter />
                 </a>
                 </li>
@@ -78,7 +78,7 @@ const GlobalFooter: React.FC = () => {
                 </a>
                 </li>
                 <li className="icon-hover">
-                <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.instagram.com/ooferjuice/p/BgSlRglAKBn/?hl=en" target="_blank" rel="noopener noreferrer">
                     <FaInstagram />
                 </a>
                 </li>
