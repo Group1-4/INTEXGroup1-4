@@ -191,31 +191,56 @@ export const fetchRecommendations = async (id: string): Promise<MovieRecommendat
 };
 
 // ----- User Rating API Function -----
+export async function rateMovie(movieId: string, rating: number) {
+  try {
+    const response = await fetch(
+      `https://localhost:4000/Recommender/rate/${movieId}/${rating}`,
+      {
+        method: "POST",
+        credentials: "include", // important for cookie-based auth
+      }
+    );
 
-//export const rateMovie = async (movieId: string, rating: number, authToken: string | null): Promise<RateMovieResponse> => {
-  //try {
-    //if (!authToken) {
-      //throw new Error('Authentication token is required to rate a movie.');
-   // }
+    if (!response.ok) {
+      // If there's an error response, try to parse the error message
+      let errorMessage = `Failed to rate movie (status: ${response.status})`;
+      try {
+        const errorData = await response.json();
+        if (errorData.message) errorMessage = errorData.message;
+      } catch {}
+      throw new Error(errorMessage);
+    }
 
-    //const response = await fetch(`${API_URL}/User/RateMovie/${movieId}`, {
-     // method: "POST",
-     // headers: {
-     //   "Content-Type": "application/json",
-     //   "Authorization": `Bearer ${authToken}`, // Assuming Bearer token
-    //  },
-    // credentials: "include",
-    // body: JSON.stringify({ rating }),
-   // });
+    // Safely try to parse JSON only if content exists
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      const data = await response.json();
+      return data;
+    }
 
-   //if (!response.ok) {
-   //   const errorData = await response.json();
-   //   throw new Error(errorData.message || `Failed to rate movie: ${response.status}`);
-   // }
+    return { message: "Rating saved (no content returned)." };
+  } catch (error) {
+    console.error("Error rating movie:", error);
+    throw error;
+  }
+}
 
-   // return { success: true, message: "Movie rated successfully." };
-  //} catch (error: any) {
-  //  console.error("Error rating movie:", error);
-  //  return { success: false, message: error.message || "Failed to rate movie." };
-  //}
-//};
+
+export async function fetchUserMovieDetails(movieId: string) {
+  const response = await fetch(`${API_URL}/Recommender/UserMovieDetails/${movieId}`, {
+    method: "GET",
+    credentials: "include", // needed for cookies to send the auth info
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch user movie details");
+  }
+
+  const data = await response.json();
+
+  return {
+    movie: data.movie,
+    userRating: data.userRating,
+  };
+}
+

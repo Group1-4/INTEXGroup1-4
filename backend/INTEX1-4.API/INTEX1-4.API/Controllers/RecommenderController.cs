@@ -205,4 +205,75 @@ public async Task<IActionResult> GetContentBasedUserRecommendations()
     return NotFound("No recommendations found based on user's rated shows.");
 }
 
+[Authorize]
+[HttpPost("rate/{movieId}/{rating}")]
+public async Task<IActionResult> RateMovieFromUrl(string movieId, int rating)
+{
+    // 1. Get user email from cookie claims
+    var email = User.FindFirstValue(ClaimTypes.Email);
+    if (string.IsNullOrEmpty(email))
+        return Unauthorized("Email not found in claims.");
+
+    // 2. Lookup user in movies_users
+    var movieUser = await _context.movies_users.FirstOrDefaultAsync(mu => mu.Email == email);
+    if (movieUser == null)
+        return NotFound("User not found in movies_users.");
+
+    var userId = movieUser.UserId;
+
+    // 3. Check if user already rated this movie
+    var existingRating = await _context.movies_ratings
+        .FirstOrDefaultAsync(r => r.UserId == userId && r.ShowId == movieId);
+
+    if (existingRating != null)
+    {
+        existingRating.Rating = rating;
+    }
+    else
+    {
+        var newRating = new MovieRating
+        {
+            UserId = userId,
+            ShowId = movieId,
+            Rating = rating
+        };
+        _context.movies_ratings.Add(newRating);
+    }
+
+    await _context.SaveChangesAsync();
+
+    return Ok(new { message = "Rating saved successfully." });
+}
+[Authorize]
+[HttpGet("UserMovieDetails/{id}")]
+public async Task<IActionResult> UserMovieDetails(string id)
+{
+    var email = User.FindFirstValue(ClaimTypes.Email);
+    if (string.IsNullOrEmpty(email))
+        return Unauthorized("Email not found in claims.");
+
+    // Find the movie
+    var movie = await _context.movies_titles.FindAsync(id);
+    if (movie == null)
+        return NotFound("Movie not found.");
+
+    // Find the user from movies_users
+    var movieUser = await _context.movies_users.FirstOrDefaultAsync(mu => mu.Email == email);
+    if (movieUser == null)
+        return NotFound("User not found in movies_users.");
+
+    // Try to get the user's rating for this movie
+    var rating = await _context.movies_ratings
+        .Where(r => r.UserId == movieUser.UserId && r.ShowId == id)
+        .Select(r => r.Rating)
+        .FirstOrDefaultAsync(); // returns 0 if not found
+
+    return Ok(new
+    {
+        Movie = movie,
+        UserRating = rating == 0 ? (int?)null : rating
+    });
+}
+
+
 }
