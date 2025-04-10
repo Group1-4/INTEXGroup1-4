@@ -219,3 +219,12 @@ export const fetchRecommendations = async (id: string): Promise<MovieRecommendat
   //  return { success: false, message: error.message || "Failed to rate movie." };
   //}
 //};
+
+//log out user and send to home page
+// src/api/AuthAPI.ts
+export const logoutUser = async () => {
+  await fetch("https://localhost:4000/api/auth/logout", {
+    method: "POST",
+    credentials: "include",
+  });
+};
