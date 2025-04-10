@@ -194,7 +194,7 @@ export const fetchRecommendations = async (id: string): Promise<MovieRecommendat
 export async function rateMovie(movieId: string, rating: number) {
   try {
     const response = await fetch(
-      `https://localhost:4000/Recommender/rate/${movieId}/${rating}`,
+      `${API_URL}/Recommender/rate/${movieId}/${rating}`,
       {
         method: "POST",
         credentials: "include", // important for cookie-based auth
@@ -248,7 +248,7 @@ export async function fetchUserMovieDetails(movieId: string) {
 //log out user and send to home page
 // src/api/AuthAPI.ts
 export const logoutUser = async () => {
-  await fetch("https://localhost:4000/logout", {
+  await fetch(`${API_URL}/logout`, {
     method: "POST",
     credentials: "include",
   });

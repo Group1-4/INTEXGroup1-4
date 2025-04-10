@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./MoviePage.css";
 import MovieList from "../components/MovieListCards";
-import { fetchRecommendations, fetchMovieDetails } from "../api/MoviesAPI";
+import { fetchRecommendations, fetchMovieDetails, API_URL } from "../api/MoviesAPI";
 import OneMovieCard from "../components/1MovieCard";
 import { MovieCard } from "../types/MovieCard";
 import MovieDetails from "../components/MovieDetails";
@@ -42,10 +42,10 @@ const MainPage = () => {
     const fetchAll = async () => {
       try {
         const [watchedRes, picksRes] = await Promise.all([
-          fetch("https://localhost:4000/Recommender/recentlywatched", {
+          fetch(`${API_URL}/Recommender/recentlywatched`, {
             credentials: "include",
           }),
-          fetch("https://localhost:4000/Recommender/content-user-based", {
+          fetch(`${API_URL}/Recommender/content-user-based`, {
             credentials: "include",
           }),
         ]);
