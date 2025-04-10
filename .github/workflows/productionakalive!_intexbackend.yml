@@ -24,10 +24,10 @@ jobs:
           dotnet-version: "8.x"
 
       - name: Build with dotnet
-        run: dotnet build ./INTEX1_4.API/INTEX1_4.API.csproj --configuration Release
+        run: dotnet build ./backend/INTEX1-4.API/INTEX1-4.API.csproj --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish ./INTEX1_4.API/INTEX1_4.API.csproj -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+        run: dotnet publish ./backend/INTEX1-4.API/INTEX1-4.API.csproj -c Release -o "${{env.DOTNET_ROOT}}/myapp"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
