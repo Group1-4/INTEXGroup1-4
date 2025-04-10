@@ -1,20 +1,54 @@
-/* Scoped FAQ Accordion Styling */
+/* Accordion Container */
+.faq-container {
+  width: 100%;
+  max-width: 92%;
+  margin: 0 auto;
+  margin-top: 1rem;
+}
+
+/* Section Header */
+.FAQ-Header {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: #6C3F18;
+}
+
+/* FAQ Accordion Styles */
 .faq-accordion {
-    background-color: #FDF2CD !important;
-    color: #6C3F18 !important;
-    border-radius: 8px;
-    margin-bottom: 12px;
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  }
-  
-  .faq-accordion:hover {
-    background-color: #FDF2CD !important;
-    transform: scale(1.01);
-    box-shadow: 0 4px 10px rgba(213, 36, 41, 0.1);
-  }
-  
-  .MuiAccordionSummary-content,
-  .MuiAccordionDetails-root {
-    color: #6C3F18 !important;
-  }
-  
+  background-color: #FDF2CD !important;
+  color: #6C3F18 !important;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border-color: #6C3F18 !important;
+  box-shadow: 0 6px 14px rgba(108, 63, 24, 0.3) !important; /* <-- dropdown shadow effect */
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.faq-accordion:hover {
+  background-color: #FDF2CD !important;
+  transform: scale(1.01);
+  box-shadow: 0 6px 14px rgba(196, 69, 60, 0.2); /* enhanced shadow on hover */
+}
+
+/* Removes default MUI divider line */
+.faq-accordion::before {
+  display: none !important;
+}
+
+/* Accordion Summary */
+.faq-accordion .MuiAccordionSummary-root {
+  background-color: #FDF2CD;
+  color: #6C3F18;
+}
+
+.faq-accordion .MuiAccordionSummary-root:hover {
+  background-color: #FDF2CD;
+  color: #6C3F18;
+}
+
+/* Accordion Details */
+.faq-accordion .MuiAccordionDetails-root {
+  background-color: #FDF2CD;
+  color: #6C3F18;
+}

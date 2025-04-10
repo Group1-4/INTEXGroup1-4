@@ -87,7 +87,7 @@ body,
 }
 
 .header-btn:hover {
-  background-color: #fff4d3; /* Teal hover */
+  background-color: #fff4d3; 
   color: #FDF2CD;
   transform: scale(1.06);
   text-decoration: none;
