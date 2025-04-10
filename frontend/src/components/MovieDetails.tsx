@@ -16,6 +16,10 @@ interface MovieRecommendation {
   similarity: number;
 }
 
+interface MovieListProps {
+  onMovieSelect?: (id: string, title?: string) => void;
+}
+
 interface Props {
   movieId: string;
   onTitleChange?: (newTitle: string) => void;

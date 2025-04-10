@@ -158,7 +158,7 @@ const MainPage = () => {
       {activeTab === "all" && (
         <div className="tab-content movie-list-wrapper">
           <h2 className="welcome-head">All Movies</h2>
-          <MovieList />
+          <MovieList onMovieSelect={(id, title) => handleSelectMovie(id, title ?? "Movie Details")} />
         </div>
       )}
 
