@@ -80,7 +80,7 @@ function Admin() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [showForm, setShowForm] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [selectedMovieId, setSelectedMovieId] = useState<number | null>(null);
+  const [selectedMovieId, setSelectedMovieId] = useState<string | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [newMovie, setNewMovie] = useState<any>({
     showId: 0,
@@ -121,7 +121,7 @@ function Admin() {
     fetchData();
   }, [page, rowsPerPage]);
   
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
   const handleChangeRowsPerPage = (
@@ -187,7 +187,7 @@ function Admin() {
   };
   const getCategoryString = (movie: any) =>
     allCategoryFields.filter((cat) => movie[cat] === 1).join(", ");
-  const handleDeleteClick = (id: number) => {
+  const handleDeleteClick = (id: string) => {
     setSelectedMovieId(id);
     setDeleteConfirmOpen(true);
   };
