@@ -1,8 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace INTEX1_4.API.Data;
-
-using System.ComponentModel.DataAnnotations.Schema;
 
 public class MoviesUser
 {
@@ -28,13 +27,13 @@ public class MoviesUser
     [Column("Netflix")]
     public bool Netflix { get; set; }
 
-    [Column("Amazon Prime")]
+    [Column("Amazon_Prime")]
     public bool AmazonPrime { get; set; }
 
-    [Column("Disney+")]
+    [Column("Disney")]
     public bool DisneyPlus { get; set; }
 
-    [Column("Paramount+")]
+    [Column("Paramount")]
     public bool ParamountPlus { get; set; }
 
     [Column("Max")]
@@ -43,7 +42,7 @@ public class MoviesUser
     [Column("Hulu")]
     public bool Hulu { get; set; }
 
-    [Column("Apple TV+")]
+    [Column("Apple_TV")]
     public bool AppleTvPlus { get; set; }
 
     [Column("Peacock")]
