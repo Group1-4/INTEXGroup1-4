@@ -42,6 +42,10 @@
   color: #6C3F18;
 }
 
+.MuiTypography-h6 {
+  color: #6C3F18 !important;
+}
+
 .faq-accordion .MuiAccordionSummary-root:hover {
   background-color: #FDF2CD;
   color: #6C3F18;
