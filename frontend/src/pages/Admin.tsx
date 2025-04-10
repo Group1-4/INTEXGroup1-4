@@ -129,9 +129,8 @@ function Admin() {
 
     fetchData();
   }, [page, rowsPerPage]);
-  
+
   const handleChangePage = (_event: unknown, newPage: number) => {
-    
     setPage(newPage);
   };
 
@@ -402,7 +401,6 @@ function Admin() {
                         sx={{
                           borderBottom: "1px solid rgba(166, 68, 46, 0.15)",
                           padding: "8px 16px",
-
                         }}
                       >
                         <Button
@@ -417,7 +415,6 @@ function Admin() {
                             "&:hover": {
                               backgroundColor: "rgba(241, 96, 44, 0.1)",
                               borderColor: "#F1602C",
-
                             },
                           }}
                           onClick={() => handleEditClick(row)}
@@ -442,9 +439,6 @@ function Admin() {
                         >
                           Delete
                         </Button>
-
-                      </Box>
-                      
                       </TableCell>
                     </TableRow>
                   ))}
