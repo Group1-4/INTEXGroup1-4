@@ -29,8 +29,8 @@ function App() {
           <Route path="403" element={<Denied />} />
           <Route path="comingsoon" element={<ComingSoon />} />
         </Routes>
+        <Footer />
       </Router>
-      <Footer />
     </>
   );
 }

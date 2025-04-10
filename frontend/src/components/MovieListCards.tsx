@@ -116,8 +116,14 @@ const MovieList: React.FC = () => {
           <option value="dramas">Drama</option>
           <option value="documentaries">Documentary</option>
           <option value="horrorMovies">Horror</option>
+          <option value="thrillers">Thrillers</option>
           <option value="thrillers">Thriller</option>
           <option value="fantasy">Fantasy</option>
+          <option value="romance">Romance</option>
+          <option value="children">Children</option>
+          <option value="tvDramas">TV Dramas</option>
+          <option value="realityTV">TV Reality</option>
+          <option value="tvComedies">TV Comedy</option>
         </select>
 
         <button
