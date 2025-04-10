@@ -303,31 +303,56 @@ function Admin() {
                           {String(row[col as keyof Movie])}
                         </TableCell>
                       ))}
-                      <TableCell>
+                      <TableCell sx={{
+                                      padding: 0,
+                                      border: "none", // optional: removes table cell border
+                                    }}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column", // stack vertically
+                          gap: 1, // vertical space between buttons (theme spacing unit)
+                          width: "fit-content", // shrink to button width; or use fixed width like "120px"
+                        }}
+                      >
                         <Button
                           variant="outlined"
                           size="small"
                           sx={{
-                            mr: 1,
-                            color: "#C4453C",
-                            borderColor: "#C4453C",
+                            width: "70px", // set equal width
+                            color: "#2A9D8F",
+                            borderColor: "#2A9D8F",
                             "&:hover": {
-                              backgroundColor: "#FDF2CD",
-                              borderColor: "#A73930",
+                              backgroundColor: "#2A9D8F",
+                              borderColor: "#F1602C",
+                              color: "#FDF2CD",
                             },
                           }}
                           onClick={() => handleEditClick(row)}
                         >
                           Edit
                         </Button>
+
                         <Button
                           variant="outlined"
-                          color="error"
                           size="small"
+                          sx={{
+                            width: "70px", // set equal width
+                            color: "#c0392b",
+                            borderColor: "#c0392b",
+                            "&:hover": {
+                              backgroundColor: "#c0392b",
+                              borderColor: "#EC8922",
+                              color: "#FDF2CD",
+                            },
+                          }}
                           onClick={() => handleDeleteClick(row.showId)}
                         >
                           Delete
                         </Button>
+
+                      </Box>
+                      
                       </TableCell>
                     </TableRow>
                   ))}
