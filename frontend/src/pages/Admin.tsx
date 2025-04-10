@@ -89,9 +89,9 @@ function Admin() {
     director: "",
     cast: "",
     country: "",
-    releaseYear: 0,
-    rating: 0,
-    duration: 0,
+    releaseYear: "",
+    rating: "",
+    duration: "",
     description: "",
     ...Object.fromEntries(allCategoryFields.map((c) => [c, 0])),
   });
@@ -132,11 +132,9 @@ function Admin() {
   };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    const typedValue = ["releaseYear", "rating", "duration"].includes(name)
-      ? Number(value)
-      : value;
-    setNewMovie((prev: any) => ({ ...prev, [name]: typedValue }));
+    setNewMovie((prev: any) => ({ ...prev, [name]: value }));
   };
+  
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
     setNewMovie((prev: any) => ({ ...prev, [name]: checked ? 1 : 0 }));
@@ -176,12 +174,13 @@ function Admin() {
         director: "",
         cast: "",
         country: "",
-        releaseYear: 0,
-        rating: 0,
-        duration: 0,
+        releaseYear: "", // ✅ now a string
+        rating: "",      // ✅ now a string
+        duration: "",    // ✅ now a string
         description: "",
         ...Object.fromEntries(allCategoryFields.map((c) => [c, 0])),
       });
+      
       setEditMode(false);
       setShowForm(false);
     }
