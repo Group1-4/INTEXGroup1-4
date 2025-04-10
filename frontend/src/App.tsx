@@ -12,8 +12,8 @@ import MovieListPage from "./pages/MovieListPage"
 function App() {
   return (
     <>
-      <Header />
       <Router>
+        <Header />
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
           <Route path="/home" element={<Navigate to="/" replace />} />

@@ -122,6 +122,7 @@ body,
   font-style: normal;
 }
 
+
 .secondary-font {
   font-family: 'CreatoDisplay', sans-serif;
 }
@@ -133,4 +134,78 @@ body,
   margin-bottom: 1.5rem;
   text-align: center;
   color: #6C3F18 !important;
+}
+=======
+.cine-header {
+  width: 100%;
+  margin: 0;
+  padding: 12px 24px;
+  background-color: #C4453C;
+  color: #FDF2CD;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: static;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.cine-logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo-icon {
+  height: 80px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.admin-title-top-right {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #FFF1C2;
+}
+
+.header-button {
+  background-color: #FDF2CD;
+  color: #c0392b;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+.header-button:hover {
+  background-color: #f0e6d2;
+}
+
+.header-right-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.admin-title-top-right {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #FFF1C2;
+  margin-bottom: 4px;
+}
+
+.header-right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }

@@ -181,3 +181,96 @@ h1, h2, h3 {
   margin-bottom: 1.5rem;
   font-family: 'CreatoDisplay' !important;
 }
+=======
+/* Style the movie poster images */
+.movie-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover; /* fills the space while keeping aspect ratio */
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+}
+
+/* For the horizontal carousels */
+.carousel {
+  display: flex;
+  overflow-x: auto;
+  gap: 15px;
+  padding: 10px 0;
+  scrollbar-width: none; /* Firefox */
+}
+
+.carousel::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+/* For the full movie grid below */
+.all-movies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.all-movies .movie-card {
+  width: 150px;
+}
+
+/* Loader trigger div */
+.loading-trigger {
+  height: 10px;
+}
+
+.movie-card {
+  flex: 0 0 auto;
+  width: 150px;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.movie-card:hover {
+  transform: scale(1.15); /* Whole card grows */
+}
+
+.movie-card img {
+  width: 100%;
+  border-radius: 8px;
+  transition: box-shadow 0.5s ease;
+  display: block; /* removes bottom spacing under img */
+}
+
+.movie-card:hover img {
+  box-shadow: 0 0 12px rgba(253, 242, 205, 0.6); /* Cream glow around image only */
+}
+
+/* Tabs container styled like a nav bar */
+.tabs {
+  display: flex;
+  justify-content: flex-start;
+  border-bottom: 2px solid #2A9D8F; /* Teal bottom border */
+  margin-bottom: 20px;
+}
+
+/* Each tab looks like a nav item */
+.tab {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #FDF2CD; /* Cream text */
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: border-bottom 0.3s ease, color 0.3s ease;
+}
+
+/* On hover: keep text cream, underline teal */
+.tab:hover {
+  color: #FDF2CD;
+  border-bottom: 3px solid #2A9D8F;
+}
+
+/* Active tab gets an underline and teal text */
+.tab.active {
+  color: #2A9D8F;
+  border-bottom: 3px solid #2A9D8F;
+}

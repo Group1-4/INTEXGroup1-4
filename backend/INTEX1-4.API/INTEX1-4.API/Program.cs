@@ -3,6 +3,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using INTEX1_4.API.Data;
 using INTEX1_4.API.Services;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 // and any other relevant namespaces such as Azure.Identity if needed
 
@@ -22,6 +28,9 @@ builder.Services.AddDbContext<MoviesDbContext>(options =>
 
 builder.Services.AddDbContext<ContentDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("ContentConnection")));
+
+builder.Services.AddDbContext<UsersCollabDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("UserCollabConnection")));
 
 builder.Services.AddDbContext<CollabDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("CollabConnection")));

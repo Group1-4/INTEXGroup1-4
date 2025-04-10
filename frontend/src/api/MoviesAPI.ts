@@ -6,6 +6,7 @@ const API_URL = "https://localhost:4000";
 // ----- Shared Types -----
 interface FetchMoviesResponse {
   movies: Movie[];
+  total: number;
 }
 
 interface FetchMoviesCardsResponse {
@@ -20,23 +21,25 @@ interface AddMovieResponse {
 
 // ----- API Functions -----
 
-export const fetchMovies = async (): Promise<Movie[]> => {
-  try {
-    const response = await fetch(`${API_URL}/Movies/GetMovies`, {
+export const fetchMovies = async (
+  page: number,
+  pageSize: number
+): Promise<{ movies: Movie[]; total: number }> => {
+  const response = await fetch(
+    `${API_URL}/Movies/GetMovies?page=${page + 1}&pageSize=${pageSize}`,
+    {
       credentials: "include",
-    });
-
-    if (!response.ok) {
-      throw new Error(`Fetch failed with status: ${response.status}`);
     }
+  );
 
-    const data: Movie[] = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching movies:", error);
-    throw error;
+  if (!response.ok) {
+    throw new Error(`Fetch failed with status: ${response.status}`);
   }
+
+  return await response.json();
 };
+
+
 
 
 export const addMovie = async (movie: Movie): Promise<AddMovieResponse> => {
@@ -187,3 +190,32 @@ export const fetchRecommendations = async (id: string): Promise<MovieRecommendat
   return await response.json();
 };
 
+// ----- User Rating API Function -----
+
+//export const rateMovie = async (movieId: string, rating: number, authToken: string | null): Promise<RateMovieResponse> => {
+  //try {
+    //if (!authToken) {
+      //throw new Error('Authentication token is required to rate a movie.');
+   // }
+
+    //const response = await fetch(`${API_URL}/User/RateMovie/${movieId}`, {
+     // method: "POST",
+     // headers: {
+     //   "Content-Type": "application/json",
+     //   "Authorization": `Bearer ${authToken}`, // Assuming Bearer token
+    //  },
+    // credentials: "include",
+    // body: JSON.stringify({ rating }),
+   // });
+
+   //if (!response.ok) {
+   //   const errorData = await response.json();
+   //   throw new Error(errorData.message || `Failed to rate movie: ${response.status}`);
+   // }
+
+   // return { success: true, message: "Movie rated successfully." };
+  //} catch (error: any) {
+  //  console.error("Error rating movie:", error);
+  //  return { success: false, message: error.message || "Failed to rate movie." };
+  //}
+//};
