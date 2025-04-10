@@ -221,24 +221,36 @@ function Admin() {
       <Box
         sx={{ height: "100vh", display: "flex", flexDirection: "column", p: 2 }}
       >
-        <h1 style={{ color: "#FDF2CD" }}>CineNiche Admin Portal</h1>
-        <Button
-          variant="contained"
-          onClick={() => {
-            setShowForm(true);
-            setEditMode(false);
-          }}
-          sx={{
-            mb: 2,
-            backgroundColor: "#C4453C", // your CineNiche red
-            color: "#FDF2CD", // your creamy gold text
-            "&:hover": {
-              backgroundColor: "#A73930", // darker red on hover
-            },
-          }}
-        >
-          Add Movie
-        </Button>
+        <Box
+  sx={{
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    mb: 2,
+  }}
+>
+  <Typography variant="h4" className="Admin" sx={{ fontWeight: "bold" }}>
+    CineNiche Admin Portal
+  </Typography>
+  <Button
+    variant="contained"
+    onClick={() => {
+      setShowForm(true);
+      setEditMode(false);
+    }}
+    sx={{
+      backgroundColor: "#2A9D8F",
+      color: "#FDF2CD",
+      paddingX: 2,
+      minWidth: "auto", // makes it naturally sized to the content
+      "&:hover": {
+        backgroundColor: "#EC8922",
+      },
+    }}
+  >
+    Add Movie
+  </Button>
+</Box>
         <Paper
           sx={{
             flex: 1,
@@ -255,18 +267,14 @@ function Admin() {
           >
             <Table stickyHeader aria-label="movie table">
               <TableHead>
-                <TableRow
-                  sx={{
-                    backgroundColor: "#C4453C",
-                  }}
-                >
+                <TableRow>
                   {[...baseColumns, "category", "actions"].map((col) => (
                     <TableCell
                       key={col}
                       sx={{
                         color: "#FDF2CD",
                         fontWeight: "bold",
-                        backgroundColor: "#C4453C", // header cell color
+                        backgroundColor: "#F1602C", // header cell color
                       }}
                     >
                       {col === "actions"

@@ -244,3 +244,12 @@ export async function fetchUserMovieDetails(movieId: string) {
   };
 }
 
+
+//log out user and send to home page
+// src/api/AuthAPI.ts
+export const logoutUser = async () => {
+  await fetch("https://localhost:4000/api/auth/logout", {
+    method: "POST",
+    credentials: "include",
+  });
+};

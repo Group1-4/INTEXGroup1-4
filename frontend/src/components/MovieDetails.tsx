@@ -186,3 +186,7 @@ const MovieDetails: React.FC<Props> = ({ movieId: initialMovieId }) => {
 };
 
 export default MovieDetails;
+function rateMovie(currentMovieId: string, newRating: number, authToken: string | null) {
+  throw new Error("Function not implemented.");
+}
+
