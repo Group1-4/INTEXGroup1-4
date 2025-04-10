@@ -172,7 +172,7 @@ const MainPage = () => {
         }}
         TransitionComponent={Transition}
       >
-        <AppBar sx={{ position: "relative", backgroundColor: "#111" }}>
+        <AppBar sx={{ position: "relative", backgroundColor: "#4A2B0F !important" }}>
           <Toolbar>
             <IconButton
               edge="start"
@@ -182,9 +182,6 @@ const MainPage = () => {
             >
               <CloseIcon />
             </IconButton>
-            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              {selectedMovieTitle}
-            </Typography>
           </Toolbar>
         </AppBar>
         {selectedMovieId && <MovieDetails movieId={selectedMovieId} />}
