@@ -1,12 +1,12 @@
-import { useNavigate } from "react-router-dom";
+
 import "./ComingSoon.css"; // Import CSS if you have other styles there
 
 function ComingSoon() {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
-    const goToHome = () => {
-        navigate("/"); // Navigate to the root path (your home page)
-    };
+    // const goToHome = () => {
+    //     navigate("/"); // Navigate to the root path (your home page)
+    // };
 
     return (
         <div className="coming-soon-container">
