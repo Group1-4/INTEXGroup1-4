@@ -1,0 +1,106 @@
+
+
+.coming-soon-container {
+    position: relative; /* For the overlay */
+    background: url('/SquiglyStripes.png') no-repeat center center;
+    background-size: cover;
+    min-height: 100vh;
+    color: #6C3F18; /* Default text color */
+    padding: 20px;
+    display: flex;
+    flex-direction: column; /* Arrange header and grid vertically */
+    align-items: center; /* Center content horizontally */
+}
+
+.coming-soon-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5); /* Dark overlay */
+    z-index: 1;
+}
+
+.header-section {
+    position: relative; /* To be above the overlay */
+    z-index: 2;
+    margin-bottom: 20px;
+    width: 100%; /* Make header section take full width */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Align header content to the left */
+}
+
+.center-text {
+    text-align: center; /* Apply center alignment to these elements */
+}
+
+.left-align {
+    text-align: left; /* Apply left alignment */
+}
+
+.header-text-color {
+    color: #FDF2CD; /* Light text color for the main header */
+}
+
+.tile-header-color {
+    color: #6C3F18; /* Darker color for the tile headers */
+}
+
+.future-features-grid {
+    position: relative; /* To be above the overlay */
+    z-index: 2;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+    width: 100%; /* Make grid take full width */
+    max-width: 1200px; /* Optional max width for the grid */
+}
+
+.feature-card {
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 8px;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Smooth transition for hover effect */
+}
+
+.feature-card:hover {
+    transform: scale(1.03); /* Slightly scale up on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a more prominent shadow on hover */
+}
+
+.feature-card h3 {
+    margin-top: 0;
+}
+
+.status {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    margin-top: 10px;
+}
+
+.planned {
+    background-color: #f0ad4e;
+    color: white;
+}
+
+.in-development {
+    background-color: #5bc0de;
+    color: white;
+}
+
+.considering {
+    background-color: #777;
+    color: white;
+}
+
+.cream-opaque-tile {
+    background-color: rgba(255, 253, 208, 0.9); /* Cream opaque background */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional subtle shadow */
+    color: #333; /* Default text color on the tile */
+}

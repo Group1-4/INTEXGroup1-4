@@ -1,4 +1,4 @@
 export interface MovieCard {
-    showId: number;
+    showId: string;
     title: string;
   }

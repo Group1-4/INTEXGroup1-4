@@ -1,17 +1,42 @@
 import React, { useEffect, useState } from "react";
 import "./MoviePage.css";
 import MovieList from "../components/MovieListCards";
-import { fetchRecommendations } from "../api/MoviesAPI";
+import { fetchRecommendations, fetchMovieDetails } from "../api/MoviesAPI";
+import OneMovieCard from "../components/1MovieCard";
+import { MovieCard } from "../types/MovieCard";
+import MovieDetails from "../components/MovieDetails";
+
+import Dialog from "@mui/material/Dialog";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import CloseIcon from "@mui/icons-material/Close";
+import Slide from "@mui/material/Slide";
+import { TransitionProps } from "@mui/material/transitions";
+import { Movie } from "../types/Movie";
+
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & { children: React.ReactElement },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const MainPage = () => {
   const [activeTab, setActiveTab] = useState<"tailored" | "all">("tailored");
 
-  const [recentlyWatched, setRecentlyWatched] = useState([]);
-  const [topPicks, setTopPicks] = useState([]);
-  const [related1, setRelated1] = useState([]);
-  const [related2, setRelated2] = useState([]);
-  const [related3, setRelated3] = useState([]);
+  const [recentlyWatched, setRecentlyWatched] = useState<MovieCard[]>([]);
+  const [topPicks, setTopPicks] = useState<MovieCard[]>([]);
+  const [related1, setRelated1] = useState<MovieCard[]>([]);
+  const [related2, setRelated2] = useState<MovieCard[]>([]);
+  const [related3, setRelated3] = useState<MovieCard[]>([]);
   const [userName, setUserName] = useState("Joe");
+
+  const [selectedMovieId, setSelectedMovieId] = useState<string | null>(null);
+  const [selectedMovieTitle, setSelectedMovieTitle] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -28,16 +53,37 @@ const MainPage = () => {
         const watchedData = await watchedRes.json();
         const picksData = await picksRes.json();
 
-        setUserName(watchedData.name ?? "Joe");
-        setRecentlyWatched(watchedData.ratedMovies ?? []);
-        setTopPicks(picksData.slice(0, 3));
+        const fullName = watchedData.name ?? "Joe";
+        const firstName = fullName.split(" ")[0]; // takes first word before space
+        setUserName(firstName);
 
-        if (picksData.length >= 3) {
-          const [rel1, rel2, rel3] = await Promise.all([
-            fetchRecommendations(picksData[0].showId),
-            fetchRecommendations(picksData[1].showId),
-            fetchRecommendations(picksData[2].showId),
+        const watchedMovies: MovieCard[] = await Promise.all(
+          watchedData.ratedMovies.map((m: Movie) => fetchMovieDetails(m.showId))
+        );
+        setRecentlyWatched(watchedMovies);
+
+        const topPicksFull: MovieCard[] = await Promise.all(
+          picksData.slice(0, 3).map((m: Movie) => fetchMovieDetails(m.showId))
+        );
+        setTopPicks(topPicksFull);
+
+        if (topPicksFull.length >= 3) {
+          const [rel1Raw, rel2Raw, rel3Raw] = await Promise.all([
+            fetchRecommendations(topPicksFull[0].showId),
+            fetchRecommendations(topPicksFull[1].showId),
+            fetchRecommendations(topPicksFull[2].showId),
           ]);
+          const rel1 = await Promise.all(
+            rel1Raw.map((m: Movie) => fetchMovieDetails(m.showId))
+          );
+          const rel2 = await Promise.all(
+            rel2Raw.map((m: Movie) => fetchMovieDetails(m.showId))
+          );
+          const rel3 = await Promise.all(
+            rel3Raw.map((m: Movie) => fetchMovieDetails(m.showId))
+          );
+          
+
           setRelated1(rel1);
           setRelated2(rel2);
           setRelated3(rel3);
@@ -50,28 +96,25 @@ const MainPage = () => {
     fetchAll();
   }, []);
 
-  const getPosterUrl = (title) =>
-    title
-      ? `https://intexmovieposters14.blob.core.windows.net/posters/Movie%20Posters/${encodeURIComponent(title)}.jpg`
-      : "/fallback-poster.png";
-
-  const renderCarousel = (title, movieList) => (
+  const renderCarousel = (title: string, movieList: MovieCard[]) => (
     <div className="carousel-section">
       <h2>{title}</h2>
       <div className="carousel">
-        {movieList.map((movie, index) => (
-          <div key={index} className="movie-card">
-            <img
-              src={getPosterUrl(movie.title)}
-              alt={movie.title}
-              onError={(e) => (e.currentTarget.src = "/fallback-poster.png")}
-            />
-            <p>{movie.title}</p>
-          </div>
+        {movieList.map((movie) => (
+          <OneMovieCard
+            key={movie.showId}
+            movie={movie}
+            onClick={() => {
+              setSelectedMovieId(movie.showId.toString());
+              setSelectedMovieTitle(movie.title ?? "Movie Details");
+            }}
+          />
         ))}
       </div>
     </div>
   );
+
+  
 
   return (
     <div className="main-container">
@@ -91,7 +134,7 @@ const MainPage = () => {
       </div>
 
       {activeTab === "tailored" && (
-        <>
+        <div className="tab-content">
           <h1>Welcome back, {userName}!</h1>
           <br />
           {renderCarousel("Recently Watched", recentlyWatched)}
@@ -111,15 +154,43 @@ const MainPage = () => {
               `Movies Related to "${topPicks[2]?.title}"`,
               related3
             )}
-        </>
+        </div>
       )}
 
       {activeTab === "all" && (
-        <div className="movie-list-wrapper">
+        <div className="tab-content movie-list-wrapper">
           <h2>All Movies</h2>
           <MovieList />
         </div>
       )}
+
+      {/* Movie Details Model */}
+      <Dialog
+        fullScreen
+        open={!!selectedMovieId}
+        onClose={() => {
+          setSelectedMovieId(null);
+          setSelectedMovieTitle(null);
+        }}
+        TransitionComponent={Transition}
+      >
+        <AppBar sx={{ position: "relative", backgroundColor: "#111" }}>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={() => setSelectedMovieId(null)}
+              aria-label="close"
+            >
+              <CloseIcon />
+            </IconButton>
+            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+              {selectedMovieTitle}
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        {selectedMovieId && <MovieDetails movieId={selectedMovieId} />}
+      </Dialog>
     </div>
   );
 };

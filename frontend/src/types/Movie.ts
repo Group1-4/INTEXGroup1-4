@@ -1,13 +1,13 @@
 export interface Movie {
-    showId: number;
+    showId: string;
     type?: string;
     title?: string;
     director?: string;
     cast?: string;
     country?: string;
-    releaseYear?: number;
-    rating?: number;
-    duration?: number;
+    releaseYear?: string;
+    rating?: string;
+    duration?: string;
     description?: string;
     [key: string]: any; // allow dynamic category keys
   }

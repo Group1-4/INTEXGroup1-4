@@ -80,7 +80,7 @@ function Admin() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [showForm, setShowForm] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [selectedMovieId, setSelectedMovieId] = useState<number | null>(null);
+  const [selectedMovieId, setSelectedMovieId] = useState<string | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [newMovie, setNewMovie] = useState<any>({
     showId: 0,
@@ -89,9 +89,9 @@ function Admin() {
     director: "",
     cast: "",
     country: "",
-    releaseYear: 0,
-    rating: 0,
-    duration: 0,
+    releaseYear: "",
+    rating: "",
+    duration: "",
     description: "",
     ...Object.fromEntries(allCategoryFields.map((c) => [c, 0])),
   });
@@ -121,7 +121,7 @@ function Admin() {
     fetchData();
   }, [page, rowsPerPage]);
   
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
   const handleChangeRowsPerPage = (
@@ -132,11 +132,9 @@ function Admin() {
   };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    const typedValue = ["releaseYear", "rating", "duration"].includes(name)
-      ? Number(value)
-      : value;
-    setNewMovie((prev: any) => ({ ...prev, [name]: typedValue }));
+    setNewMovie((prev: any) => ({ ...prev, [name]: value }));
   };
+  
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
     setNewMovie((prev: any) => ({ ...prev, [name]: checked ? 1 : 0 }));
@@ -176,19 +174,20 @@ function Admin() {
         director: "",
         cast: "",
         country: "",
-        releaseYear: 0,
-        rating: 0,
-        duration: 0,
+        releaseYear: "", // ✅ now a string
+        rating: "",      // ✅ now a string
+        duration: "",    // ✅ now a string
         description: "",
         ...Object.fromEntries(allCategoryFields.map((c) => [c, 0])),
       });
+      
       setEditMode(false);
       setShowForm(false);
     }
   };
   const getCategoryString = (movie: any) =>
     allCategoryFields.filter((cat) => movie[cat] === 1).join(", ");
-  const handleDeleteClick = (id: number) => {
+  const handleDeleteClick = (id: string) => {
     setSelectedMovieId(id);
     setDeleteConfirmOpen(true);
   };

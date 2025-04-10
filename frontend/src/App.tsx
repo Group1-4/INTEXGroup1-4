@@ -9,6 +9,8 @@ import GlobalFooter from "./components/GlobalFooter";
 import Header from "./components/GlobalHeader";
 import Footer from "./components/GlobalFooter";
 import MovieListPage from "./pages/MovieListPage"
+import Denied from "./pages/403";
+import ComingSoon from "./pages/ComingSoon";
 function App() {
   return (
     <>
@@ -24,6 +26,8 @@ function App() {
           <Route path="/privacy" element={<Privacy />}></Route>
           <Route path="/footer" element={<GlobalFooter />}></Route>
           <Route path="/movielist" element={<MovieListPage />}></Route>
+          <Route path="403" element={<Denied />} />
+          <Route path="comingsoon" element={<ComingSoon />} />
         </Routes>
       </Router>
       <Footer />
