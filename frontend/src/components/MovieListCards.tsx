@@ -165,7 +165,7 @@ const MovieList: React.FC = () => {
         }}
         TransitionComponent={Transition}
       >
-        <AppBar sx={{ position: "relative", backgroundColor: "#111" }}>
+        <AppBar>
           <Toolbar>
             <IconButton
               edge="start"
@@ -175,7 +175,7 @@ const MovieList: React.FC = () => {
             >
               <CloseIcon />
             </IconButton>
-            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+            <Typography variant="h6" component="div">
               {/* {selectedMovieTitle} */}
             </Typography>
           </Toolbar>
