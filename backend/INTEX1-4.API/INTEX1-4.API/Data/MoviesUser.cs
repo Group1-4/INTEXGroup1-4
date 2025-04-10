@@ -23,30 +23,29 @@ public class MoviesUser
 
     [Column("gender")]
     public string Gender { get; set; }
-
     [Column("Netflix")]
-    public bool Netflix { get; set; }
+    public int? Netflix { get; set; }
 
     [Column("Amazon_Prime")]
-    public bool AmazonPrime { get; set; }
+    public int? AmazonPrime { get; set; }
 
     [Column("Disney")]
-    public bool DisneyPlus { get; set; }
+    public int? DisneyPlus { get; set; }
 
     [Column("Paramount")]
-    public bool ParamountPlus { get; set; }
+    public int? ParamountPlus { get; set; }
 
     [Column("Max")]
-    public bool Max { get; set; }
+    public int? Max { get; set; }
 
     [Column("Hulu")]
-    public bool Hulu { get; set; }
+    public int? Hulu { get; set; }
 
     [Column("Apple_TV")]
-    public bool AppleTvPlus { get; set; }
+    public int? AppleTvPlus { get; set; }
 
     [Column("Peacock")]
-    public bool Peacock { get; set; }
+    public int? Peacock { get; set; }
 
     [Column("city")]
     public string City { get; set; }

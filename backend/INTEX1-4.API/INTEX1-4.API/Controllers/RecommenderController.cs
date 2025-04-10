@@ -1,14 +1,11 @@
-
 using System.Collections.Generic;
 using INTEX1_4.API.Data;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Linq;
 using System.Threading.Tasks;
-
 
 namespace INTEX1_4.API.Controllers;
 
@@ -146,134 +143,128 @@ public class RecommenderController : ControllerBase
 
         return Ok(results);
     }
-[Authorize]
-[HttpGet("content-user-based")]
-public async Task<IActionResult> GetContentBasedUserRecommendations()
-{
-    var email = User.FindFirstValue(ClaimTypes.Email);
-    if (string.IsNullOrEmpty(email))
-        return Unauthorized("Email not found in claims.");
 
-    var movieUser = await _context.movies_users
-        .FirstOrDefaultAsync(mu => mu.Email == email);
-    if (movieUser == null)
-        return NotFound("User not found in movies_users.");
-
-    var userId = movieUser.UserId;
-
-    var userRatings = await _context.movies_ratings
-        .Where(r => r.UserId == userId)
-        .OrderByDescending(r => r.Rating)
-        .ToListAsync();
-
-    if (!userRatings.Any())
-        return NotFound("User has not rated any movies.");
-
-    foreach (var rating in userRatings)
+    [Authorize]
+    [HttpGet("content-user-based")]
+    public async Task<IActionResult> GetContentBasedUserRecommendations()
     {
-        var recs = await _contentDb.ContentRecommendationBase
-            .Where(c => c.ShowId1 == rating.ShowId)
-            .OrderByDescending(c => c.Similarity)
+        var email = User.FindFirstValue(ClaimTypes.Email);
+        if (string.IsNullOrEmpty(email))
+            return Unauthorized("Email not found in claims.");
+
+        var movieUser = await _context.movies_users
+            .FirstOrDefaultAsync(mu => mu.Email == email);
+        if (movieUser == null)
+            return NotFound("User not found in movies_users.");
+
+        var userId = movieUser.UserId;
+
+        var userRatings = await _context.movies_ratings
+            .Where(r => r.UserId == userId)
+            .OrderByDescending(r => r.Rating)
             .ToListAsync();
 
-        if (recs.Any())
+        if (!userRatings.Any())
+            return NotFound("User has not rated any movies.");
+
+        foreach (var rating in userRatings)
         {
-            var showId2s = recs
-                .Where(r => !string.IsNullOrEmpty(r.ShowId2))
-                .Select(r => r.ShowId2)
-                .ToList();
+            var recs = await _contentDb.ContentRecommendationBase
+                .Where(c => c.ShowId1 == rating.ShowId)
+                .OrderByDescending(c => c.Similarity)
+                .ToListAsync();
 
-            var titles = await _context.movies_titles
-                .Where(m => showId2s.Contains(m.ShowId) || m.ShowId == rating.ShowId)
-                .ToDictionaryAsync(m => m.ShowId, m => m.Title);
+            if (recs.Any())
+            {
+                var showId2s = recs
+                    .Where(r => !string.IsNullOrEmpty(r.ShowId2))
+                    .Select(r => r.ShowId2)
+                    .ToList();
 
-            var result = recs
-                .Where(r => !string.IsNullOrEmpty(r.ShowId2))
-                .Select(r => new
-                {
-                    ShowId = r.ShowId2,
-                    Title = titles.TryGetValue(r.ShowId2, out var title) ? title : "Unknown Title",
-                    Similarity = r.Similarity,
-                    BasedOnTitle = titles.TryGetValue(rating.ShowId, out var basedTitle) ? basedTitle : "Unknown"
-                })
-                .ToList();
+                var titles = await _context.movies_titles
+                    .Where(m => showId2s.Contains(m.ShowId) || m.ShowId == rating.ShowId)
+                    .ToDictionaryAsync(m => m.ShowId, m => m.Title);
 
-            return Ok(result);
+                var result = recs
+                    .Where(r => !string.IsNullOrEmpty(r.ShowId2))
+                    .Select(r => new
+                    {
+                        ShowId = r.ShowId2,
+                        Title = titles.TryGetValue(r.ShowId2, out var title) ? title : "Unknown Title",
+                        Similarity = r.Similarity,
+                        BasedOnTitle = titles.TryGetValue(rating.ShowId, out var basedTitle) ? basedTitle : "Unknown"
+                    })
+                    .ToList();
+
+                return Ok(result);
+            }
         }
+
+        return NotFound("No recommendations found based on user's rated shows.");
     }
 
-    return NotFound("No recommendations found based on user's rated shows.");
-}
-
-[Authorize]
-[HttpPost("rate/{movieId}/{rating}")]
-public async Task<IActionResult> RateMovieFromUrl(string movieId, int rating)
-{
-    // 1. Get user email from cookie claims
-    var email = User.FindFirstValue(ClaimTypes.Email);
-    if (string.IsNullOrEmpty(email))
-        return Unauthorized("Email not found in claims.");
-
-    // 2. Lookup user in movies_users
-    var movieUser = await _context.movies_users.FirstOrDefaultAsync(mu => mu.Email == email);
-    if (movieUser == null)
-        return NotFound("User not found in movies_users.");
-
-    var userId = movieUser.UserId;
-
-    // 3. Check if user already rated this movie
-    var existingRating = await _context.movies_ratings
-        .FirstOrDefaultAsync(r => r.UserId == userId && r.ShowId == movieId);
-
-    if (existingRating != null)
+    [Authorize]
+    [HttpPost("rate/{movieId}/{rating}")]
+    public async Task<IActionResult> RateMovieFromUrl(string movieId, int rating)
     {
-        existingRating.Rating = rating;
-    }
-    else
-    {
-        var newRating = new MovieRating
+        var email = User.FindFirstValue(ClaimTypes.Email);
+        if (string.IsNullOrEmpty(email))
+            return Unauthorized("Email not found in claims.");
+
+        var movieUser = await _context.movies_users.FirstOrDefaultAsync(mu => mu.Email == email);
+        if (movieUser == null)
+            return NotFound("User not found in movies_users.");
+
+        var userId = movieUser.UserId;
+
+        var existingRating = await _context.movies_ratings
+            .FirstOrDefaultAsync(r => r.UserId == userId && r.ShowId == movieId);
+
+        if (existingRating != null)
         {
-            UserId = userId,
-            ShowId = movieId,
-            Rating = rating
-        };
-        _context.movies_ratings.Add(newRating);
+            existingRating.Rating = rating;
+        }
+        else
+        {
+            var newRating = new MovieRating
+            {
+                UserId = userId,
+                ShowId = movieId,
+                Rating = rating
+            };
+            _context.movies_ratings.Add(newRating);
+        }
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new { message = "Rating saved successfully." });
     }
 
-    await _context.SaveChangesAsync();
-
-    return Ok(new { message = "Rating saved successfully." });
-}
-[Authorize]
-[HttpGet("UserMovieDetails/{id}")]
-public async Task<IActionResult> UserMovieDetails(string id)
-{
-    var email = User.FindFirstValue(ClaimTypes.Email);
-    if (string.IsNullOrEmpty(email))
-        return Unauthorized("Email not found in claims.");
-
-    // Find the movie
-    var movie = await _context.movies_titles.FindAsync(id);
-    if (movie == null)
-        return NotFound("Movie not found.");
-
-    // Find the user from movies_users
-    var movieUser = await _context.movies_users.FirstOrDefaultAsync(mu => mu.Email == email);
-    if (movieUser == null)
-        return NotFound("User not found in movies_users.");
-
-    // Try to get the user's rating for this movie
-    var rating = await _context.movies_ratings
-        .Where(r => r.UserId == movieUser.UserId && r.ShowId == id)
-        .Select(r => r.Rating)
-        .FirstOrDefaultAsync(); // returns 0 if not found
-
-    return Ok(new
+    [Authorize]
+    [HttpGet("UserMovieDetails/{id}")]
+    public async Task<IActionResult> UserMovieDetails(string id)
     {
-        Movie = movie,
-        UserRating = rating == 0 ? (int?)null : rating
-    });
-}
+        var email = User.FindFirstValue(ClaimTypes.Email);
+        if (string.IsNullOrEmpty(email))
+            return Unauthorized("Email not found in claims.");
 
+        var movie = await _context.movies_titles.FindAsync(id);
+        if (movie == null)
+            return NotFound("Movie not found.");
 
+        var movieUser = await _context.movies_users.FirstOrDefaultAsync(mu => mu.Email == email);
+        if (movieUser == null)
+            return NotFound("User not found in movies_users.");
+
+        var rating = await _context.movies_ratings
+            .Where(r => r.UserId == movieUser.UserId && r.ShowId == id)
+            .Select(r => (int?)r.Rating)
+            .FirstOrDefaultAsync();
+
+        return Ok(new
+        {
+            Movie = movie,
+            UserRating = rating == 0 ? (int?)null : rating
+        });
+    }
 }

@@ -1,6 +1,6 @@
 namespace INTEX1_4.API.Data;
 
-public class LoginRequest
+public class CustomLoginRequest
 {
     public string Email { get; set; } = "";
     public string Password { get; set; } = "";

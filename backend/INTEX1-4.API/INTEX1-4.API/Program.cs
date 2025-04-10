@@ -125,7 +125,7 @@ app.MapPost("/custom-login", async (
     HttpContext context,
     SignInManager<IdentityUser> signInManager,
     UserManager<IdentityUser> userManager,
-    [FromBody] LoginRequest login
+    [FromBody] CustomLoginRequest login
 ) =>
 {
     try
