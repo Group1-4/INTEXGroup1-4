@@ -16,6 +16,10 @@ import CloseIcon from "@mui/icons-material/Close";
 import { TransitionProps } from "@mui/material/transitions";
 import { fetchMoviesCard } from '../api/MoviesAPI';
 
+interface MovieListProps {
+  onMovieSelect?: (id: string, title?: string) => void;
+}
+
 const PAGE_SIZE = 20;
 
 const Transition = React.forwardRef(function Transition(
@@ -25,7 +29,7 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const MovieList: React.FC = () => {
+const MovieList: React.FC<MovieListProps> = ({ onMovieSelect }) => {
   const [movies, setMovies] = useState<MovieCard[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -94,7 +98,7 @@ const MovieList: React.FC = () => {
   return (
     <div>
       {/* Filters */}
-      <div className="filter-dropdown-bar">
+      <div className="filter-dropdown-bar scoped-searchbar">
         <input
           className="search-input"
           type="text"
@@ -139,16 +143,15 @@ const MovieList: React.FC = () => {
 
       {/* Movie grid */}
       <div className="movie-grid">
-        {movies.map((movie) => (
-          <OneMovieCard
-            key={movie.showId}
-            movie={movie}
-            onClick={() => {
-              setSelectedMovieId(movie.showId.toString());
-              setSelectedMovieTitle(movie.title ?? "Movie Details");
-            }}
-          />
-        ))}
+      {movies.map((movie) => (
+      <div
+        key={movie.showId}
+        onClick={() => onMovieSelect?.(movie.showId.toString(), movie.title)}
+        style={{ cursor: "pointer" }}
+      >
+        <OneMovieCard movie={movie} />
+      </div>
+    ))}
       </div>
 
       {/* Infinite scroll loader trigger */}

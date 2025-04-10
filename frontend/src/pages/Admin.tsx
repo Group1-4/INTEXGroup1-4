@@ -532,7 +532,7 @@ function Admin() {
             <DialogTitle
               sx={{
                 backgroundColor: "#A6442E", // Changed to match the header red color
-                color: "#FDF2CD",
+                color: "#FDF2CD !important",
                 fontWeight: "bold",
                 padding: "16px 24px",
               }}
