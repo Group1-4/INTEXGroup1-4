@@ -4,7 +4,6 @@ import MovieList from "../components/MovieListCards";
 import { RequireRole } from "../components/RequireRole";
 
 import { fetchRecommendations, fetchMovieDetails, API_URL } from "../api/MoviesAPI";
-import OneMovieCard from "../components/1MovieCard";
 import { MovieCard } from "../types/MovieCard";
 import MovieDetails from "../components/MovieDetails";
 
