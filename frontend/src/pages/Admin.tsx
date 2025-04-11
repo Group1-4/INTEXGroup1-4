@@ -28,7 +28,6 @@ import {
   updateMovie,
 } from "../api/MoviesAPI";
 import "../App.css";
-import AuthorizeView from "../components/Authorizeview";
 import { RequireRole } from "../components/RequireRole";
 const baseColumns = [
   "type",
