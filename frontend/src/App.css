@@ -237,3 +237,45 @@ body,
   border: 1px solid black !important;
   box-shadow: none !important;
 }
+
+.home-page-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #6c3f18;
+  margin-bottom: 1rem;
+  font-family: "BeachSound", sans-serif;
+}
+
+.carousel-arrow-barr {
+  background-color: transparent;
+  color: #6c3f1800; /* Dark brown */
+  font-size: 0%;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.carousel-arrow-barr:hover {
+  color: #4e2a12; /* Slightly darker on hover if desired */
+}
+
+.carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.carousel::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.featured-movie-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #6C3F18 !important;
+  margin-bottom: 1rem;
+  font-family: "BeachSound", sans-serif !important;
+  margin-left: 100px;
+}
