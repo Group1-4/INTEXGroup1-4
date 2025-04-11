@@ -153,7 +153,37 @@ function Admin() {
     setNewMovie((prev: any) => ({ ...prev, [name]: checked ? 1 : 0 }));
   };
 
+  const validateMovie = (movie: Movie): { [key: string]: string[] } => {
+    const errors: { [key: string]: string[] } = {};
+  
+    if (!movie.title?.trim()) {
+      errors.title = ["Title is required."];
+    }
+    if (!movie.type?.trim()) {
+      errors.type = ["Type is required."];
+    }
+    if (!movie.director?.trim()) {
+      errors.director = ["Director is required."];
+    }
+    if (!movie.releaseYear || isNaN(Number(movie.releaseYear))) {
+      errors.releaseYear = ["Valid release year is required."];
+    }
+    if (!movie.rating?.trim()) {
+      errors.rating = ["Rating is required."];
+    }
+    if (!movie.duration?.trim()) {
+      errors.duration = ["Duration is required."];
+    }
+  
+    return errors;
+  };
+
   const handleFormSubmit = async () => {
+    const clientErrors = validateMovie(newMovie);
+      if (Object.keys(clientErrors).length > 0) {
+        setValidationErrors(clientErrors);
+        return;
+      }
     const movieToSend = { ...newMovie };
     try {
       if (editMode) {
@@ -564,6 +594,20 @@ function Admin() {
             >
               {editMode ? "Edit Movie" : "Add New Movie"}
             </DialogTitle>
+            {validationErrors.general && (
+  <Typography
+    sx={{
+      color: "#FFB4A2", // light red/pink for error
+      backgroundColor: "#3C2F2A", // darker background for contrast
+      padding: "8px 12px",
+      borderRadius: "4px",
+      fontWeight: "bold",
+    }}
+  >
+    {validationErrors.general[0]}
+  </Typography>
+)}
+
             <DialogContent
               dividers
               sx={{
@@ -585,7 +629,10 @@ function Admin() {
                     helperText={validationErrors[field]?.[0] || ""} // 📝 First error message
                     sx={{
                       input: { color: "#FDF2CD" },
-                      label: { color: "#FDF2CD" },
+                      label: {
+                        color: "#FDF2CD",
+                        "&.Mui-focused": { color: "#FDF2CD" }, // ✅ this line fixes the blue text on focus
+                      },
                       "& .MuiOutlinedInput-root": {
                         "& fieldset": { borderColor: "#FDF2CD" },
                         "&:hover fieldset": { borderColor: "#FDF2CD" },
