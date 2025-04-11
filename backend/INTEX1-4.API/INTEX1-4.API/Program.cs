@@ -164,18 +164,21 @@ app.MapPost("/logout", async (HttpContext context, SignInManager<IdentityUser> s
 }).RequireAuthorization();
 
 // AUTH CHECK ROUTE
-app.MapGet("/pingauth", (ClaimsPrincipal user) =>
+app.MapGet("/pingauth", (HttpContext context) =>
 {
-    if (!user.Identity?.IsAuthenticated ?? false)
+    var user = context.User;
+
+    if (user?.Identity?.IsAuthenticated != true)
     {
-        return Results.Unauthorized();
+        return Results.Json(new { message = "Unauthorized" }, statusCode: 401);
     }
 
     var email = user.FindFirstValue(ClaimTypes.Email) ?? "unknown@example.com";
     var roles = user.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
 
     return Results.Json(new { email, roles });
-}).RequireAuthorization();
+});
+
 
 // REGISTER ROUTE
 app.MapPost("/signup", async (
@@ -202,61 +205,54 @@ app.MapPost("/signup", async (
 
     return Results.Ok(new { message = "User registered and signed in!" });
 });
+
 app.MapPost("/custom-login", async (
     HttpContext context,
     SignInManager<IdentityUser> signInManager,
     UserManager<IdentityUser> userManager,
-    ILogger<Program> logger,
     [FromBody] CustomLoginRequest login
 ) =>
 {
     var user = await userManager.FindByEmailAsync(login.Email);
     if (user == null)
     {
-        logger.LogInformation($"Login attempt failed for user: {login.Email} - User not found.");
         return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);
     }
 
     var result = await signInManager.PasswordSignInAsync(
-        user,
-        login.Password,
-        login.RememberMe,
-        lockoutOnFailure: false);
+        user, login.Password, login.RememberMe, lockoutOnFailure: false);
 
-    if (result.Succeeded)
+    if (!result.Succeeded)
     {
-        var roles = await userManager.GetRolesAsync(user);
-
-        // ✅ Sign in manually to issue cookie in minimal API
-        var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.NameIdentifier, user.Id),
-            new Claim(ClaimTypes.Name, user.Email),
-        };
-
-        foreach (var role in roles)
-        {
-            claims.Add(new Claim(ClaimTypes.Role, role));
-        }
-
-        var identity = new ClaimsIdentity(claims, IdentityConstants.ApplicationScheme);
-        var principal = new ClaimsPrincipal(identity);
-
-        await context.SignInAsync(IdentityConstants.ApplicationScheme, principal);
-
-        logger.LogInformation($"User {user.Email} signed in and cookie issued.");
-
-        return Results.Ok(new {
-            message = "Login successful",
-            email = user.Email,
-            roles
-        });
+        return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);
     }
 
-    logger.LogInformation($"Login failed for user: {user.Email} - Bad password.");
-    return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);
+    var roles = await userManager.GetRolesAsync(user);
+
+    var claims = new List<Claim>
+    {
+        new(ClaimTypes.Email, user.Email),
+        new(ClaimTypes.NameIdentifier, user.Id),
+        new(ClaimTypes.Name, user.Email)
+    };
+
+    foreach (var role in roles)
+    {
+        claims.Add(new Claim(ClaimTypes.Role, role));
+    }
+
+    await context.SignInAsync(
+        IdentityConstants.ApplicationScheme,
+        new ClaimsPrincipal(new ClaimsIdentity(claims, IdentityConstants.ApplicationScheme)),
+        new AuthenticationProperties
+        {
+            IsPersistent = login.RememberMe,
+            AllowRefresh = true
+        });
+
+    return Results.Ok(new { message = "Login successful", email = user.Email, roles });
 });
+
 
 
 
