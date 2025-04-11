@@ -40,7 +40,7 @@ function LoginPage() {
       return;
     }
   
-    const loginUrl = `${API_URL}/custom-login`;
+    const loginUrl = `${API_URL}/login`;
   
     try {
       const response = await fetch(loginUrl, {
