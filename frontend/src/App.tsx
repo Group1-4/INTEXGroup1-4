@@ -11,11 +11,13 @@ import Footer from "./components/GlobalFooter";
 import MovieListPage from "./pages/MovieListPage"
 import Denied from "./pages/403";
 import ComingSoon from "./pages/ComingSoon";
+import CookieConsentBanner from "./components/CookieConsentBanner";
 function App() {
   return (
     <>
       <Router>
         <Header />
+        <CookieConsentBanner />
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
           <Route path="/home" element={<Navigate to="/" replace />} />

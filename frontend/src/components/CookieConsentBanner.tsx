@@ -56,7 +56,7 @@ const CookieConsentBanner: React.FC = () => {
         By clicking "Accept," you consent to our use of cookies. If you click "Decline," non-essential cookies will not be activated.
         For more details, please refer to our{" "}
         <a
-          href="/privacy-policy"
+          href="/privacy"
           style={{
             color: "#000000",
             textDecoration: "underline",

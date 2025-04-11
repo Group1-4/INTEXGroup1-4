@@ -254,7 +254,21 @@ function Admin() {
               variant="contained"
               onClick={() => {
                 setShowForm(true);
+                setNewMovie({
+                  showId: 0,
+                  title: "",
+                  type: "",
+                  director: "",
+                  cast: "",
+                  country: "",
+                  releaseYear: "",
+                  rating: "",
+                  duration: "",
+                  description: "",
+                  ...Object.fromEntries(allCategoryFields.map((c) => [c, 0])),
+                });
                 setEditMode(false);
+                setShowForm(true);
               }}
               sx={{
                 backgroundColor: "#2A9D8F",
@@ -635,16 +649,18 @@ function Admin() {
             onClose={() => setDeleteConfirmOpen(false)}
             PaperProps={{
               sx: {
-                borderRadius: "8px",
+                borderRadius: "12px",
                 overflow: "hidden",
+                backgroundColor: "#FDF2CD",
               },
             }}
           >
             <DialogTitle
               sx={{
                 backgroundColor: "#A6442E",
-                color: "#FDF2CD",
+                color: "#FDF2CD !important",
                 fontWeight: "bold",
+                padding: "16px 24px",
               }}
             >
               Confirm Deletion
@@ -653,19 +669,33 @@ function Admin() {
               dividers
               sx={{
                 padding: "24px",
-                color: "#6C3F18", // Dark brown for text
+                backgroundColor: "#FDF2CD",
+                color: "#6C3F18",
+                fontSize: "1rem",
+                fontFamily: "CreatoDisplay, sans-serif",
               }}
             >
-              <Typography>
+              <Typography sx={{ textAlign: "center", fontWeight: "bold" }}>
                 Are you sure you want to delete this movie?
               </Typography>
             </DialogContent>
-            <DialogActions sx={{ padding: "16px" }}>
+            <DialogActions
+               sx={{
+                 backgroundColor: "#FDF2CD",
+                 padding: "16px 24px",
+                 justifyContent: "space-between",
+               }}
+             >
               <Button
                 onClick={() => setDeleteConfirmOpen(false)}
                 sx={{
-                  color: "#6C3F18",
+                  color: "#A6442E",
                   fontWeight: "bold",
+                  border: "1px solid #A6442E",
+                   borderRadius: "6px",
+                   "&:hover": {
+                     backgroundColor: "rgba(166, 68, 46, 0.1)",
+                   },
                 }}
               >
                 Cancel
@@ -677,6 +707,7 @@ function Admin() {
                   backgroundColor: "#A6442E",
                   color: "#FDF2CD",
                   fontWeight: "bold",
+                  borderRadius: "6px",
                   "&:hover": {
                     backgroundColor: "#8A3724",
                   },
