@@ -12,6 +12,7 @@ import MovieListPage from "./pages/MovieListPage"
 import Denied from "./pages/403";
 import ComingSoon from "./pages/ComingSoon";
 import CookieConsentBanner from "./components/CookieConsentBanner";
+import CarouselHomePage from "./components/CarouselHomePage";
 function App() {
   return (
     <>
@@ -30,6 +31,7 @@ function App() {
           <Route path="/movielist" element={<MovieListPage />}></Route>
           <Route path="403" element={<Denied />} />
           <Route path="comingsoon" element={<ComingSoon />} />
+          <Route path="/carousel" element={<CarouselHomePage />} />
         </Routes>
         <Footer />
       </Router>
