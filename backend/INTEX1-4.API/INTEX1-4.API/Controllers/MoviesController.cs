@@ -182,11 +182,12 @@ public class MoviesController : ControllerBase
             .ToList();
 
         var hasMore = (page * pageSize) < totalMovies;
-
+        
         return Ok(new
         {
-            Movies = movies,
-            HasMore = hasMore
+            movies,    // <-- lowercase
+            hasMore
         });
+
     }
 }
