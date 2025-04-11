@@ -182,7 +182,7 @@ app.MapPost("/signup", async (
     return Results.Ok(new { message = "User registered and signed in!" });
 });
 
-// CUSTOM LOGIN ROUTE
+// CUSTOM LOGIN ROUTE (Program.cs - Backend)
 app.MapPost("/custom-login", async (
     HttpContext context,
     SignInManager<IdentityUser> signInManager,
@@ -206,7 +206,16 @@ app.MapPost("/custom-login", async (
 
         if (result.Succeeded)
         {
-            return Results.Ok(new { message = "Login successful" });
+            // Login successful, now determine the redirect URL based on roles
+            if (await userManager.IsInRoleAsync(user, "Admin"))
+            {
+                return Results.Ok(new { redirectUrl = "/admin" });
+            }
+            else
+            {
+                // Default to the movie page for non-admin users
+                return Results.Ok(new { redirectUrl = "/movies" });
+            }
         }
 
         return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);

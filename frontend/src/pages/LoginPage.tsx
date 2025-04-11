@@ -1,3 +1,4 @@
+// LoginPage.tsx (Frontend)
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './identity.css';
@@ -34,45 +35,52 @@ function LoginPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
-  
+
     if (!email || !password) {
       setError('Please fill in all fields.');
       return;
     }
-  
+
     const loginUrl = `${API_URL}/custom-login`;
-  
+
     try {
       const response = await fetch(loginUrl, {
         method: 'POST',
-        credentials: 'include', // ✅ crucial for cookies
+        credentials: 'include', // ✅ crucial for the session cookie
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           email,
           password,
-          rememberMe: rememberme, // ✅ this tells Identity to persist login
+          rememberMe: rememberme, // ✅ this influences the session cookie's persistence
         }),
       });
-  
+
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data?.message || 'Invalid email or password.');
       }
-  
-      navigate('/admin');
+
+      const responseData = await response.json();
+      if (responseData?.redirectUrl) {
+        navigate(responseData.redirectUrl);
+      } else {
+        // Fallback in case redirectUrl is not present (shouldn't happen)
+        navigate('/');
+      }
+
     } catch (error: any) {
       setError(error.message || 'Error logging in.');
       console.error('Login failed:', error);
     }
   };
-  
+
 
   const handleGoogleLogin = () => {
-    window.location.href = 'https://localhost:4000/signin-google'; // Backend URL that starts the Google OAuth flow
+    window.location.href = 'https://localhost:4000/signin-google'; // Backend URL for Google OAuth
   };
-  
+
 
   return (
     <div className="netflix-login-container">

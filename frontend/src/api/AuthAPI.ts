@@ -1,5 +1,5 @@
 export const pingAuth = async (): Promise<{ email?: string }> => {
-  const response = await fetch("https://localhost:4000/pingauth", {
+  const response = await fetch("http://localhost:4000/pingauth", {
     method: "GET",
     credentials: "include",
   });
