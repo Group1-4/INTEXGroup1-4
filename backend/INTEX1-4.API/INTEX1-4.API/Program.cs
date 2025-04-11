@@ -1,3 +1,4 @@
+
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,7 @@ using System.Globalization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
@@ -26,6 +28,7 @@ builder.Services.AddSwaggerGen();
 // Database contexts
 builder.Services.AddDbContext<MoviesDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MoviesConnection")));
+
 
 builder.Services.AddDbContext<ContentDbContext>(options =>
 {
@@ -40,18 +43,21 @@ builder.Services.AddDbContext<UsersCollabDbContext>(options =>
 });
 
 builder.Services.AddDbContext<CollabDbContext>(options =>
+
 {
     var path = Path.Combine(Directory.GetCurrentDirectory(), "collab.db");
     options.UseSqlite($"Data Source={path}");
 });
 
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")));
+
 
 // --- IDENTITY CONFIGURATION WITH ROLES ---
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
+    .AddDefaultTokenProviders(); // needed for password reset, email confirmation, etc.
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -66,6 +72,9 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.ClaimsIdentity.UserNameClaimType = ClaimTypes.Email;
 });
 
+// builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+//     .AddEntityFrameworkStores<ApplicationDbContext>();
+
 builder.Services.AddScoped<IUserClaimsPrincipalFactory<IdentityUser>, CustomUserClaimsPrincipalFactory>();
 
 builder.Services.ConfigureApplicationCookie(options =>
@@ -74,29 +83,38 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.Cookie.SameSite = SameSiteMode.None;
     options.Cookie.Name = ".AspNetCore.Identity.Application";
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    options.LoginPath = "/login";
+    options.LoginPath = "/login"; // still required for redirect-based apps
 
+    // 🔥 THIS IS THE KEY PART:
     options.Events.OnRedirectToLogin = context =>
     {
+        // For APIs, return 401 instead of redirecting
         if (context.Request.Path.StartsWithSegments("/pingauth"))
         {
             context.Response.StatusCode = 401;
             return Task.CompletedTask;
         }
 
+        // Let other routes redirect normally
         context.Response.Redirect(context.RedirectUri);
         return Task.CompletedTask;
     };
 });
 
+
+
+
+// --- OPTIONAL: No-op Email Sender to avoid errors if tokens are used ---
 builder.Services.AddSingleton<IEmailSender<IdentityUser>, NoOpEmailSender<IdentityUser>>();
 
+// --- CORS ---
 builder.Services.AddAuthorization();
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("MyCorsPolicy", policy =>
     {
+
         policy.WithOrigins(
                 "http://localhost:5173",
                 "https://kind-wave-0d0fe0a1e.6.azurestaticapps.net")
@@ -110,8 +128,13 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-app.UseSwagger();
-app.UseSwaggerUI();
+// Pipeline
+// if (app.Environment.IsDevelopment())
+// {
+
+    app.UseSwagger();
+    app.UseSwaggerUI();
+// }
 
 app.UseCors("MyCorsPolicy");
 app.UseHttpsRedirection();
@@ -124,6 +147,7 @@ app.MapControllers();
 app.MapIdentityApi<IdentityUser>();
 
 app.MapGet("/login", () => Results.Unauthorized());
+
 
 // --- LOGOUT ROUTE ---
 app.MapPost("/logout", async (HttpContext context, SignInManager<IdentityUser> signInManager) =>
@@ -156,6 +180,7 @@ app.MapGet("/pingauth", (HttpContext context) =>
     return Results.Json(new { email, roles });
 });
 
+
 // REGISTER ROUTE
 app.MapPost("/signup", async (
     UserManager<IdentityUser> userManager,
@@ -181,5 +206,56 @@ app.MapPost("/signup", async (
 
     return Results.Ok(new { message = "User registered and signed in!" });
 });
+
+app.MapPost("/custom-login", async (
+    HttpContext context,
+    SignInManager<IdentityUser> signInManager,
+    UserManager<IdentityUser> userManager,
+    [FromBody] CustomLoginRequest login
+) =>
+{
+    var user = await userManager.FindByEmailAsync(login.Email);
+    if (user == null)
+    {
+        return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);
+    }
+
+    var result = await signInManager.PasswordSignInAsync(
+        user, login.Password, login.RememberMe, lockoutOnFailure: false);
+
+    if (!result.Succeeded)
+    {
+        return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);
+    }
+
+    var roles = await userManager.GetRolesAsync(user);
+
+    var claims = new List<Claim>
+    {
+        new(ClaimTypes.Email, user.Email),
+        new(ClaimTypes.NameIdentifier, user.Id),
+        new(ClaimTypes.Name, user.Email)
+    };
+
+    foreach (var role in roles)
+    {
+        claims.Add(new Claim(ClaimTypes.Role, role));
+    }
+
+    await context.SignInAsync(
+        IdentityConstants.ApplicationScheme,
+        new ClaimsPrincipal(new ClaimsIdentity(claims, IdentityConstants.ApplicationScheme)),
+        new AuthenticationProperties
+        {
+            IsPersistent = login.RememberMe,
+            AllowRefresh = true
+        });
+
+    return Results.Ok(new { message = "Login successful", email = user.Email, roles });
+});
+
+
+
+
 
 app.Run();

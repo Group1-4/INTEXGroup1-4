@@ -11,6 +11,7 @@ import Footer from "./components/GlobalFooter";
 import CarouselHomePage from "./components/CarouselHomePage";
 import MovieListPage from "./pages/MovieListPage";
 
+
 import AuthorizeView from "./components/Authorizeview";
 
 import Denied from "./pages/403";
