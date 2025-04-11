@@ -86,21 +86,21 @@ const HeroCard: React.FC = () => {
               <br /> From Classics to Today’s Favorites
             </Typography>
             <Typography
-              variant="h6"
-              sx={{ mb: 2, color: "#FDF2CD !important" }}
+              variant="h5"
+              sx={{ mb: 2, color: "#FDF2CD !important", WebkitTextStroke: "0.5px rgb(255, 246, 215)" }}
             >
               Starts at $5.99. Cancel anytime.
             </Typography>
             <Typography
-              variant="body1"
-              sx={{
-                mb: 3,
-                color: "#FDF2CD", // Add this line
-              }}
-            >
-              Ready to watch? Enter your email to create or restart your
-              membership.
-            </Typography>
+  variant="h6"
+  sx={{
+    mb: 3,
+    color: "#FDF2CD !important",
+    WebkitTextStroke: "0.5px rgb(255, 246, 215)", // Add this line
+  }}
+>
+  Ready to watch? Enter your email to create or restart your membership.
+</Typography>
 
             <Box
               sx={{

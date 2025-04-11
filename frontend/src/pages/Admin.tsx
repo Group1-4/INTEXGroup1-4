@@ -28,7 +28,7 @@ import {
   updateMovie,
 } from "../api/MoviesAPI";
 import "../App.css";
-import AuthorizeView from "../components/Authorizeview";
+import { RequireRole } from "../components/RequireRole";
 
 const baseColumns = [
   "type",
@@ -232,7 +232,11 @@ function Admin() {
 
   return (
     <>
-      <AuthorizeView>
+    <RequireRole role="Admin">
+      <Box
+        sx={{ height: "100vh", display: "flex", flexDirection: "column", p: 2 }}
+      >
+
         <Box
           sx={{
             height: "100vh",
@@ -253,6 +257,7 @@ function Admin() {
             <Button
               variant="contained"
               onClick={() => {
+                setShowForm(true);
                 setNewMovie({
                   showId: 0,
                   title: "",
@@ -434,8 +439,8 @@ function Admin() {
                               borderColor: "#2A9D8F", // Edit border color
                               "&:hover": {
                                 backgroundColor: "#2A9D8F", // fill on hover
-                                borderColor: "#F1602C", // border on hover
-                                color: "#FDF2CD", // text on hover
+                                borderColor: "#F1602C",     // border on hover
+                                color: "#FDF2CD",           // text on hover
                               },
                             }}
                             onClick={() => handleEditClick(row)}
@@ -448,12 +453,12 @@ function Admin() {
                             size="small"
                             sx={{
                               width: "70px",
-                              color: "#c0392b", // Delete text color
-                              borderColor: "#c0392b", // Delete border color
+                              color: "#c0392b",            // Delete text color
+                              borderColor: "#c0392b",      // Delete border color
                               "&:hover": {
                                 backgroundColor: "#c0392b", // fill on hover
-                                borderColor: "#EC8922", // border on hover
-                                color: "#FDF2CD", // text on hover
+                                borderColor: "#EC8922",     // border on hover
+                                color: "#FDF2CD",           // text on hover
                               },
                             }}
                             onClick={() => handleDeleteClick(row.showId)}
@@ -532,7 +537,7 @@ function Admin() {
             <DialogTitle
               sx={{
                 backgroundColor: "#A6442E", // Changed to match the header red color
-                color: "#FDF2CD",
+                color: "#FDF2CD !important",
                 fontWeight: "bold",
                 padding: "16px 24px",
               }}
@@ -657,14 +662,13 @@ function Admin() {
             <DialogTitle
               sx={{
                 backgroundColor: "#A6442E",
-                color: "#FDF2CD",
+                color: "#FDF2CD !important",
                 fontWeight: "bold",
                 padding: "16px 24px",
               }}
             >
               Confirm Deletion
             </DialogTitle>
-
             <DialogContent
               dividers
               sx={{
@@ -675,28 +679,28 @@ function Admin() {
                 fontFamily: "CreatoDisplay, sans-serif",
               }}
             >
+
               <Typography sx={{ textAlign: "center", fontWeight: "bold" }}>
                 Are you sure you want to delete this movie?
               </Typography>
             </DialogContent>
-
             <DialogActions
-              sx={{
-                backgroundColor: "#FDF2CD",
-                padding: "16px 24px",
-                justifyContent: "space-between",
-              }}
-            >
+               sx={{
+                 backgroundColor: "#FDF2CD",
+                 padding: "16px 24px",
+                 justifyContent: "space-between",
+               }}
+             >
               <Button
                 onClick={() => setDeleteConfirmOpen(false)}
                 sx={{
                   color: "#A6442E",
                   fontWeight: "bold",
                   border: "1px solid #A6442E",
-                  borderRadius: "6px",
-                  "&:hover": {
-                    backgroundColor: "rgba(166, 68, 46, 0.1)",
-                  },
+                   borderRadius: "6px",
+                   "&:hover": {
+                     backgroundColor: "rgba(166, 68, 46, 0.1)",
+                   },
                 }}
               >
                 Cancel
@@ -783,7 +787,9 @@ function Admin() {
             </DialogActions>
           </Dialog>
         </Box>
-      </AuthorizeView>
+        </Box>
+      </RequireRole> 
+
     </>
   );
 }

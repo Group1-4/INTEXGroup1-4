@@ -1,15 +1,14 @@
-import React from 'react';
 import AccordionHomePage from "../components/AccordionHomePage";
 import HeroCard from "../components/HeroCard";
-import CookieConsentBanner from "../components/CookieConsentBanner"; // Import the banner component
+// import Carousel from "../components/Carousel";
+
 
 const HomePage: React.FC = () => {
   return (
     <>
-      <HeroCard />
-      {/* <Carousel /> */}
-      <AccordionHomePage />
-      <CookieConsentBanner /> {/* Render the banner component */}
+    <HeroCard />
+    {/* <Carousel /> */}
+    <AccordionHomePage />
     </>
   );
 };

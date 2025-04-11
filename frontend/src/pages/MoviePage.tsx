@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "./MoviePage.css";
 import MovieList from "../components/MovieListCards";
-import { fetchRecommendations, fetchMovieDetails } from "../api/MoviesAPI";
+import { RequireRole } from "../components/RequireRole";
+
+import { fetchRecommendations, fetchMovieDetails, API_URL } from "../api/MoviesAPI";
+import OneMovieCard from "../components/1MovieCard";
 import { MovieCard } from "../types/MovieCard";
 import MovieDetails from "../components/MovieDetails";
 
@@ -9,7 +12,6 @@ import Dialog from "@mui/material/Dialog";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
@@ -23,6 +25,7 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+
 const MainPage = () => {
   const [activeTab, setActiveTab] = useState<"tailored" | "all">("tailored");
 
@@ -34,7 +37,7 @@ const MainPage = () => {
   const [userName, setUserName] = useState("Joe");
 
   const [selectedMovieId, setSelectedMovieId] = useState<string | null>(null);
-  const [selectedMovieTitle, setSelectedMovieTitle] = useState<string | null>(
+  const [, setSelectedMovieTitle] = useState<string | null>(
     null
   );
 
@@ -42,10 +45,10 @@ const MainPage = () => {
     const fetchAll = async () => {
       try {
         const [watchedRes, picksRes] = await Promise.all([
-          fetch("https://localhost:4000/Recommender/recentlywatched", {
+          fetch(`${API_URL}/Recommender/recentlywatched`, {
             credentials: "include",
           }),
-          fetch("https://localhost:4000/Recommender/content-user-based", {
+          fetch(`${API_URL}/Recommender/content-user-based`, {
             credentials: "include",
           }),
         ]);
@@ -101,6 +104,7 @@ const MainPage = () => {
   };
 
   return (
+    <RequireRole role="User">
     <div className="main-container">
       <div className="tabs">
         <button
@@ -158,7 +162,7 @@ const MainPage = () => {
       {activeTab === "all" && (
         <div className="tab-content movie-list-wrapper">
           <h2 className="welcome-head">All Movies</h2>
-          <MovieList />
+          <MovieList onMovieSelect={(id, title) => handleSelectMovie(id, title ?? "Movie Details")} />
         </div>
       )}
 
@@ -187,6 +191,7 @@ const MainPage = () => {
         {selectedMovieId && <MovieDetails movieId={selectedMovieId} />}
       </Dialog>
     </div>
+    </RequireRole>
   );
 };
 
