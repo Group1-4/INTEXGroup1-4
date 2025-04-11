@@ -37,19 +37,30 @@ public class MoviesController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+            {
+                // Helpful for debugging frontend-to-backend shape mismatches
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                return BadRequest(ModelState
+                .Where(x => x.Value.Errors.Count > 0)
+                .ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                )
+            );
+
+            }
+
+            var sanitizer = new HtmlSanitizer();
+            newMovie.Description = sanitizer.Sanitize(newMovie.Description);
+            newMovie.Title = sanitizer.Sanitize(newMovie.Title);
+            newMovie.Cast = sanitizer.Sanitize(newMovie.Cast);
+
+            _context.movies_titles.Add(newMovie);
+            _context.SaveChanges();
+
+            return Ok(new { id = newMovie.ShowId });
         }
-
-        var sanitizer = new HtmlSanitizer();
-        newMovie.Description = sanitizer.Sanitize(newMovie.Description);
-        newMovie.Title = sanitizer.Sanitize(newMovie.Title);
-        newMovie.Cast = sanitizer.Sanitize(newMovie.Cast);
-
-        _context.movies_titles.Add(newMovie);
-        _context.SaveChanges();
-
-        return Ok(new { id = newMovie.ShowId });
-    }
 
     [HttpDelete("DeleteMovie/{id}")]
     [Authorize(Roles = "Admin")]
