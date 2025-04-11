@@ -187,6 +187,7 @@ app.MapPost("/custom-login", async (
     HttpContext context,
     SignInManager<IdentityUser> signInManager,
     UserManager<IdentityUser> userManager,
+    ILogger<Program> logger, // Inject logger
     [FromBody] CustomLoginRequest login
 ) =>
 {
@@ -195,6 +196,7 @@ app.MapPost("/custom-login", async (
         var user = await userManager.FindByEmailAsync(login.Email);
         if (user == null)
         {
+            logger.LogInformation($"Login attempt failed for user: {login.Email} - User not found.");
             return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);
         }
 
@@ -206,15 +208,26 @@ app.MapPost("/custom-login", async (
 
         if (result.Succeeded)
         {
-            return Results.Ok(new { message = "Login successful" });
+            logger.LogInformation($"Login successful for user: {user.Email}");
+
+            if (await userManager.IsInRoleAsync(user, "Admin"))
+            {
+                logger.LogInformation($"User {user.Email} is in the Admin role. Redirecting to /admin.");
+                return Results.Ok(new { redirectUrl = "/admin" });
+            }
+            else
+            {
+                logger.LogInformation($"User {user.Email} is NOT in the Admin role. Redirecting to /movies.");
+                return Results.Ok(new { redirectUrl = "/movies" });
+            }
         }
 
+        logger.LogInformation($"Login failed for user: {user.Email} - Invalid password.");
         return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);
     }
     catch (Exception ex)
     {
-        Console.WriteLine("Login failed:");
-        Console.WriteLine(ex);
+        logger.LogError($"An error occurred during login: {ex}");
         return Results.Problem("An internal error occurred.");
     }
 });
