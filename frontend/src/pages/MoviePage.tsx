@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "./MoviePage.css";
 import MovieList from "../components/MovieListCards";
-import { fetchRecommendations, fetchMovieDetails } from "../api/MoviesAPI";
+import { RequireRole } from "../components/RequireRole";
+
+import { fetchRecommendations, fetchMovieDetails, API_URL } from "../api/MoviesAPI";
+import OneMovieCard from "../components/1MovieCard";
 import { MovieCard } from "../types/MovieCard";
 import MovieDetails from "../components/MovieDetails";
 
@@ -22,6 +25,7 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+
 const MainPage = () => {
   const [activeTab, setActiveTab] = useState<"tailored" | "all">("tailored");
 
@@ -41,10 +45,10 @@ const MainPage = () => {
     const fetchAll = async () => {
       try {
         const [watchedRes, picksRes] = await Promise.all([
-          fetch("https://localhost:4000/Recommender/recentlywatched", {
+          fetch(`${API_URL}/Recommender/recentlywatched`, {
             credentials: "include",
           }),
-          fetch("https://localhost:4000/Recommender/content-user-based", {
+          fetch(`${API_URL}/Recommender/content-user-based`, {
             credentials: "include",
           }),
         ]);
@@ -100,6 +104,7 @@ const MainPage = () => {
   };
 
   return (
+    <RequireRole role="User">
     <div className="main-container">
       <div className="tabs">
         <button
@@ -186,6 +191,7 @@ const MainPage = () => {
         {selectedMovieId && <MovieDetails movieId={selectedMovieId} />}
       </Dialog>
     </div>
+    </RequireRole>
   );
 };
 
