@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Globalization;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -204,38 +205,41 @@ app.MapPost("/custom-login", async (
     [FromBody] CustomLoginRequest login
 ) =>
 {
-    try
+    var user = await userManager.FindByEmailAsync(login.Email);
+    if (user == null)
     {
-        var user = await userManager.FindByEmailAsync(login.Email);
-        if (user == null)
-        {
-            return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);
-        }
-
-        var result = await signInManager.PasswordSignInAsync(
-            user,
-            login.Password,
-            login.RememberMe,
-            lockoutOnFailure: false);
-
-        if (result.Succeeded)
-        {
-            var roles = await userManager.GetRolesAsync(user);
-            return Results.Ok(new {
-                message = "Login successful",
-                email = user.Email,
-                roles
-            });
-        }
-
         return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);
     }
-    catch (Exception ex)
+
+    var result = await signInManager.PasswordSignInAsync(
+        user,
+        login.Password,
+        login.RememberMe,
+        lockoutOnFailure: false);
+
+    if (result.Succeeded)
     {
-        Console.WriteLine("Login failed:");
-        Console.WriteLine(ex);
-        return Results.Problem("An internal error occurred.");
+        var roles = await userManager.GetRolesAsync(user);
+
+        // 🔥 TRY ADDING THIS:
+        await context.SignInAsync(IdentityConstants.ApplicationScheme,
+            new ClaimsPrincipal(new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.Email),
+            }, IdentityConstants.ApplicationScheme))
+        );
+
+        return Results.Ok(new {
+            message = "Login successful",
+            email = user.Email,
+            roles
+        });
     }
+
+    return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);
 });
+
 
 app.Run();
