@@ -5,21 +5,21 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using Ganss.Xss;
-using Microsoft.AspNetCore.Authorization; // needed for reflection
+using Microsoft.AspNetCore.Authorization;
 
 [Route("[controller]")]
 [ApiController]
 public class MoviesController : ControllerBase
 {
-    private MoviesDbContext _context;
+    private readonly MoviesDbContext _context;
 
     public MoviesController(MoviesDbContext temp)
     {
         _context = temp;
     }
 
-    [Authorize]
     [HttpGet("GetMovies")]
+    [Authorize(Roles = "Admin")]
     public IActionResult Get(int page = 1, int pageSize = 10)
     {
         var total = _context.movies_titles.Count();
@@ -31,35 +31,35 @@ public class MoviesController : ControllerBase
         return Ok(new { movies, total });
     }
 
-        [HttpPost("AddMovie")]
-        public IActionResult AddMovie([FromBody] Movie newMovie)
+    [HttpPost("AddMovie")]
+    [Authorize(Roles = "Admin")]
+    public IActionResult AddMovie([FromBody] Movie newMovie)
+    {
+        if (!ModelState.IsValid)
         {
-            if (!ModelState.IsValid)
-            {
-                // Helpful for debugging frontend-to-backend shape mismatches
-                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-                return BadRequest(ModelState
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+            return BadRequest(ModelState
                 .Where(x => x.Value.Errors.Count > 0)
                 .ToDictionary(
                     kvp => kvp.Key,
                     kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
                 )
             );
-
-            }
-
-            var sanitizer = new HtmlSanitizer();
-            newMovie.Description = sanitizer.Sanitize(newMovie.Description);
-            newMovie.Title = sanitizer.Sanitize(newMovie.Title);
-            newMovie.Cast = sanitizer.Sanitize(newMovie.Cast);
-
-            _context.movies_titles.Add(newMovie);
-            _context.SaveChanges();
-
-            return Ok(new { id = newMovie.ShowId });
         }
 
+        var sanitizer = new HtmlSanitizer();
+        newMovie.Description = sanitizer.Sanitize(newMovie.Description);
+        newMovie.Title = sanitizer.Sanitize(newMovie.Title);
+        newMovie.Cast = sanitizer.Sanitize(newMovie.Cast);
+
+        _context.movies_titles.Add(newMovie);
+        _context.SaveChanges();
+
+        return Ok(new { id = newMovie.ShowId });
+    }
+
     [HttpDelete("DeleteMovie/{id}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult DeleteMovie(string id)
     {
         var movie = _context.movies_titles.Find(id);
@@ -74,6 +74,7 @@ public class MoviesController : ControllerBase
     }
 
     [HttpPut("UpdateMovie/{id}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult UpdateMovie(string id, [FromBody] Movie updatedMovie)
     {
         if (id != updatedMovie.ShowId)
@@ -95,12 +96,14 @@ public class MoviesController : ControllerBase
     }
 
     [HttpGet("MovieDetails/{id}")]
+    [Authorize(Roles = "User")]
     public IActionResult MovieDetails(string id)
     {
         var existing = _context.movies_titles.Find(id);
         return Ok(existing);
     }
 
+    [Authorize(Roles = "User")]
     [HttpGet("MovieList/{page}/{pageSize}")]
     public IActionResult MovieList(
         int page = 1,
@@ -113,10 +116,8 @@ public class MoviesController : ControllerBase
         var query = _context.movies_titles.AsQueryable();
         var sanitizer = new HtmlSanitizer();
 
-        // Sanitize the searchQuery
         string sanitizedSearchQuery = string.IsNullOrEmpty(searchQuery) ? null : sanitizer.Sanitize(searchQuery);
 
-        // 🔍 Search by selected field
         if (!string.IsNullOrEmpty(searchField) && !string.IsNullOrEmpty(sanitizedSearchQuery))
         {
             var searchLower = sanitizedSearchQuery.ToLower();
@@ -137,7 +138,6 @@ public class MoviesController : ControllerBase
             }
         }
 
-        // 🏷 Category filtering
         if (!string.IsNullOrEmpty(categories))
         {
             var selectedCategories = categories.Split(',').Select(c => c.Trim()).ToList();
@@ -172,5 +172,4 @@ public class MoviesController : ControllerBase
             HasMore = hasMore
         });
     }
-
 }

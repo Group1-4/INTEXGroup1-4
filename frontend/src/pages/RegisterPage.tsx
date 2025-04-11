@@ -1,7 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./identity.css";
 import { useSearchParams } from "react-router-dom";
+import { API_URL } from '../api/MoviesAPI';
+
 
 function Register() {
   // State variables for email and passwords
@@ -31,11 +34,8 @@ function Register() {
   const toggleShowPassword = () => {
     setShowPassword((prevState) => !prevState);
   };
-
-  // Handle submit event for the form
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Validate email and passwords
     if (!email || !password || !confirmPassword) {
       setError("Please fill in all fields.");
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -43,12 +43,19 @@ function Register() {
     } else if (password !== confirmPassword) {
       setError("Passwords do not match.");
     } else {
-      setError("");
-      // Post data to the /register API
-      fetch("https://localhost:4000/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+
+      setError('');
+
+      fetch(`${API_URL}/signup`, {
+
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          password,
+          confirmPassword: password
+        }),
+
       })
         .then((data) => {
           console.log(data);
@@ -60,6 +67,7 @@ function Register() {
           setError("Error registering.");
         });
     }
+
   };
 
   useEffect(() => {

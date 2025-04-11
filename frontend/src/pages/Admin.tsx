@@ -23,12 +23,12 @@ import {
 import { Movie } from "../types/Movie";
 import {
   fetchMovies,
-  addMovie,
   deleteMovie,
   updateMovie,
+  API_URL,
 } from "../api/MoviesAPI";
 import "../App.css";
-import AuthorizeView from "../components/Authorizeview";
+import { RequireRole } from "../components/RequireRole";
 
 const baseColumns = [
   "type",
@@ -196,7 +196,7 @@ function Admin() {
           )
         );
       } else {
-        const response = await fetch("https://localhost:4000/Movies/AddMovie", {
+        const response = await fetch(`${API_URL}/Movies/AddMovie`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
@@ -286,7 +286,11 @@ function Admin() {
 
   return (
     <>
-      <AuthorizeView>
+    <RequireRole role="Admin">
+      <Box
+        sx={{ height: "100vh", display: "flex", flexDirection: "column", p: 2 }}
+      >
+
         <Box
           sx={{
             height: "100vh",
@@ -742,6 +746,7 @@ function Admin() {
                 fontFamily: "CreatoDisplay, sans-serif",
               }}
             >
+
               <Typography sx={{ textAlign: "center", fontWeight: "bold" }}>
                 Are you sure you want to delete this movie?
               </Typography>
@@ -849,7 +854,9 @@ function Admin() {
             </DialogActions>
           </Dialog>
         </Box>
-      </AuthorizeView>
+        </Box>
+      </RequireRole> 
+
     </>
   );
 }

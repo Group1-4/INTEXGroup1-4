@@ -1,5 +1,6 @@
+import { API_URL } from "./MoviesAPI";
 export const pingAuth = async (): Promise<{ email?: string }> => {
-  const response = await fetch("https://localhost:4000/pingauth", {
+  const response = await fetch(`${API_URL}/pingauth`, {
     method: "GET",
     credentials: "include",
   });
