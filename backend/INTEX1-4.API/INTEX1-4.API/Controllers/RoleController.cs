@@ -16,7 +16,7 @@ public class RoleController : Controller
         _roleManager = roleManager;
         _userManager = userManager;
     }
-    
+    [Authorize(Roles = "Admin")]
     [HttpPost("AddRole")]
     public async Task<IActionResult> AddRole(string roleName)
     {
@@ -39,7 +39,7 @@ public class RoleController : Controller
 
         return StatusCode(500, "An error occurred while creating the role.");
     }
-
+    [Authorize(Roles = "Admin")]
     [HttpPost("AssignRoleToUser")]
     public async Task<IActionResult> AssignRoleToUser(string userEmail, string roleName)
     {
