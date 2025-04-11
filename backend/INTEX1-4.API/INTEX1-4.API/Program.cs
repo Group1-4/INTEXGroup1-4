@@ -128,6 +128,9 @@ app.MapControllers();
 // --- IDENTITY MINIMAL API ROUTES ---
 app.MapIdentityApi<IdentityUser>();
 
+app.MapGet("/login", () => Results.Unauthorized());
+
+
 // --- LOGOUT ROUTE ---
 app.MapPost("/logout", async (HttpContext context, SignInManager<IdentityUser> signInManager) =>
 {
