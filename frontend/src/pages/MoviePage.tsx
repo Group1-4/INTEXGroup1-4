@@ -3,7 +3,11 @@ import "./MoviePage.css";
 import MovieList from "../components/MovieListCards";
 import { RequireRole } from "../components/RequireRole";
 
-import { fetchRecommendations, fetchMovieDetails, API_URL } from "../api/MoviesAPI";
+import {
+  fetchRecommendations,
+  fetchMovieDetails,
+  API_URL,
+} from "../api/MoviesAPI";
 import { MovieCard } from "../types/MovieCard";
 import MovieDetails from "../components/MovieDetails";
 
@@ -24,7 +28,6 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-
 const MainPage = () => {
   const [activeTab, setActiveTab] = useState<"tailored" | "all">("tailored");
 
@@ -36,13 +39,24 @@ const MainPage = () => {
   const [userName, setUserName] = useState("Joe");
 
   const [selectedMovieId, setSelectedMovieId] = useState<string | null>(null);
-  const [, setSelectedMovieTitle] = useState<string | null>(
-    null
-  );
+  const [, setSelectedMovieTitle] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchAll = async () => {
       try {
+        // 🔍 Fetch user info first
+        const userRes = await fetch(`${API_URL}/pingauth`, {
+          credentials: "include",
+        });
+
+        if (userRes.ok) {
+          const userInfo = await userRes.json();
+          const email = userInfo.email ?? "Joe";
+          const nameGuess = email.split("@")[0];
+          setUserName(nameGuess.charAt(0).toUpperCase() + nameGuess.slice(1));
+        }
+
+        // 🧠 Continue loading the personalized stuff...
         const [watchedRes, picksRes] = await Promise.all([
           fetch(`${API_URL}/Recommender/recentlywatched`, {
             credentials: "include",
@@ -54,10 +68,6 @@ const MainPage = () => {
 
         const watchedData = await watchedRes.json();
         const picksData = await picksRes.json();
-
-        const fullName = watchedData.name ?? "Joe";
-        const firstName = fullName.split(" ")[0];
-        setUserName(firstName);
 
         const watchedMovies: MovieCard[] = await Promise.all(
           watchedData.ratedMovies.map((m: Movie) => fetchMovieDetails(m.showId))
@@ -75,6 +85,7 @@ const MainPage = () => {
             fetchRecommendations(topPicksFull[1].showId),
             fetchRecommendations(topPicksFull[2].showId),
           ]);
+
           const rel1 = await Promise.all(
             rel1Raw.map((m: Movie) => fetchMovieDetails(m.showId))
           );
@@ -104,92 +115,98 @@ const MainPage = () => {
 
   return (
     <RequireRole role="User">
-    <div className="main-container">
-      <div className="tabs">
-        <button
-          className={activeTab === "tailored" ? "tab active" : "tab"}
-          onClick={() => setActiveTab("tailored")}
+      <div className="main-container">
+        <div className="tabs">
+          <button
+            className={activeTab === "tailored" ? "tab active" : "tab"}
+            onClick={() => setActiveTab("tailored")}
+          >
+            Tailored For You
+          </button>
+          <button
+            className={activeTab === "all" ? "tab active" : "tab"}
+            onClick={() => setActiveTab("all")}
+          >
+            All Movies
+          </button>
+        </div>
+
+        {activeTab === "tailored" && (
+          <div className="tab-content">
+            <h1 className="welcome-head">Welcome back, {userName}!</h1>
+            <br />
+            <CarouselSection
+              title="Recently Watched"
+              movieList={recentlyWatched}
+              onSelect={handleSelectMovie}
+            />
+            <CarouselSection
+              title="Top Picks for You"
+              movieList={topPicks}
+              onSelect={handleSelectMovie}
+            />
+            {topPicks.length > 0 && (
+              <CarouselSection
+                title={`Related to "${topPicks[0]?.title}"`}
+                movieList={related1}
+                onSelect={handleSelectMovie}
+              />
+            )}
+            {topPicks.length > 1 && (
+              <CarouselSection
+                title={`Related to "${topPicks[1]?.title}"`}
+                movieList={related2}
+                onSelect={handleSelectMovie}
+              />
+            )}
+            {topPicks.length > 2 && (
+              <CarouselSection
+                title={`Related to "${topPicks[2]?.title}"`}
+                movieList={related3}
+                onSelect={handleSelectMovie}
+              />
+            )}
+          </div>
+        )}
+
+        {activeTab === "all" && (
+          <div className="tab-content movie-list-wrapper">
+            <h2 className="welcome-head">All Movies</h2>
+            <MovieList
+              onMovieSelect={(id, title) =>
+                handleSelectMovie(id, title ?? "Movie Details")
+              }
+            />
+          </div>
+        )}
+
+        {/* Movie Details Modal */}
+        <Dialog
+          fullScreen
+          open={!!selectedMovieId}
+          onClose={() => {
+            setSelectedMovieId(null);
+            setSelectedMovieTitle(null);
+          }}
+          TransitionComponent={Transition}
         >
-          Tailored For You
-        </button>
-        <button
-          className={activeTab === "all" ? "tab active" : "tab"}
-          onClick={() => setActiveTab("all")}
-        >
-          All Movies
-        </button>
+          <AppBar
+            sx={{ position: "relative", backgroundColor: "#4A2B0F !important" }}
+          >
+            <Toolbar>
+              <IconButton
+                edge="start"
+                color="inherit"
+                onClick={() => setSelectedMovieId(null)}
+                aria-label="close"
+              >
+                <CloseIcon />
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+          {selectedMovieId && <MovieDetails movieId={selectedMovieId} />}
+        </Dialog>
       </div>
-
-      {activeTab === "tailored" && (
-        <div className="tab-content">
-          <h1 className="welcome-head">Welcome back, {userName}!</h1>
-          <br />
-          <CarouselSection
-            title="Recently Watched"
-            movieList={recentlyWatched}
-            onSelect={handleSelectMovie}
-          />
-          <CarouselSection
-            title="Top Picks for You"
-            movieList={topPicks}
-            onSelect={handleSelectMovie}
-          />
-          {topPicks.length > 0 && (
-            <CarouselSection
-              title={`Related to "${topPicks[0]?.title}"`}
-              movieList={related1}
-              onSelect={handleSelectMovie}
-            />
-          )}
-          {topPicks.length > 1 && (
-            <CarouselSection
-              title={`Related to "${topPicks[1]?.title}"`}
-              movieList={related2}
-              onSelect={handleSelectMovie}
-            />
-          )}
-          {topPicks.length > 2 && (
-            <CarouselSection
-              title={`Related to "${topPicks[2]?.title}"`}
-              movieList={related3}
-              onSelect={handleSelectMovie}
-            />
-          )}
-        </div>
-      )}
-
-      {activeTab === "all" && (
-        <div className="tab-content movie-list-wrapper">
-          <h2 className="welcome-head">All Movies</h2>
-          <MovieList onMovieSelect={(id, title) => handleSelectMovie(id, title ?? "Movie Details")} />
-        </div>
-      )}
-
-      {/* Movie Details Modal */}
-      <Dialog
-        fullScreen
-        open={!!selectedMovieId}
-        onClose={() => {
-          setSelectedMovieId(null);
-          setSelectedMovieTitle(null);
-        }}
-        TransitionComponent={Transition}
-      >
-        <AppBar sx={{ position: "relative", backgroundColor: "#4A2B0F !important" }}>
-          <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={() => setSelectedMovieId(null)}
-              aria-label="close"
-            >
-              <CloseIcon />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-        {selectedMovieId && <MovieDetails movieId={selectedMovieId} />}
-      </Dialog>
-    </div>
     </RequireRole>
   );
 };

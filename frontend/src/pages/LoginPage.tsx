@@ -1,42 +1,43 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './identity.css';
-import '@fortawesome/fontawesome-free/css/all.css';
-import { API_URL } from '../api/MoviesAPI';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./identity.css";
+import "@fortawesome/fontawesome-free/css/all.css";
+import { API_URL } from "../api/MoviesAPI";
 
 function LoginPage() {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [rememberme, setRememberme] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, type, checked, value } = e.target;
-    if (type === 'checkbox') {
-      if (name === 'rememberme') {
+    if (type === "checkbox") {
+      if (name === "rememberme") {
         setRememberme(checked);
-      } else if (name === 'showPassword') {
+      } else if (name === "showPassword") {
         setShowPassword(checked);
       }
-    } else if (name === 'email') {
+    } else if (name === "email") {
       setEmail(value);
-    } else if (name === 'password') {
+    } else if (name === "password") {
       setPassword(value);
     }
   };
 
   const handleRegisterClick = () => {
-    navigate('/register');
+    navigate("/register");
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError('');
+    setError("");
+
 
     if (!email || !password) {
-      setError('Please fill in all fields.');
+      setError("Please fill in all fields.");
       return;
     }
 
@@ -44,35 +45,42 @@ function LoginPage() {
 
     try {
       const response = await fetch(loginUrl, {
-        method: 'POST',
-        credentials: 'include',
+        method: "POST",
+        credentials: "include", // ✅ crucial for the session cookie
+
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email,
           password,
-          rememberMe: rememberme,
+          rememberMe: rememberme, // ✅ influences session persistence
         }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data?.message || 'Invalid email or password.');
+        const data = await response.json();
+        throw new Error(data?.message || "Invalid email or password.");
       }
 
-      // ✅ navigate based on role
-      if (data.roles?.includes('Admin')) {
-        navigate('/admin');
+      const responseData = await response.json();
+      if (responseData?.redirectUrl) {
+        console.log("Redirecting to:", responseData.redirectUrl); // Add this log
+        navigate(responseData.redirectUrl);
       } else {
-        navigate('/movies');
+        console.warn("No redirectUrl received, navigating to /"); // Add this warning
+        navigate("/");
       }
+
     } catch (error: any) {
-      setError(error.message || 'Error logging in.');
-      console.error('Login failed:', error);
+      setError(error.message || "Error logging in.");
+      console.error("Login failed:", error);
     }
   };
+  const handleGoogleLogin = () => {
+    window.location.href = "https://localhost:4000/signin-google"; // Backend URL for Google OAuth
+  };
+
 
   return (
     <div className="netflix-login-container">
@@ -89,7 +97,7 @@ function LoginPage() {
           />
           <input
             className="form-control"
-            type={showPassword ? 'text' : 'password'}
+            type={showPassword ? "text" : "password"}
             name="password"
             placeholder="Password"
             value={password}
@@ -123,6 +131,13 @@ function LoginPage() {
           </button>
           {error && <p className="error">{error}</p>}
         </form>
+
+        {/* Google Login Button */}
+        <div className="google-login-container">
+          <button className="google-login-btn" onClick={handleGoogleLogin}>
+            <i className="fab fa-google"></i> Sign In with Google
+          </button>
+        </div>
       </div>
     </div>
   );
