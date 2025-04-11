@@ -258,3 +258,17 @@ export const logoutUser = async () => {
     credentials: "include",
   });
 };
+
+
+
+export const fetchHomeMovieDetails = async (id: string): Promise<MovieCard> => {
+  const response = await fetch(`${API_URL}/Movies/HomeMovieDetails/${id}`, {
+    credentials: "include"
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch movie details: ${response.status}`);
+  }
+
+  return await response.json();
+};

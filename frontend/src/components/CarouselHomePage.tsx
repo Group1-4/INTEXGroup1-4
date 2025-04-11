@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { fetchMovieDetails } from "../api/MoviesAPI";
+import { fetchHomeMovieDetails } from "../api/MoviesAPI";
 import { MovieCard } from "../types/MovieCard";
 
 const handpickedIds = [
@@ -36,7 +36,7 @@ const CarouselHomePage: React.FC = () => {
     const loadMovies = async () => {
       try {
         const results = await Promise.all(
-          handpickedIds.map((id) => fetchMovieDetails(id))
+          handpickedIds.map((id) => fetchHomeMovieDetails(id))
         );
         setMovies(results);
       } catch (error) {
@@ -90,7 +90,7 @@ const CarouselHomePage: React.FC = () => {
     const loadMovies = async () => {
       try {
         const results = await Promise.all(
-          handpickedIds.map((id) => fetchMovieDetails(id))
+          handpickedIds.map((id) => fetchHomeMovieDetails(id))
         );
         // Duplicate the list to create seamless scroll illusion
         setMovies([...results, ...results]);

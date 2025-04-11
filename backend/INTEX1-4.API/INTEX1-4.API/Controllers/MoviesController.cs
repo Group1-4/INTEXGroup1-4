@@ -106,6 +106,19 @@ public class MoviesController : ControllerBase
         var existing = _context.movies_titles.Find(id);
         return Ok(existing);
     }
+    
+    [HttpGet("HomeMovieDetails/{id}")]
+    public IActionResult HomeMovieDetails(string id)
+    {
+        var movie = _context.movies_titles.Find(id);
+        if (movie == null)
+        {
+            return NotFound(new { message = "Movie not found" });
+        }
+
+        return Ok(movie);
+    }
+
 
     [Authorize(Roles = "User")]
     [HttpGet("MovieList/{page}/{pageSize}")]
