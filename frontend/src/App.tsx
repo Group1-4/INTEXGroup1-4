@@ -8,8 +8,9 @@ import RegisterPage from "./pages/RegisterPage";
 import GlobalFooter from "./components/GlobalFooter";
 import Header from "./components/GlobalHeader";
 import Footer from "./components/GlobalFooter";
-import MovieListPage from "./pages/MovieListPage";
 import CarouselHomePage from "./components/CarouselHomePage";
+import MovieListPage from "./pages/MovieListPage";
+
 
 import AuthorizeView from "./components/Authorizeview";
 
