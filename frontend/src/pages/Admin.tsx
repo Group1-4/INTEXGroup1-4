@@ -23,9 +23,9 @@ import {
 import { Movie } from "../types/Movie";
 import {
   fetchMovies,
-  addMovie,
   deleteMovie,
   updateMovie,
+  API_URL,
 } from "../api/MoviesAPI";
 import "../App.css";
 import { RequireRole } from "../components/RequireRole";
@@ -166,7 +166,7 @@ function Admin() {
           )
         );
       } else {
-        const response = await fetch("https://localhost:4000/Movies/AddMovie", {
+        const response = await fetch(`${API_URL}/Movies/AddMovie`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
@@ -807,7 +807,7 @@ function Admin() {
             </DialogActions>
           </Dialog>
         </Box>
-
+        </Box>
       </RequireRole> 
 
     </>

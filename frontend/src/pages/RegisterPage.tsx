@@ -1,5 +1,5 @@
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./identity.css";
 import { useSearchParams } from "react-router-dom";
@@ -46,7 +46,7 @@ function Register() {
 
       setError('');
 
-      fetch(`${API_URL}/register`, {
+      fetch(`${API_URL}/signup`, {
 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

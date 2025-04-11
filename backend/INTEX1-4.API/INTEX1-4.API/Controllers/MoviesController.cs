@@ -5,13 +5,13 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using Ganss.Xss;
-using Microsoft.AspNetCore.Authorization; // needed for reflection
+using Microsoft.AspNetCore.Authorization;
 
 [Route("[controller]")]
 [ApiController]
 public class MoviesController : ControllerBase
 {
-    private MoviesDbContext _context;
+    private readonly MoviesDbContext _context;
 
     public MoviesController(MoviesDbContext temp)
     {
@@ -47,6 +47,7 @@ public class MoviesController : ControllerBase
                     kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
                 )
             );
+        }
 
             }
 
@@ -75,7 +76,7 @@ public class MoviesController : ControllerBase
         _context.SaveChanges();
         return NoContent();
     }
-    
+
     [HttpPut("UpdateMovie/{id}")]
     [Authorize(Roles = "Admin")]
     public IActionResult UpdateMovie(string id, [FromBody] Movie updatedMovie)
@@ -99,6 +100,7 @@ public class MoviesController : ControllerBase
     }
 
     [HttpGet("MovieDetails/{id}")]
+    [Authorize(Roles = "User")]
     public IActionResult MovieDetails(string id)
     {
         var existing = _context.movies_titles.Find(id);
@@ -118,10 +120,8 @@ public class MoviesController : ControllerBase
         var query = _context.movies_titles.AsQueryable();
         var sanitizer = new HtmlSanitizer();
 
-        // Sanitize the searchQuery
         string sanitizedSearchQuery = string.IsNullOrEmpty(searchQuery) ? null : sanitizer.Sanitize(searchQuery);
 
-        // 🔍 Search by selected field
         if (!string.IsNullOrEmpty(searchField) && !string.IsNullOrEmpty(sanitizedSearchQuery))
         {
             var searchLower = sanitizedSearchQuery.ToLower();
@@ -142,7 +142,6 @@ public class MoviesController : ControllerBase
             }
         }
 
-        // 🏷 Category filtering
         if (!string.IsNullOrEmpty(categories))
         {
             var selectedCategories = categories.Split(',').Select(c => c.Trim()).ToList();
@@ -177,5 +176,4 @@ public class MoviesController : ControllerBase
             HasMore = hasMore
         });
     }
-
 }
