@@ -1,13 +1,17 @@
+// MainPage.tsx
 import React, { useEffect, useState } from "react";
 import "./MoviePage.css";
 import MovieList from "../components/MovieListCards";
 import { RequireRole } from "../components/RequireRole";
 
 import {
-  fetchRecommendations,
+  getRecentlyWatched,
+  getUserCollaborativeRecs,
+  getContentRecsForMovie,
   fetchMovieDetails,
   API_URL,
 } from "../api/MoviesAPI";
+
 import { MovieCard } from "../types/MovieCard";
 import MovieDetails from "../components/MovieDetails";
 
@@ -28,6 +32,12 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+// Define this type above the component
+type RatedMovie = {
+  showId: string;
+  rating: number;
+};
+
 const MainPage = () => {
   const [activeTab, setActiveTab] = useState<"tailored" | "all">("tailored");
 
@@ -37,6 +47,7 @@ const MainPage = () => {
   const [related2, setRelated2] = useState<MovieCard[]>([]);
   const [related3, setRelated3] = useState<MovieCard[]>([]);
   const [userName, setUserName] = useState("Joe");
+  const [hasWatched, setHasWatched] = useState(true);
 
   const [selectedMovieId, setSelectedMovieId] = useState<string | null>(null);
   const [, setSelectedMovieTitle] = useState<string | null>(null);
@@ -44,69 +55,73 @@ const MainPage = () => {
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        // 🔍 Fetch user info first
-        const userRes = await fetch(`${API_URL}/pingauth`, {
-          credentials: "include",
-        });
-
-        if (userRes.ok) {
-          const userInfo = await userRes.json();
-          const email = userInfo.email ?? "Joe";
-          const nameGuess = email.split("@")[0];
-          setUserName(nameGuess.charAt(0).toUpperCase() + nameGuess.slice(1));
-        }
-
-        // 🧠 Continue loading the personalized stuff...
-        const [watchedRes, picksRes] = await Promise.all([
-          fetch(`${API_URL}/Recommender/recentlywatched`, {
-            credentials: "include",
-          }),
-          fetch(`${API_URL}/Recommender/content-user-based`, {
-            credentials: "include",
-          }),
-        ]);
-
-        const watchedData = await watchedRes.json();
-        const picksData = await picksRes.json();
-
-        const watchedMovies: MovieCard[] = await Promise.all(
-          watchedData.ratedMovies.map((m: Movie) => fetchMovieDetails(m.showId))
-        );
-        setRecentlyWatched(watchedMovies);
-
-        const topPicksFull: MovieCard[] = await Promise.all(
-          picksData.slice(0, 3).map((m: Movie) => fetchMovieDetails(m.showId))
-        );
-        setTopPicks(topPicksFull);
-
-        if (topPicksFull.length >= 3) {
-          const [rel1Raw, rel2Raw, rel3Raw] = await Promise.all([
-            fetchRecommendations(topPicksFull[0].showId),
-            fetchRecommendations(topPicksFull[1].showId),
-            fetchRecommendations(topPicksFull[2].showId),
-          ]);
-
-          const rel1 = await Promise.all(
-            rel1Raw.map((m: Movie) => fetchMovieDetails(m.showId))
-          );
-          const rel2 = await Promise.all(
-            rel2Raw.map((m: Movie) => fetchMovieDetails(m.showId))
-          );
-          const rel3 = await Promise.all(
-            rel3Raw.map((m: Movie) => fetchMovieDetails(m.showId))
-          );
-
-          setRelated1(rel1);
-          setRelated2(rel2);
-          setRelated3(rel3);
+        // ✅ 1. Fetch Recently Watched FIRST
+        try {
+          const watchedData: { name: string; ratedMovies: RatedMovie[] } = await getRecentlyWatched();
+  
+          if (!watchedData.ratedMovies || watchedData.ratedMovies.length === 0) {
+            setHasWatched(false);
+            setUserName(""); // Remove name if no watched data
+          } else {
+            setHasWatched(true);
+            setUserName(watchedData.name); // Use real name
+  
+            // 🎞 Recently Watched
+            const watchedCards: MovieCard[] = await Promise.all(
+              watchedData.ratedMovies.map((m: RatedMovie) => fetchMovieDetails(m.showId))
+            );
+            setRecentlyWatched(watchedCards);
+  
+            // 🧠 Step 1: Get top 5 highest-rated DISTINCT movies
+            const topRatedCandidates = watchedData.ratedMovies
+              .sort((a, b) => b.rating - a.rating)
+              .filter(
+                (movie, index, self) =>
+                  index === self.findIndex((m) => m.showId === movie.showId)
+              )
+              .slice(0, 5);
+  
+            // 🧠 Step 2: Try content-based recs for each until we get 3 valid ones
+            const relatedSets: MovieCard[][] = [];
+  
+            for (const movie of topRatedCandidates) {
+              const recsRaw = await getContentRecsForMovie(movie.showId);
+              if (recsRaw.length > 0) {
+                const recsFull = await Promise.all(
+                  recsRaw.map((m: Movie) => fetchMovieDetails(m.showId))
+                );
+                relatedSets.push(recsFull);
+              }
+              if (relatedSets.length === 3) break;
+            }
+  
+            // 🧠 Step 3: Set related carousels
+            setRelated1(relatedSets[0] || []);
+            setRelated2(relatedSets[1] || []);
+            setRelated3(relatedSets[2] || []);
+  
+            // ✅ Step 4: Only fetch Collaborative Recs if user has watched something
+            const collabData = await getUserCollaborativeRecs();
+            const collabMovies: MovieCard[] = await Promise.all(
+              collabData.map((m: Movie) => fetchMovieDetails(m.showId))
+            );
+            setTopPicks(collabMovies);
+          }
+        } catch (watchedErr) {
+          console.warn("Could not fetch recently watched:", watchedErr);
+          setHasWatched(false);
+          setUserName(""); // Fallback — remove name if error
         }
       } catch (err) {
-        console.error("Error loading personalized carousels", err);
+        console.error("Error loading personalized movie sections", err);
       }
     };
-
+  
     fetchAll();
   }, []);
+  
+  
+  
 
   const handleSelectMovie = (id: string, title: string) => {
     setSelectedMovieId(id);
@@ -133,38 +148,49 @@ const MainPage = () => {
 
         {activeTab === "tailored" && (
           <div className="tab-content">
-            <h1 className="welcome-head">Welcome back, {userName}!</h1>
+          <h1 className="welcome-head">
+          Welcome back{userName ? `, ${userName}` : ""}!
+        </h1>
+
             <br />
-            <CarouselSection
-              title="Recently Watched"
-              movieList={recentlyWatched}
-              onSelect={handleSelectMovie}
-            />
-            <CarouselSection
-              title="Top Picks for You"
-              movieList={topPicks}
-              onSelect={handleSelectMovie}
-            />
-            {topPicks.length > 0 && (
-              <CarouselSection
-                title={`Related to "${topPicks[0]?.title}"`}
-                movieList={related1}
-                onSelect={handleSelectMovie}
-              />
-            )}
-            {topPicks.length > 1 && (
-              <CarouselSection
-                title={`Related to "${topPicks[1]?.title}"`}
-                movieList={related2}
-                onSelect={handleSelectMovie}
-              />
-            )}
-            {topPicks.length > 2 && (
-              <CarouselSection
-                title={`Related to "${topPicks[2]?.title}"`}
-                movieList={related3}
-                onSelect={handleSelectMovie}
-              />
+            {!hasWatched ? (
+              <p className="welcome-head">
+                Looks like you haven't watched anything yet — go check out some movies!
+              </p>
+            ) : (
+              <>
+                <CarouselSection
+                  title="Recently Watched"
+                  movieList={recentlyWatched}
+                  onSelect={handleSelectMovie}
+                />
+                <CarouselSection
+                  title="Top Picks for You"
+                  movieList={topPicks}
+                  onSelect={handleSelectMovie}
+                />
+                {related1.length > 0 && (
+                  <CarouselSection
+                    title={`Related to "${related1[0]?.title}"`}
+                    movieList={related1}
+                    onSelect={handleSelectMovie}
+                  />
+                )}
+                {related2.length > 0 && (
+                  <CarouselSection
+                    title={`Related to "${related2[0]?.title}"`}
+                    movieList={related2}
+                    onSelect={handleSelectMovie}
+                  />
+                )}
+                {related3.length > 0 && (
+                  <CarouselSection
+                    title={`Related to "${related3[0]?.title}"`}
+                    movieList={related3}
+                    onSelect={handleSelectMovie}
+                  />
+                )}
+              </>
             )}
           </div>
         )}
@@ -180,7 +206,6 @@ const MainPage = () => {
           </div>
         )}
 
-        {/* Movie Details Modal */}
         <Dialog
           fullScreen
           open={!!selectedMovieId}
