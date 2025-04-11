@@ -162,6 +162,7 @@ app.MapPost("/logout", async (HttpContext context, SignInManager<IdentityUser> s
 
     return Results.Ok(new { message = "Logout successful" });
 }).RequireAuthorization();
+
 // AUTH CHECK ROUTE
 app.MapGet("/pingauth", (ClaimsPrincipal user) =>
 {
@@ -207,43 +208,15 @@ app.MapPost("/custom-login", async (
     HttpContext context,
     SignInManager<IdentityUser> signInManager,
     UserManager<IdentityUser> userManager,
-    ILogger<Program> logger, // Inject logger
+    ILogger<Program> logger,
     [FromBody] CustomLoginRequest login
 ) =>
 {
     var user = await userManager.FindByEmailAsync(login.Email);
+
     if (user == null)
     {
-        if (user == null)
-        {
-            logger.LogInformation($"Login attempt failed for user: {login.Email} - User not found.");
-            return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);
-        }
-
-        var outcome = await signInManager.PasswordSignInAsync(
-            user,
-            login.Password,
-            login.RememberMe,
-            lockoutOnFailure: false);
-
-        if (outcome.Succeeded)
-        {
-            logger.LogInformation($"Login successful for user: {user.Email}");
-
-            if (await userManager.IsInRoleAsync(user, "Admin"))
-            {
-                logger.LogInformation($"User {user.Email} is in the Admin role. Redirecting to /admin.");
-                return Results.Ok(new { redirectUrl = "/admin" });
-            }
-            else
-            {
-                logger.LogInformation($"User {user.Email} is NOT in the Admin role. Redirecting to /movies.");
-                return Results.Ok(new { redirectUrl = "/movies" });
-            }
-        }
-
-        logger.LogInformation($"Login failed for user: {user.Email} - Invalid password.");
-
+        logger.LogInformation($"Login attempt failed for user: {login.Email} - User not found.");
         return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);
     }
 
@@ -253,15 +226,34 @@ app.MapPost("/custom-login", async (
         login.RememberMe,
         lockoutOnFailure: false);
 
-    if (result.Succeeded)
+    if (!result.Succeeded)
     {
-        logger.LogError($"An error occurred during login:");
-        return Results.Problem("An internal error occurred.");
-
+        logger.LogInformation($"Login failed for user: {user.Email} - Invalid password.");
+        return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);
     }
 
-    return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);
+    // ✅ Issue the cookie manually to make sure it's set
+    await context.SignInAsync(
+        IdentityConstants.ApplicationScheme,
+        new ClaimsPrincipal(new ClaimsIdentity(new[]
+        {
+            new Claim(ClaimTypes.Email, user.Email!),
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(ClaimTypes.Name, user.Email!)
+        }, IdentityConstants.ApplicationScheme))
+    );
+
+    logger.LogInformation($"Login successful for user: {user.Email}");
+
+    var roles = await userManager.GetRolesAsync(user);
+
+    return Results.Ok(new {
+        message = "Login successful",
+        email = user.Email,
+        roles
+    });
 });
+
 
 
 app.Run();
