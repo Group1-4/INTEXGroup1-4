@@ -7,7 +7,7 @@ export default defineConfig({
     port: 5173,
     headers: {
       'Content-Security-Policy-Report-Only': 
-        "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://localhost:4000; media-src 'self' blob:; object-src 'none'; frame-ancestors 'self'; upgrade-insecure-requests; report-uri /csp-report;",
+        "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://localhost:4000 https://intexbackend-a6fvcvg6cha4hwcx.westus-01.azurewebsites.net; media-src 'self' blob:; object-src 'none'; frame-ancestors 'self'; upgrade-insecure-requests; report-uri /csp-report;",
     },
   },
 });
