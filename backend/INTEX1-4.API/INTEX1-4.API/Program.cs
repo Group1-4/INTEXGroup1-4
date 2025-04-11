@@ -81,7 +81,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 
     options.Cookie.SameSite = SameSiteMode.None; // enable cross-site cookies
     options.Cookie.Name = ".AspNetCore.Identity.Application";
-    options.LoginPath = "/login";
+    options.LoginPath = "/custom-login";
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
