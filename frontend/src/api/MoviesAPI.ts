@@ -272,3 +272,29 @@ export const fetchHomeMovieDetails = async (id: string): Promise<MovieCard> => {
 
   return await response.json();
 };
+
+// --- NEW API CALLS FOR HOMEPAGE ---
+
+export const getRecentlyWatched = async () => {
+  const response = await fetch(`${API_URL}/Recommender/recentlywatched`, {
+    credentials: "include",
+  });
+  if (!response.ok) throw new Error("Failed to fetch recently watched.");
+  return await response.json();
+};
+
+export const getUserCollaborativeRecs = async () => {
+  const response = await fetch(`${API_URL}/Recommender/collab-user-recs`, {
+    credentials: "include",
+  });
+  if (!response.ok) throw new Error("Failed to fetch collaborative recs.");
+  return await response.json();
+};
+
+export const getContentRecsForMovie = async (showId: string) => {
+  const response = await fetch(`${API_URL}/Recommender/ContentBased/${showId}`, {
+    credentials: "include",
+  });
+  if (!response.ok) throw new Error(`Failed to fetch content recs for ${showId}`);
+  return await response.json();
+};
