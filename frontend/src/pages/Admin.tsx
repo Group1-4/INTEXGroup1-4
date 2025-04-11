@@ -28,7 +28,7 @@ import {
   updateMovie,
 } from "../api/MoviesAPI";
 import "../App.css";
-import AuthorizeView from "../components/Authorizeview";
+import { RequireRole } from "../components/RequireRole";
 
 const baseColumns = [
   "type",
@@ -256,7 +256,11 @@ function Admin() {
 
   return (
     <>
-      <AuthorizeView>
+    <RequireRole role="Admin">
+      <Box
+        sx={{ height: "100vh", display: "flex", flexDirection: "column", p: 2 }}
+      >
+
         <Box
           sx={{
             height: "100vh",
@@ -695,6 +699,7 @@ function Admin() {
                 fontFamily: "CreatoDisplay, sans-serif",
               }}
             >
+
               <Typography sx={{ textAlign: "center", fontWeight: "bold" }}>
                 Are you sure you want to delete this movie?
               </Typography>
@@ -802,7 +807,9 @@ function Admin() {
             </DialogActions>
           </Dialog>
         </Box>
-      </AuthorizeView>
+        </Box>
+      </RequireRole> 
+
     </>
   );
 }
