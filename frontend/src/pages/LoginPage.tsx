@@ -75,9 +75,9 @@ function LoginPage() {
     }
   };
   
-  const handleGoogleLogin = () => {
-    window.location.href = "https://localhost:4000/signin-google"; // Backend URL for Google OAuth
-  };
+  // const handleGoogleLogin = () => {
+  //   window.location.href = "https://localhost:4000/signin-google"; // Backend URL for Google OAuth
+  // };
 
 
   return (
@@ -130,12 +130,12 @@ function LoginPage() {
           {error && <p className="error">{error}</p>}
         </form>
 
-        {/* Google Login Button */}
+        {/* Google Login Button
         <div className="google-login-container">
           <button className="google-login-btn" onClick={handleGoogleLogin}>
             <i className="fab fa-google"></i> Sign In with Google
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

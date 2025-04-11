@@ -9,7 +9,6 @@ import {
   getUserCollaborativeRecs,
   getContentRecsForMovie,
   fetchMovieDetails,
-  API_URL,
 } from "../api/MoviesAPI";
 
 import { MovieCard } from "../types/MovieCard";
