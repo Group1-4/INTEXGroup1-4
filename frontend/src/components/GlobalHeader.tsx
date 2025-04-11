@@ -72,9 +72,9 @@ const Header: React.FC = () => {
         );
       case "/privacy":
         return (
-          <button className="header-button" onClick={() => navigate("/")}>
-            Get Started
-          </button>
+          <Link to="/register">
+             <button className="header-button">Get Started</button>
+           </Link>
         );
       default:
         return null;

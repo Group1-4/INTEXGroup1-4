@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./MoviePage.css";
 import MovieList from "../components/MovieListCards";
-
 import { RequireRole } from "../components/RequireRole";
 
 import { fetchRecommendations, fetchMovieDetails, API_URL } from "../api/MoviesAPI";
@@ -13,11 +12,11 @@ import Dialog from "@mui/material/Dialog";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
 import { Movie } from "../types/Movie";
+import CarouselSection from "../components/CarouselSection";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & { children: React.ReactElement },
@@ -38,7 +37,7 @@ const MainPage = () => {
   const [userName, setUserName] = useState("Joe");
 
   const [selectedMovieId, setSelectedMovieId] = useState<string | null>(null);
-  const [selectedMovieTitle, setSelectedMovieTitle] = useState<string | null>(
+  const [, setSelectedMovieTitle] = useState<string | null>(
     null
   );
 
@@ -58,7 +57,7 @@ const MainPage = () => {
         const picksData = await picksRes.json();
 
         const fullName = watchedData.name ?? "Joe";
-        const firstName = fullName.split(" ")[0]; // takes first word before space
+        const firstName = fullName.split(" ")[0];
         setUserName(firstName);
 
         const watchedMovies: MovieCard[] = await Promise.all(
@@ -86,7 +85,6 @@ const MainPage = () => {
           const rel3 = await Promise.all(
             rel3Raw.map((m: Movie) => fetchMovieDetails(m.showId))
           );
-          
 
           setRelated1(rel1);
           setRelated2(rel2);
@@ -100,25 +98,10 @@ const MainPage = () => {
     fetchAll();
   }, []);
 
-  const renderCarousel = (title: string, movieList: MovieCard[]) => (
-    <div className="carousel-section">
-      <h2>{title}</h2>
-      <div className="carousel">
-        {movieList.map((movie) => (
-          <OneMovieCard
-            key={movie.showId}
-            movie={movie}
-            onClick={() => {
-              setSelectedMovieId(movie.showId.toString());
-              setSelectedMovieTitle(movie.title ?? "Movie Details");
-            }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-
-  
+  const handleSelectMovie = (id: string, title: string) => {
+    setSelectedMovieId(id);
+    setSelectedMovieTitle(title);
+  };
 
   return (
     <RequireRole role="User">
@@ -140,36 +123,50 @@ const MainPage = () => {
 
       {activeTab === "tailored" && (
         <div className="tab-content">
-          <h1>Welcome back, {userName}!</h1>
+          <h1 className="welcome-head">Welcome back, {userName}!</h1>
           <br />
-          {renderCarousel("Recently Watched", recentlyWatched)}
-          {renderCarousel("Top Picks for You", topPicks)}
-          {topPicks.length > 0 &&
-            renderCarousel(
-              `Movies Related to "${topPicks[0]?.title}"`,
-              related1
-            )}
-          {topPicks.length > 1 &&
-            renderCarousel(
-              `Movies Related to "${topPicks[1]?.title}"`,
-              related2
-            )}
-          {topPicks.length > 2 &&
-            renderCarousel(
-              `Movies Related to "${topPicks[2]?.title}"`,
-              related3
-            )}
+          <CarouselSection
+            title="Recently Watched"
+            movieList={recentlyWatched}
+            onSelect={handleSelectMovie}
+          />
+          <CarouselSection
+            title="Top Picks for You"
+            movieList={topPicks}
+            onSelect={handleSelectMovie}
+          />
+          {topPicks.length > 0 && (
+            <CarouselSection
+              title={`Related to "${topPicks[0]?.title}"`}
+              movieList={related1}
+              onSelect={handleSelectMovie}
+            />
+          )}
+          {topPicks.length > 1 && (
+            <CarouselSection
+              title={`Related to "${topPicks[1]?.title}"`}
+              movieList={related2}
+              onSelect={handleSelectMovie}
+            />
+          )}
+          {topPicks.length > 2 && (
+            <CarouselSection
+              title={`Related to "${topPicks[2]?.title}"`}
+              movieList={related3}
+              onSelect={handleSelectMovie}
+            />
+          )}
         </div>
       )}
 
       {activeTab === "all" && (
         <div className="tab-content movie-list-wrapper">
-          <h2>All Movies</h2>
-          <MovieList />
+          <h2 className="welcome-head">All Movies</h2>
+          <MovieList onMovieSelect={(id, title) => handleSelectMovie(id, title ?? "Movie Details")} />
         </div>
       )}
 
-      {/* Movie Details Model */}
+      {/* Movie Details Modal */}
       <Dialog
         fullScreen
         open={!!selectedMovieId}
@@ -179,7 +176,7 @@ const MainPage = () => {
         }}
         TransitionComponent={Transition}
       >
-        <AppBar sx={{ position: "relative", backgroundColor: "#111" }}>
+        <AppBar sx={{ position: "relative", backgroundColor: "#4A2B0F !important" }}>
           <Toolbar>
             <IconButton
               edge="start"
@@ -189,9 +186,6 @@ const MainPage = () => {
             >
               <CloseIcon />
             </IconButton>
-            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              {selectedMovieTitle}
-            </Typography>
           </Toolbar>
         </AppBar>
         {selectedMovieId && <MovieDetails movieId={selectedMovieId} />}

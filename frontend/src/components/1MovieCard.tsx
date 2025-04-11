@@ -16,6 +16,8 @@ const OneMovieCard: React.FC<Props> = ({ movie, onClick }) => {
     setImgSrc('/fallback-poster.png'); // Path to your fallback image
   };
 
+  
+
   return (
     <div
       className="movie-card bg-gray-900 rounded-lg overflow-hidden text-white text-center cursor-pointer hover:scale-105 transition-transform"

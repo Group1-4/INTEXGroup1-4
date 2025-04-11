@@ -85,7 +85,7 @@ const AccordionHomePage: React.FC = () => {
             sx={{
               backgroundColor: "rgba(253, 238, 205, 0.1)",
               backdropFilter: "blur(6px)",
-              border: "1px solid rgba(253, 242, 205, 0.3)",
+              border: "1px solid rgba(220, 207, 166, 0.8)",
               borderRadius: "12px",
               width: { xs: "100%", sm: "45%", md: "22%" },
               padding: 3,
@@ -112,7 +112,8 @@ const AccordionHomePage: React.FC = () => {
       {/* Accordion Section */}
 
       <Box className="faq-container">
-        <h2 className="FAQ-Header">Frequently Asked Questions</h2>
+        <h2 className="FAQ-Header !important"
+        >Frequently Asked Questions</h2>
         {faqs.map((faq, index) => (
           <Accordion
             key={index}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaFacebookF, FaYoutube, FaInstagram, FaXTwitter } from 'react-icons/fa6';
+import { Link } from 'react-router-dom';
 import './GlobalFooter.css';
 
 const GlobalFooter: React.FC = () => {
@@ -44,11 +45,11 @@ const GlobalFooter: React.FC = () => {
         <div>
             <h4 className="footer-heading">LEGAL</h4>
             <ul className="footer-list">
-            <li>
-                <a href="/privacy" className="footer-privacy">
-                    Privacy Policy
-                </a>
+            <Link to="/privacy">
+                <li className="footer-privacy">
+                  Privacy Policy
                 </li>
+            </Link>
                 <li>About Ads</li>
                 <li>Subscriber Agreement</li>
                 <li>Do Not Sell or Share My Personal Information</li>
@@ -63,12 +64,12 @@ const GlobalFooter: React.FC = () => {
         <div className="footer-social">
             <ul>
                 <li className="icon-hover">
-                <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.facebook.com/groups/1199210663926081/posts/hey-rollers-lets-rick-roll-with-a-new-link/1199670603880087/" target="_blank" rel="noopener noreferrer">
                     <FaFacebookF />
                 </a>
                 </li>
                 <li className="icon-hover">
-                <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">
+                <a href="https://x.com/MIT_CSAIL/status/1363172815315214336?lang=en" target="_blank" rel="noopener noreferrer">
                     <FaXTwitter />
                 </a>
                 </li>
@@ -78,7 +79,7 @@ const GlobalFooter: React.FC = () => {
                 </a>
                 </li>
                 <li className="icon-hover">
-                <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.instagram.com/ooferjuice/p/BgSlRglAKBn/?hl=en" target="_blank" rel="noopener noreferrer">
                     <FaInstagram />
                 </a>
                 </li>
