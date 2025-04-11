@@ -78,12 +78,23 @@ builder.Services.AddScoped<IUserClaimsPrincipalFactory<IdentityUser>, CustomUser
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.HttpOnly = true;
-
-    options.Cookie.SameSite = SameSiteMode.None; // enable cross-site cookies
-    options.Cookie.Name = ".AspNetCore.Identity.Application";
-    options.LoginPath = "/login";
+    options.Cookie.SameSite = SameSiteMode.None;
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.Name = ".AspNetCore.Identity.Application";
+
+    // ✨ THESE TWO FIX THE ISSUE ✨
+    options.Events.OnRedirectToLogin = context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        return Task.CompletedTask;
+    };
+    options.Events.OnRedirectToAccessDenied = context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+        return Task.CompletedTask;
+    };
 });
+
 
 
 // --- OPTIONAL: No-op Email Sender to avoid errors if tokens are used ---
