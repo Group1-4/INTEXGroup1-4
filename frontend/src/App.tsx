@@ -14,7 +14,7 @@ import AuthorizeView from "./components/Authorizeview";
 
 import Denied from "./pages/403";
 import ComingSoon from "./pages/ComingSoon";
-// import CookieConsentBanner from "./components/CookieConsentBanner";
+import CookieConsentBanner from "./components/CookieConsentBanner";
 
 function App() {
   return (
@@ -22,7 +22,7 @@ function App() {
   
   <Router>
       <Header />
-      {/* <CookieConsentBanner /> */}
+      <CookieConsentBanner />
       <Routes>
         {/* ✅ PUBLIC ROUTES */}
         <Route path="/" element={<HomePage />} />

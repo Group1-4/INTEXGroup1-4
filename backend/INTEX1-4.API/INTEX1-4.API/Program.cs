@@ -80,21 +80,26 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.HttpOnly = true;
     options.Cookie.SameSite = SameSiteMode.None;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     options.Cookie.Name = ".AspNetCore.Identity.Application";
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.LoginPath = "/login"; // still required for redirect-based apps
 
-    // ✨ THESE TWO FIX THE ISSUE ✨
+    // 🔥 THIS IS THE KEY PART:
     options.Events.OnRedirectToLogin = context =>
     {
-        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-        return Task.CompletedTask;
-    };
-    options.Events.OnRedirectToAccessDenied = context =>
-    {
-        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+        // For APIs, return 401 instead of redirecting
+        if (context.Request.Path.StartsWithSegments("/pingauth"))
+        {
+            context.Response.StatusCode = 401;
+            return Task.CompletedTask;
+        }
+
+        // Let other routes redirect normally
+        context.Response.Redirect(context.RedirectUri);
         return Task.CompletedTask;
     };
 });
+
 
 
 
