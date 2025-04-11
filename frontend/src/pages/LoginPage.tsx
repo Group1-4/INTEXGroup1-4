@@ -34,49 +34,47 @@ function LoginPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
-
-
+  
     if (!email || !password) {
       setError("Please fill in all fields.");
       return;
     }
-
+  
     const loginUrl = `${API_URL}/custom-login`;
-
+  
     try {
       const response = await fetch(loginUrl, {
         method: "POST",
         credentials: "include", // ✅ crucial for the session cookie
-
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email,
           password,
-          rememberMe: rememberme, // ✅ influences session persistence
+          rememberMe: rememberme,
         }),
       });
-
+  
+      const data = await response.json();
+  
       if (!response.ok) {
-        const data = await response.json();
         throw new Error(data?.message || "Invalid email or password.");
       }
-
-      const responseData = await response.json();
-      if (responseData?.redirectUrl) {
-        console.log("Redirecting to:", responseData.redirectUrl); // Add this log
-        navigate(responseData.redirectUrl);
+  
+      // ✅ Role-based navigation (server doesn't return redirectUrl)
+      if (data.roles?.includes("Admin")) {
+        navigate("/admin");
       } else {
-        console.warn("No redirectUrl received, navigating to /"); // Add this warning
-        navigate("/");
+        navigate("/movies");
       }
-
+  
     } catch (error: any) {
       setError(error.message || "Error logging in.");
       console.error("Login failed:", error);
     }
   };
+  
   const handleGoogleLogin = () => {
     window.location.href = "https://localhost:4000/signin-google"; // Backend URL for Google OAuth
   };
