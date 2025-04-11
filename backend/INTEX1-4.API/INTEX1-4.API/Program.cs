@@ -214,20 +214,19 @@ app.MapPost("/custom-login", async (
     var user = await userManager.FindByEmailAsync(login.Email);
     if (user == null)
     {
-        var user = await userManager.FindByEmailAsync(login.Email);
         if (user == null)
         {
             logger.LogInformation($"Login attempt failed for user: {login.Email} - User not found.");
             return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);
         }
 
-        var result = await signInManager.PasswordSignInAsync(
+        var outcome = await signInManager.PasswordSignInAsync(
             user,
             login.Password,
             login.RememberMe,
             lockoutOnFailure: false);
 
-        if (result.Succeeded)
+        if (outcome.Succeeded)
         {
             logger.LogInformation($"Login successful for user: {user.Email}");
 
@@ -256,7 +255,7 @@ app.MapPost("/custom-login", async (
 
     if (result.Succeeded)
     {
-        logger.LogError($"An error occurred during login: {ex}");
+        logger.LogError($"An error occurred during login:");
         return Results.Problem("An internal error occurred.");
 
     }
