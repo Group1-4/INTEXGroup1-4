@@ -8,7 +8,8 @@ import RegisterPage from "./pages/RegisterPage";
 import GlobalFooter from "./components/GlobalFooter";
 import Header from "./components/GlobalHeader";
 import Footer from "./components/GlobalFooter";
-import MovieListPage from "./pages/MovieListPage"
+import MovieListPage from "./pages/MovieListPage";
+import CarouselHomePage from "./components/CarouselHomePage";
 
 import AuthorizeView from "./components/Authorizeview";
 
@@ -33,6 +34,7 @@ function App() {
         <Route path="/footer" element={<GlobalFooter />} />
         <Route path="/403" element={<Denied />} />
         <Route path="/comingsoon" element={<ComingSoon />} />
+        <Route path="/carousel" element={<CarouselHomePage />} />
 
         {/* 🔐 PROTECTED ROUTES */}
         <Route
@@ -63,7 +65,6 @@ function App() {
 
       <Footer />
     </Router>
-     
     </>
   );
 }

@@ -6,11 +6,13 @@ interface CarouselSectionProps {
   title: string;
   movieList: MovieCard[];
   onSelect: (id: string, title: string) => void;
+  arrowColor?: string; // ⬅️ New prop
 }
 
 const CarouselSection: React.FC<CarouselSectionProps> = ({
   title,
   movieList,
+  arrowColor,
   onSelect,
 }) => {
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -61,9 +63,14 @@ return (
     <div className="carousel-wrapper-barred">
       <div className="arrow-bar left-bar">
         {!atStart && (
-          <button className="carousel-arrow-bar" onClick={() => scroll("left")}>
-            &#10094;
-          </button>
+          <button
+          className="carousel-arrow-bar"
+          onClick={() => scroll("left")}
+          style={{ color: arrowColor || "#000" }}
+        >
+          &#10094;
+        </button>
+        
         )}
       </div>
 
@@ -86,11 +93,12 @@ return (
       <div className="arrow-bar right-bar">
         {!atEnd && (
           <button
-            className="carousel-arrow-bar"
-            onClick={() => scroll("right")}
-          >
-            &#10095;
-          </button>
+          className="carousel-arrow-bar"
+          onClick={() => scroll("right")}
+          style={{ color: arrowColor || "#000" }} // ✅ Add this
+        >
+          &#10095;
+        </button>
         )}
       </div>
     </div>
