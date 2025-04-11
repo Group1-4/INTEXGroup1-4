@@ -35,6 +35,7 @@ function LoginPage() {
     e.preventDefault();
     setError("");
 
+
     if (!email || !password) {
       setError("Please fill in all fields.");
       return;
@@ -46,6 +47,7 @@ function LoginPage() {
       const response = await fetch(loginUrl, {
         method: "POST",
         credentials: "include", // ✅ crucial for the session cookie
+
         headers: {
           "Content-Type": "application/json",
         },
@@ -69,15 +71,16 @@ function LoginPage() {
         console.warn("No redirectUrl received, navigating to /"); // Add this warning
         navigate("/");
       }
+
     } catch (error: any) {
       setError(error.message || "Error logging in.");
       console.error("Login failed:", error);
     }
   };
-
   const handleGoogleLogin = () => {
     window.location.href = "https://localhost:4000/signin-google"; // Backend URL for Google OAuth
   };
+
 
   return (
     <div className="netflix-login-container">

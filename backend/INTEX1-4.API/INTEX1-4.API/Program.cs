@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Globalization;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -78,12 +79,28 @@ builder.Services.AddScoped<IUserClaimsPrincipalFactory<IdentityUser>, CustomUser
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.HttpOnly = true;
-
-    options.Cookie.SameSite = SameSiteMode.None; // enable cross-site cookies
+    options.Cookie.SameSite = SameSiteMode.None;
     options.Cookie.Name = ".AspNetCore.Identity.Application";
-    options.LoginPath = "/login";
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.LoginPath = "/login"; // still required for redirect-based apps
+
+    // 🔥 THIS IS THE KEY PART:
+    options.Events.OnRedirectToLogin = context =>
+    {
+        // For APIs, return 401 instead of redirecting
+        if (context.Request.Path.StartsWithSegments("/pingauth"))
+        {
+            context.Response.StatusCode = 401;
+            return Task.CompletedTask;
+        }
+
+        // Let other routes redirect normally
+        context.Response.Redirect(context.RedirectUri);
+        return Task.CompletedTask;
+    };
 });
+
+
 
 
 // --- OPTIONAL: No-op Email Sender to avoid errors if tokens are used ---
@@ -127,6 +144,9 @@ app.MapControllers();
 
 // --- IDENTITY MINIMAL API ROUTES ---
 app.MapIdentityApi<IdentityUser>();
+
+app.MapGet("/login", () => Results.Unauthorized());
+
 
 // --- LOGOUT ROUTE ---
 app.MapPost("/logout", async (HttpContext context, SignInManager<IdentityUser> signInManager) =>
@@ -191,7 +211,8 @@ app.MapPost("/custom-login", async (
     [FromBody] CustomLoginRequest login
 ) =>
 {
-    try
+    var user = await userManager.FindByEmailAsync(login.Email);
+    if (user == null)
     {
         var user = await userManager.FindByEmailAsync(login.Email);
         if (user == null)
@@ -223,13 +244,25 @@ app.MapPost("/custom-login", async (
         }
 
         logger.LogInformation($"Login failed for user: {user.Email} - Invalid password.");
+
         return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);
     }
-    catch (Exception ex)
+
+    var result = await signInManager.PasswordSignInAsync(
+        user,
+        login.Password,
+        login.RememberMe,
+        lockoutOnFailure: false);
+
+    if (result.Succeeded)
     {
         logger.LogError($"An error occurred during login: {ex}");
         return Results.Problem("An internal error occurred.");
+
     }
+
+    return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);
 });
+
 
 app.Run();

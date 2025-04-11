@@ -46,7 +46,7 @@ function Register() {
 
       setError('');
 
-      fetch(`${API_URL}/register`, {
+      fetch(`${API_URL}/signup`, {
 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
