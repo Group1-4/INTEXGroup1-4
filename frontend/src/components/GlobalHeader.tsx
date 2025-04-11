@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import "../App.css";
 import { logoutUser } from "../api/MoviesAPI"; // 👈 Adjust if you put this elsewhere
 
-
 const Header: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();

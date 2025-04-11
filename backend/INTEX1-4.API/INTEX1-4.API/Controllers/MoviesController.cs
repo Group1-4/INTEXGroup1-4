@@ -163,5 +163,3 @@ public class MoviesController : ControllerBase
             HasMore = hasMore
         });
     }
-
-}

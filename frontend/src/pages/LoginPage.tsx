@@ -68,10 +68,15 @@ function LoginPage() {
     }
   };
 
+  const handleGoogleLogin = () => {
+    window.location.href = 'https://localhost:4000/signin-google'; // Backend URL that starts the Google OAuth flow
+  };
+  
+
   return (
     <div className="netflix-login-container">
       <div className="netflix-login-card">
-        <h1 className='login-h1'>Sign In</h1>
+        <h1 className="login-h1">Sign In</h1>
         <form onSubmit={handleSubmit}>
           <input
             className="form-control"
@@ -117,6 +122,13 @@ function LoginPage() {
           </button>
           {error && <p className="error">{error}</p>}
         </form>
+
+        {/* Google Login Button */}
+        <div className="google-login-container">
+          <button className="google-login-btn" onClick={handleGoogleLogin}>
+            <i className="fab fa-google"></i> Sign In with Google
+          </button>
+        </div>
       </div>
     </div>
   );

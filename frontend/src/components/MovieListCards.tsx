@@ -120,6 +120,7 @@ const MovieList: React.FC<MovieListProps> = ({ onMovieSelect }) => {
           <option value="dramas">Drama</option>
           <option value="documentaries">Documentary</option>
           <option value="horrorMovies">Horror</option>
+          <option value="thrillers">Thrillers</option>
           <option value="thrillers">Thriller</option>
           <option value="fantasy">Fantasy</option>
           <option value="romance">Romance</option>

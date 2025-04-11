@@ -161,3 +161,26 @@ button.btn:hover,
   margin-top: 10px;
   font-size: 0.9rem;
 }
+
+.google-login-container {
+  margin-top: 20px;
+}
+
+.google-login-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: #2A9D8F;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.google-login-btn:hover {
+  background-color: #2A9D8F;
+}
+
+.google-login-btn i {
+  margin-right: 10px;
+}
