@@ -42,19 +42,24 @@ export const fetchMovies = async (
 
 
 
-export const addMovie = async (movie: Movie): Promise<AddMovieResponse> => {
+export const addMovie = async (movie: Movie): Promise<AddMovieResponse & { errors?: Record<string, string[]> }> => {
   try {
     const response = await fetch(`${API_URL}/Movies/AddMovie`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       credentials: "include",
       body: JSON.stringify(movie),
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to add movie: ${response.statusText}`);
+      const errorData = await response.json();
+      console.error("Server responded with:", errorData);
+
+      return {
+        success: false,
+        newId: 0,
+        errors: errorData.errors || {},
+      };
     }
 
     const data = await response.json();

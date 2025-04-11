@@ -77,6 +77,7 @@ const allCategoryFields = [
   "Thrillers",
 ];
 
+
 function Admin() {
   const [rows, setRows] = useState<Movie[]>([]);
   const [page, setPage] = useState(0);
@@ -85,8 +86,9 @@ function Admin() {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [selectedMovieId, setSelectedMovieId] = useState<string | null>(null);
   const [editMode, setEditMode] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<{ [key: string]: string[] }>({});
   const [newMovie, setNewMovie] = useState<any>({
-    showId: 0,
+    showId: "0",
     title: "",
     type: "",
     director: "",
@@ -164,23 +166,41 @@ function Admin() {
           )
         );
       } else {
-        const response = await addMovie(movieToSend);
-        if (response && response.success) {
-          setRows((prev) => [
-            {
-              ...movieToSend,
-              showId: response.newId,
-              category: getCategoryString(movieToSend),
-            },
-            ...prev,
-          ]);
+        const response = await fetch("https://localhost:4000/Movies/AddMovie", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(movieToSend),
+        });
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("Server responded with:", errorData);
+  
+          // If server returns detailed validation errors:
+          if (errorData.errors) {
+            setValidationErrors(errorData.errors); // ← Store field-specific errors
+          } else {
+            setValidationErrors({ general: [errorData.message || "Unknown error"] });
+          }
+  
+          return; // Don't proceed further
         }
+  
+        const data = await response.json();
+        setRows((prev) => [
+          {
+            ...movieToSend,
+            showId: data.id,
+            category: getCategoryString(movieToSend),
+          },
+          ...prev,
+        ]);
       }
-    } catch (error) {
-      console.error("Error saving movie:", error);
-    } finally {
+  
+      // ✅ Clear form and errors on success
       setNewMovie({
-        showId: 0,
+        showId: "0",
         title: "",
         type: "",
         director: "",
@@ -192,11 +212,15 @@ function Admin() {
         description: "",
         ...Object.fromEntries(allCategoryFields.map((c) => [c, 0])),
       });
-
+      setValidationErrors({});
       setEditMode(false);
       setShowForm(false);
+    } catch (error) {
+      console.error("Error saving movie:", error);
+      setValidationErrors({ general: ["Unexpected error occurred."] });
     }
   };
+  
 
   const getCategoryString = (movie: any) =>
     allCategoryFields.filter((cat) => movie[cat] === 1).join(", ");
@@ -255,7 +279,7 @@ function Admin() {
               onClick={() => {
                 setShowForm(true);
                 setNewMovie({
-                  showId: 0,
+                  showId: '0',
                   title: "",
                   type: "",
                   director: "",
@@ -557,19 +581,15 @@ function Admin() {
                     value={String(newMovie[field] ?? "")}
                     onChange={handleInputChange}
                     fullWidth
+                    error={!!validationErrors[field]} // ❗ Red outline if error exists
+                    helperText={validationErrors[field]?.[0] || ""} // 📝 First error message
                     sx={{
                       input: { color: "#FDF2CD" },
                       label: { color: "#FDF2CD" },
                       "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: "#FDF2CD",
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "#FDF2CD",
-                        },
-                        "&.Mui-focused fieldset": {
-                          borderColor: "#FDF2CD",
-                        },
+                        "& fieldset": { borderColor: "#FDF2CD" },
+                        "&:hover fieldset": { borderColor: "#FDF2CD" },
+                        "&.Mui-focused fieldset": { borderColor: "#FDF2CD" },
                       },
                     }}
                   />
