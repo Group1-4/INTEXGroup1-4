@@ -18,8 +18,9 @@ import ComingSoon from "./pages/ComingSoon";
 function App() {
   return (
     <>
-    <AuthorizeView>
+  
       <Router>
+      <AuthorizeView>
         <Header />
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
@@ -34,9 +35,10 @@ function App() {
           <Route path="403" element={<Denied />} />
           <Route path="comingsoon" element={<ComingSoon />} />
         </Routes>
+        </AuthorizeView>
       </Router>
       <Footer />
-      </AuthorizeView>
+     
     </>
   );
 }
