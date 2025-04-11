@@ -2,29 +2,26 @@ import React, { useState, useEffect, createContext } from 'react';
 import { Navigate } from 'react-router-dom';
 import { API_URL } from '../api/MoviesAPI';
 
-const UserContext = createContext<User | null>(null);
-
-interface User {
+export interface User {
   email: string;
+  roles: string[];
 }
+
+const UserContext = createContext<User | null>(null);
 
 function AuthorizeView(props: { children: React.ReactNode }) {
   const [authorized, setAuthorized] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true); // add a loading state
-  //const navigate = useNavigate();
-  let emptyuser: User = { email: '' };
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const [user, setUser] = useState(emptyuser);
+  const emptyuser: User = { email: '', roles: [] };
+  const [user, setUser] = useState<User>(emptyuser);
 
   useEffect(() => {
     async function fetchWithRetry(url: string, options: any) {
       try {
         const response = await fetch(url, options);
-        //console.log('AuthorizeView: Raw Response:', response);
-
         const contentType = response.headers.get('content-type');
-                                                            
-        // Ensure response is JSON before parsing
+
         if (!contentType || !contentType.includes('application/json')) {
           throw new Error('Invalid response format from server');
         }
@@ -32,7 +29,10 @@ function AuthorizeView(props: { children: React.ReactNode }) {
         const data = await response.json();
 
         if (data.email) {
-          setUser({ email: data.email });
+          setUser({
+            email: data.email,
+            roles: data.roles || [], // safe default
+          });
           setAuthorized(true);
         } else {
           throw new Error('Invalid user session');
@@ -50,9 +50,7 @@ function AuthorizeView(props: { children: React.ReactNode }) {
     });
   }, []);
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+  if (loading) return <p>Loading...</p>;
 
   if (authorized) {
     return (
@@ -63,12 +61,5 @@ function AuthorizeView(props: { children: React.ReactNode }) {
   return <Navigate to="/login" />;
 }
 
-export function AuthorizedUser(props: { value: string }) {
-  const user = React.useContext(UserContext);
-
-  if (!user) return null; // Prevents errors if context is null
-
-  return props.value === 'email' ? <>{user.email}</> : null;
-}
-
 export default AuthorizeView;
+export { UserContext };

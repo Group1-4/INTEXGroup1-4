@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./MoviePage.css";
 import MovieList from "../components/MovieListCards";
+
+import { RequireRole } from "../components/RequireRole";
+
 import { fetchRecommendations, fetchMovieDetails, API_URL } from "../api/MoviesAPI";
 import OneMovieCard from "../components/1MovieCard";
 import { MovieCard } from "../types/MovieCard";
@@ -22,6 +25,7 @@ const Transition = React.forwardRef(function Transition(
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
+
 
 const MainPage = () => {
   const [activeTab, setActiveTab] = useState<"tailored" | "all">("tailored");
@@ -117,6 +121,7 @@ const MainPage = () => {
   
 
   return (
+    <RequireRole role="User">
     <div className="main-container">
       <div className="tabs">
         <button
@@ -192,6 +197,7 @@ const MainPage = () => {
         {selectedMovieId && <MovieDetails movieId={selectedMovieId} />}
       </Dialog>
     </div>
+    </RequireRole>
   );
 };
 

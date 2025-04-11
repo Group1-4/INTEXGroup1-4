@@ -42,7 +42,9 @@ function Register() {
       setError('Passwords do not match.');
     } else {
       setError('');
+
       fetch(`${API_URL}/register`, {
+
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

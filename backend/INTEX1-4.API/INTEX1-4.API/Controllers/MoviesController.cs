@@ -15,8 +15,9 @@ public class MoviesController : ControllerBase
     {
         _context = temp;
     }
-    [Authorize]
+
     [HttpGet("GetMovies")]
+    [Authorize(Roles = "Admin")]
     public IActionResult Get(int page = 1, int pageSize = 10)
     {
         var total = _context.movies_titles.Count();
@@ -30,6 +31,7 @@ public class MoviesController : ControllerBase
 
 
     [HttpPost("AddMovie")]
+    [Authorize(Roles = "Admin")]
     public IActionResult AddMovie([FromBody] Movie newMovie)
     {
         if (!ModelState.IsValid)
@@ -45,6 +47,7 @@ public class MoviesController : ControllerBase
     }
 
     [HttpDelete("DeleteMovie/{id}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult DeleteMovie(string id)
     {
         var movie = _context.movies_titles.Find(id);
@@ -57,8 +60,9 @@ public class MoviesController : ControllerBase
         _context.SaveChanges();
         return NoContent();
     }
-
+    
     [HttpPut("UpdateMovie/{id}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult UpdateMovie(string id, [FromBody] Movie updatedMovie)
     {
         if (id != updatedMovie.ShowId)
@@ -83,7 +87,7 @@ public class MoviesController : ControllerBase
     
 
 
-
+    [Authorize(Roles = "User")]
     [HttpGet("MovieList/{page}/{pageSize}")]
 public IActionResult MovieList(
     int page = 1,
