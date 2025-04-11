@@ -17,19 +17,27 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 // Database contexts
 builder.Services.AddDbContext<MoviesDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MoviesConnection")));
 
 builder.Services.AddDbContext<ContentDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("ContentConnection")));
+{
+    var path = Path.Combine(Directory.GetCurrentDirectory(), "content.db");
+    options.UseSqlite($"Data Source={path}");
+});
 
 builder.Services.AddDbContext<UsersCollabDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("UserCollabConnection")));
+{
+    var path = Path.Combine(Directory.GetCurrentDirectory(), "userscollab.db");
+    options.UseSqlite($"Data Source={path}");
+});
 
 builder.Services.AddDbContext<CollabDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("CollabConnection")));
+{
+    var path = Path.Combine(Directory.GetCurrentDirectory(), "collab.db");
+    options.UseSqlite($"Data Source={path}");
+});
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")));
