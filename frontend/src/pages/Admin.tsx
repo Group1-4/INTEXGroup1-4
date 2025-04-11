@@ -787,7 +787,7 @@ function Admin() {
             </DialogActions>
           </Dialog>
         </Box>
-
+        </Box>
       </RequireRole> 
 
     </>
