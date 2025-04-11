@@ -1,8 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace INTEX1_4.API.Data;
-
-using System.ComponentModel.DataAnnotations.Schema;
 
 public class MoviesUser
 {
@@ -24,30 +23,29 @@ public class MoviesUser
 
     [Column("gender")]
     public string Gender { get; set; }
-
     [Column("Netflix")]
-    public bool Netflix { get; set; }
+    public int? Netflix { get; set; }
 
-    [Column("Amazon Prime")]
-    public bool AmazonPrime { get; set; }
+    [Column("Amazon_Prime")]
+    public int? AmazonPrime { get; set; }
 
-    [Column("Disney+")]
-    public bool DisneyPlus { get; set; }
+    [Column("Disney")]
+    public int? DisneyPlus { get; set; }
 
-    [Column("Paramount+")]
-    public bool ParamountPlus { get; set; }
+    [Column("Paramount")]
+    public int? ParamountPlus { get; set; }
 
     [Column("Max")]
-    public bool Max { get; set; }
+    public int? Max { get; set; }
 
     [Column("Hulu")]
-    public bool Hulu { get; set; }
+    public int? Hulu { get; set; }
 
-    [Column("Apple TV+")]
-    public bool AppleTvPlus { get; set; }
+    [Column("Apple_TV")]
+    public int? AppleTvPlus { get; set; }
 
     [Column("Peacock")]
-    public bool Peacock { get; set; }
+    public int? Peacock { get; set; }
 
     [Column("city")]
     public string City { get; set; }

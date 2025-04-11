@@ -84,6 +84,7 @@ public class MoviesController : ControllerBase
         var existing = _context.movies_titles.Find(id);
         return Ok(existing);
     }
+    
 
 
     [Authorize(Roles = "User")]

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Identity.css';
+import './identity.css';
+import { API_URL } from '../api/MoviesAPI';
+
 
 function Register() {
   // State variables for email and passwords
@@ -30,11 +32,8 @@ function Register() {
   const toggleShowPassword = () => {
     setShowPassword((prevState) => !prevState);
   };
-
-  // Handle submit event for the form
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Validate email and passwords
     if (!email || !password || !confirmPassword) {
       setError('Please fill in all fields.');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -43,11 +42,16 @@ function Register() {
       setError('Passwords do not match.');
     } else {
       setError('');
-      // Post data to the /register API
-      fetch('https://localhost:4000/signup', {
+
+      fetch(`${API_URL}/register`, {
+
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({
+          email,
+          password,
+          confirmPassword: password
+        }),
       })
         .then((data) => {
           console.log(data);
@@ -59,12 +63,11 @@ function Register() {
           setError('Error registering.');
         });
     }
-  };
-
+  }; // ✅ <- this was missing
   return (
     <div className="netflix-login-container">
       <div className="netflix-login-card">
-        <h1>Register</h1>
+        <h1 className='login-h1'>Create an Account</h1>
         <form onSubmit={handleSubmit}>
           <input
             className="form-control"

@@ -3,11 +3,11 @@
   margin: 0 auto;
   text-align: center;
   background: linear-gradient(
-    135deg,
+    160deg,
     #FDF2CD 0%,
-    #FDF2CD 25%,
-    #EC8922 65%,
-    #F1602C 85%,
+    #FDF2CD 50%,
+    #EC8922 90%,
+    #F1602C 95%,
     #D52429 100%
   );
 }
@@ -16,7 +16,7 @@
 .h1 {
   font-size: 2rem;
   font-weight: bold;
-  color: #FDF2CD;
+  color: #6C3F18;
   margin-bottom: 1rem;
 }
 
@@ -87,7 +87,7 @@ body,
 }
 
 .header-btn:hover {
-  background-color: #fff4d3; /* Teal hover */
+  background-color: #fff4d3; 
   color: #FDF2CD;
   transform: scale(1.06);
   text-decoration: none;
@@ -109,10 +109,31 @@ body,
 }
 
 @font-face {
-  font-family: 'MagicRetro';
-  src: url('/Magic Retro.ttf') format('truetype');
+  font-family: 'BeachSound';
+  src: url('/BeachSound.otf') format('truetype');
   font-weight: normal;
   font-style: normal;
+}
+
+@font-face {
+  font-family: 'CreatoDisplay';
+  src: url('/CreatoDisplay-ExtraBold.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+.secondary-font {
+  font-family: 'CreatoDisplay', sans-serif;
+}
+
+
+.Admin {
+  font-family: 'BeachSound', sans-serif;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #6C3F18 !important;
 }
 
 .cine-header {
@@ -187,4 +208,27 @@ body,
   display: flex;
   gap: 10px;
   align-items: center;
+}
+
+.profile-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* spacing between button and icon */
+}
+
+.profile-icon svg {
+  display: block;
+}
+
+.admin-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-label {
+  font-weight: bold;
+  font-size: 2rem;
+  color: #FDF2CD;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
 }

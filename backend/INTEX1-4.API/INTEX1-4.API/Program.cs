@@ -3,8 +3,18 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using INTEX1_4.API.Data;
 using INTEX1_4.API.Services;
+
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity.Data;
+
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System.Globalization;
+using Microsoft.AspNetCore.Mvc;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,21 +23,34 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// --- DB CONTEXTS ---
+// Database contexts
 builder.Services.AddDbContext<MoviesDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("MoviesConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MoviesConnection")));
+
 
 builder.Services.AddDbContext<ContentDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("ContentConnection")));
+{
+    var path = Path.Combine(Directory.GetCurrentDirectory(), "content.db");
+    options.UseSqlite($"Data Source={path}");
+});
 
 builder.Services.AddDbContext<UsersCollabDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("UserCollabConnection")));
+{
+    var path = Path.Combine(Directory.GetCurrentDirectory(), "userscollab.db");
+    options.UseSqlite($"Data Source={path}");
+});
 
 builder.Services.AddDbContext<CollabDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("CollabConnection")));
+
+{
+    var path = Path.Combine(Directory.GetCurrentDirectory(), "collab.db");
+    options.UseSqlite($"Data Source={path}");
+});
+
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("IdentityConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")));
+
 
 // --- IDENTITY CONFIGURATION WITH ROLES ---
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
@@ -47,29 +70,39 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.ClaimsIdentity.UserNameClaimType = ClaimTypes.Email;
 });
 
+builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+
 builder.Services.AddScoped<IUserClaimsPrincipalFactory<IdentityUser>, CustomUserClaimsPrincipalFactory>();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.HttpOnly = true;
+
     options.Cookie.SameSite = SameSiteMode.None; // enable cross-site cookies
     options.Cookie.Name = ".AspNetCore.Identity.Application";
     options.LoginPath = "/login";
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
+
 // --- OPTIONAL: No-op Email Sender to avoid errors if tokens are used ---
 builder.Services.AddSingleton<IEmailSender<IdentityUser>, NoOpEmailSender<IdentityUser>>();
 
 // --- CORS ---
+builder.Services.AddAuthorization();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("MyCorsPolicy", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
+
+        policy.WithOrigins(
+                "http://localhost:5173",
+                "https://kind-wave-0d0fe0a1e.6.azurestaticapps.net")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
@@ -77,12 +110,13 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// --- MIDDLEWARE PIPELINE ---
-if (app.Environment.IsDevelopment())
-{
+// Pipeline
+// if (app.Environment.IsDevelopment())
+// {
+
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+// }
 
 app.UseCors("MyCorsPolicy");
 app.UseHttpsRedirection();
@@ -108,8 +142,7 @@ app.MapPost("/logout", async (HttpContext context, SignInManager<IdentityUser> s
 
     return Results.Ok(new { message = "Logout successful" });
 }).RequireAuthorization();
-
-// --- AUTH CHECK ROUTE ---
+// AUTH CHECK ROUTE
 app.MapGet("/pingauth", (ClaimsPrincipal user) =>
 {
     if (!user.Identity?.IsAuthenticated ?? false)
@@ -120,14 +153,10 @@ app.MapGet("/pingauth", (ClaimsPrincipal user) =>
     var email = user.FindFirstValue(ClaimTypes.Email) ?? "unknown@example.com";
     var roles = user.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
 
-    return Results.Json(new
-    {
-        email,
-        roles
-    });
+    return Results.Json(new { email, roles });
 }).RequireAuthorization();
 
-// Register route
+// REGISTER ROUTE
 app.MapPost("/signup", async (
     UserManager<IdentityUser> userManager,
     SignInManager<IdentityUser> signInManager,
@@ -142,18 +171,52 @@ app.MapPost("/signup", async (
         return Results.BadRequest(result.Errors);
     }
 
-    // ✅ Ensure role exists first
     if (!await roleManager.RoleExistsAsync("User"))
     {
         await roleManager.CreateAsync(new IdentityRole("User"));
     }
 
-    // ✅ Automatically add to User role
     await userManager.AddToRoleAsync(user, "User");
-
     await signInManager.SignInAsync(user, isPersistent: false);
 
     return Results.Ok(new { message = "User registered and signed in!" });
+});
+
+// CUSTOM LOGIN ROUTE
+app.MapPost("/custom-login", async (
+    HttpContext context,
+    SignInManager<IdentityUser> signInManager,
+    UserManager<IdentityUser> userManager,
+    [FromBody] CustomLoginRequest login
+) =>
+{
+    try
+    {
+        var user = await userManager.FindByEmailAsync(login.Email);
+        if (user == null)
+        {
+            return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);
+        }
+
+        var result = await signInManager.PasswordSignInAsync(
+            user,
+            login.Password,
+            login.RememberMe,
+            lockoutOnFailure: false);
+
+        if (result.Succeeded)
+        {
+            return Results.Ok(new { message = "Login successful" });
+        }
+
+        return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("Login failed:");
+        Console.WriteLine(ex);
+        return Results.Problem("An internal error occurred.");
+    }
 });
 
 app.Run();

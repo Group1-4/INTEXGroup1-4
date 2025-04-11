@@ -81,7 +81,7 @@ function Admin() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [showForm, setShowForm] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [selectedMovieId, setSelectedMovieId] = useState<number | null>(null);
+  const [selectedMovieId, setSelectedMovieId] = useState<string | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [newMovie, setNewMovie] = useState<any>({
     showId: 0,
@@ -90,9 +90,9 @@ function Admin() {
     director: "",
     cast: "",
     country: "",
-    releaseYear: 0,
-    rating: 0,
-    duration: 0,
+    releaseYear: "",
+    rating: "",
+    duration: "",
     description: "",
     ...Object.fromEntries(allCategoryFields.map((c) => [c, 0])),
   });
@@ -122,7 +122,7 @@ function Admin() {
     fetchData();
   }, [page, rowsPerPage]);
   
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
   const handleChangeRowsPerPage = (
@@ -133,11 +133,9 @@ function Admin() {
   };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    const typedValue = ["releaseYear", "rating", "duration"].includes(name)
-      ? Number(value)
-      : value;
-    setNewMovie((prev: any) => ({ ...prev, [name]: typedValue }));
+    setNewMovie((prev: any) => ({ ...prev, [name]: value }));
   };
+  
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
     setNewMovie((prev: any) => ({ ...prev, [name]: checked ? 1 : 0 }));
@@ -177,19 +175,20 @@ function Admin() {
         director: "",
         cast: "",
         country: "",
-        releaseYear: 0,
-        rating: 0,
-        duration: 0,
+        releaseYear: "", // ✅ now a string
+        rating: "",      // ✅ now a string
+        duration: "",    // ✅ now a string
         description: "",
         ...Object.fromEntries(allCategoryFields.map((c) => [c, 0])),
       });
+      
       setEditMode(false);
       setShowForm(false);
     }
   };
   const getCategoryString = (movie: any) =>
     allCategoryFields.filter((cat) => movie[cat] === 1).join(", ");
-  const handleDeleteClick = (id: number) => {
+  const handleDeleteClick = (id: string) => {
     setSelectedMovieId(id);
     setDeleteConfirmOpen(true);
   };
@@ -222,24 +221,36 @@ function Admin() {
       <Box
         sx={{ height: "100vh", display: "flex", flexDirection: "column", p: 2 }}
       >
-        <h1 style={{ color: "#FDF2CD" }}>CineNiche Admin Portal</h1>
-        <Button
-          variant="contained"
-          onClick={() => {
-            setShowForm(true);
-            setEditMode(false);
-          }}
-          sx={{
-            mb: 2,
-            backgroundColor: "#C4453C", // your CineNiche red
-            color: "#FDF2CD", // your creamy gold text
-            "&:hover": {
-              backgroundColor: "#A73930", // darker red on hover
-            },
-          }}
-        >
-          Add Movie
-        </Button>
+        <Box
+  sx={{
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    mb: 2,
+  }}
+>
+  <Typography variant="h4" className="Admin" sx={{ fontWeight: "bold" }}>
+    CineNiche Admin Portal
+  </Typography>
+  <Button
+    variant="contained"
+    onClick={() => {
+      setShowForm(true);
+      setEditMode(false);
+    }}
+    sx={{
+      backgroundColor: "#2A9D8F",
+      color: "#FDF2CD",
+      paddingX: 2,
+      minWidth: "auto", // makes it naturally sized to the content
+      "&:hover": {
+        backgroundColor: "#EC8922",
+      },
+    }}
+  >
+    Add Movie
+  </Button>
+</Box>
         <Paper
           sx={{
             flex: 1,
@@ -256,18 +267,14 @@ function Admin() {
           >
             <Table stickyHeader aria-label="movie table">
               <TableHead>
-                <TableRow
-                  sx={{
-                    backgroundColor: "#C4453C",
-                  }}
-                >
+                <TableRow>
                   {[...baseColumns, "category", "actions"].map((col) => (
                     <TableCell
                       key={col}
                       sx={{
                         color: "#FDF2CD",
                         fontWeight: "bold",
-                        backgroundColor: "#C4453C", // header cell color
+                        backgroundColor: "#F1602C", // header cell color
                       }}
                     >
                       {col === "actions"

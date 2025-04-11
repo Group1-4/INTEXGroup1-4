@@ -1,72 +1,201 @@
 import React, { useEffect, useState } from "react";
 import "./MoviePage.css";
 import MovieList from "../components/MovieListCards";
+
 import { RequireRole } from "../components/RequireRole";
 
-const MainPage = () => {
-  const [movies, setMovies] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+import { fetchRecommendations, fetchMovieDetails, API_URL } from "../api/MoviesAPI";
+import OneMovieCard from "../components/1MovieCard";
+import { MovieCard } from "../types/MovieCard";
+import MovieDetails from "../components/MovieDetails";
 
-  // Fetch recommended/watched/etc. movies from your custom model API
+import Dialog from "@mui/material/Dialog";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import CloseIcon from "@mui/icons-material/Close";
+import Slide from "@mui/material/Slide";
+import { TransitionProps } from "@mui/material/transitions";
+import { Movie } from "../types/Movie";
+
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & { children: React.ReactElement },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
+
+const MainPage = () => {
+  const [activeTab, setActiveTab] = useState<"tailored" | "all">("tailored");
+
+  const [recentlyWatched, setRecentlyWatched] = useState<MovieCard[]>([]);
+  const [topPicks, setTopPicks] = useState<MovieCard[]>([]);
+  const [related1, setRelated1] = useState<MovieCard[]>([]);
+  const [related2, setRelated2] = useState<MovieCard[]>([]);
+  const [related3, setRelated3] = useState<MovieCard[]>([]);
+  const [userName, setUserName] = useState("Joe");
+
+  const [selectedMovieId, setSelectedMovieId] = useState<string | null>(null);
+  const [selectedMovieTitle, setSelectedMovieTitle] = useState<string | null>(
+    null
+  );
+
   useEffect(() => {
-    const fetchRecommendedMovies = async () => {
+    const fetchAll = async () => {
       try {
-        const res = await fetch("https://localhost:4000/Movies/GetRecommended");
-        const data = await res.json();
-        setMovies(data.movies);
-      } catch (error) {
-        console.error("Failed to fetch recommended movies:", error);
+        const [watchedRes, picksRes] = await Promise.all([
+          fetch(`${API_URL}/Recommender/recentlywatched`, {
+            credentials: "include",
+          }),
+          fetch(`${API_URL}/Recommender/content-user-based`, {
+            credentials: "include",
+          }),
+        ]);
+
+        const watchedData = await watchedRes.json();
+        const picksData = await picksRes.json();
+
+        const fullName = watchedData.name ?? "Joe";
+        const firstName = fullName.split(" ")[0]; // takes first word before space
+        setUserName(firstName);
+
+        const watchedMovies: MovieCard[] = await Promise.all(
+          watchedData.ratedMovies.map((m: Movie) => fetchMovieDetails(m.showId))
+        );
+        setRecentlyWatched(watchedMovies);
+
+        const topPicksFull: MovieCard[] = await Promise.all(
+          picksData.slice(0, 3).map((m: Movie) => fetchMovieDetails(m.showId))
+        );
+        setTopPicks(topPicksFull);
+
+        if (topPicksFull.length >= 3) {
+          const [rel1Raw, rel2Raw, rel3Raw] = await Promise.all([
+            fetchRecommendations(topPicksFull[0].showId),
+            fetchRecommendations(topPicksFull[1].showId),
+            fetchRecommendations(topPicksFull[2].showId),
+          ]);
+          const rel1 = await Promise.all(
+            rel1Raw.map((m: Movie) => fetchMovieDetails(m.showId))
+          );
+          const rel2 = await Promise.all(
+            rel2Raw.map((m: Movie) => fetchMovieDetails(m.showId))
+          );
+          const rel3 = await Promise.all(
+            rel3Raw.map((m: Movie) => fetchMovieDetails(m.showId))
+          );
+          
+
+          setRelated1(rel1);
+          setRelated2(rel2);
+          setRelated3(rel3);
+        }
+      } catch (err) {
+        console.error("Error loading personalized carousels", err);
       }
     };
 
-    fetchRecommendedMovies();
+    fetchAll();
   }, []);
 
-  const filterByCategory = (category) =>
-    movies.filter((movie) => movie[category] === 1);
-
-  const action = filterByCategory("action");
-  const comedy = filterByCategory("comedies");
-  const drama = filterByCategory("dramas");
-  const previouslyWatched = filterByCategory("watched");
-  const recommended = filterByCategory("recommended");
-
-  const renderCarousel = (title, movieList) => (
+  const renderCarousel = (title: string, movieList: MovieCard[]) => (
     <div className="carousel-section">
       <h2>{title}</h2>
       <div className="carousel">
-        {movieList.map((movie, index) => (
-          <div key={index} className="movie-card">
-            <img
-              src={
-                movie.posterUrl && movie.posterUrl.trim() !== ""
-                  ? movie.posterUrl
-                  : "/fallback-poster.png"
-              }
-              alt={movie.title}
-            />
-            <p>{movie.title}</p>
-          </div>
+        {movieList.map((movie) => (
+          <OneMovieCard
+            key={movie.showId}
+            movie={movie}
+            onClick={() => {
+              setSelectedMovieId(movie.showId.toString());
+              setSelectedMovieTitle(movie.title ?? "Movie Details");
+            }}
+          />
         ))}
       </div>
     </div>
   );
 
+  
+
   return (
     <RequireRole role="User">
     <div className="main-container">
-      <h1>Welcome back, Joe!</h1>
-      <br />
-      {renderCarousel("Previously Watched", previouslyWatched)}
-      {renderCarousel("Recommended For You", recommended)}
-      {renderCarousel("Action", action)}
-      {renderCarousel("Comedy", comedy)}
-      {renderCarousel("Drama", drama)}
-
-      <div className="movie-list-wrapper">
-        <h2>All Movies</h2>
-        <MovieList />
+      <div className="tabs">
+        <button
+          className={activeTab === "tailored" ? "tab active" : "tab"}
+          onClick={() => setActiveTab("tailored")}
+        >
+          Tailored For You
+        </button>
+        <button
+          className={activeTab === "all" ? "tab active" : "tab"}
+          onClick={() => setActiveTab("all")}
+        >
+          All Movies
+        </button>
       </div>
+
+      {activeTab === "tailored" && (
+        <div className="tab-content">
+          <h1>Welcome back, {userName}!</h1>
+          <br />
+          {renderCarousel("Recently Watched", recentlyWatched)}
+          {renderCarousel("Top Picks for You", topPicks)}
+          {topPicks.length > 0 &&
+            renderCarousel(
+              `Movies Related to "${topPicks[0]?.title}"`,
+              related1
+            )}
+          {topPicks.length > 1 &&
+            renderCarousel(
+              `Movies Related to "${topPicks[1]?.title}"`,
+              related2
+            )}
+          {topPicks.length > 2 &&
+            renderCarousel(
+              `Movies Related to "${topPicks[2]?.title}"`,
+              related3
+            )}
+        </div>
+      )}
+
+      {activeTab === "all" && (
+        <div className="tab-content movie-list-wrapper">
+          <h2>All Movies</h2>
+          <MovieList />
+        </div>
+      )}
+
+      {/* Movie Details Model */}
+      <Dialog
+        fullScreen
+        open={!!selectedMovieId}
+        onClose={() => {
+          setSelectedMovieId(null);
+          setSelectedMovieTitle(null);
+        }}
+        TransitionComponent={Transition}
+      >
+        <AppBar sx={{ position: "relative", backgroundColor: "#111" }}>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={() => setSelectedMovieId(null)}
+              aria-label="close"
+            >
+              <CloseIcon />
+            </IconButton>
+            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+              {selectedMovieTitle}
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        {selectedMovieId && <MovieDetails movieId={selectedMovieId} />}
+      </Dialog>
     </div>
     </RequireRole>
   );

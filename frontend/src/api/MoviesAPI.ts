@@ -1,13 +1,13 @@
 import { Movie } from "../types/Movie";
 import { MovieCard } from "../types/MovieCard";
 
-const API_URL = "https://localhost:4000";
+export const API_URL = import.meta.env.VITE_API_URL;
 
 // ----- Shared Types -----
-interface FetchMoviesResponse {
-  movies: Movie[];
-  total: number;
-}
+// interface FetchMoviesResponse {
+//   movies: Movie[];
+//   total: number;
+// }
 
 interface FetchMoviesCardsResponse {
   movies: MovieCard[];
@@ -68,7 +68,7 @@ export const addMovie = async (movie: Movie): Promise<AddMovieResponse> => {
   }
 };
 
-export const deleteMovie = async (id: number): Promise<boolean> => {
+export const deleteMovie = async (id: string): Promise<boolean> => {
   try {
     const response = await fetch(`${API_URL}/Movies/DeleteMovie/${id}`, {
       method: "DELETE",
@@ -190,3 +190,66 @@ export const fetchRecommendations = async (id: string): Promise<MovieRecommendat
   return await response.json();
 };
 
+// ----- User Rating API Function -----
+export async function rateMovie(movieId: string, rating: number) {
+  try {
+    const response = await fetch(
+      `${API_URL}/Recommender/rate/${movieId}/${rating}`,
+      {
+        method: "POST",
+        credentials: "include", // important for cookie-based auth
+      }
+    );
+
+    if (!response.ok) {
+      // If there's an error response, try to parse the error message
+      let errorMessage = `Failed to rate movie (status: ${response.status})`;
+      try {
+        const errorData = await response.json();
+        if (errorData.message) errorMessage = errorData.message;
+      } catch {}
+      throw new Error(errorMessage);
+    }
+
+    // Safely try to parse JSON only if content exists
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      const data = await response.json();
+      return data;
+    }
+
+    return { message: "Rating saved (no content returned)." };
+  } catch (error) {
+    console.error("Error rating movie:", error);
+    throw error;
+  }
+}
+
+
+export async function fetchUserMovieDetails(movieId: string) {
+  const response = await fetch(`${API_URL}/Recommender/UserMovieDetails/${movieId}`, {
+    method: "GET",
+    credentials: "include", // needed for cookies to send the auth info
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch user movie details");
+  }
+
+  const data = await response.json();
+
+  return {
+    movie: data.movie,
+    userRating: data.userRating,
+  };
+}
+
+
+//log out user and send to home page
+// src/api/AuthAPI.ts
+export const logoutUser = async () => {
+  await fetch(`${API_URL}/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
+};

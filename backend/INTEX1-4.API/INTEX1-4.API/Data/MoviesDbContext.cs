@@ -19,7 +19,12 @@ public class MoviesDbContext : DbContext
         modelBuilder.Entity<MovieRating>()
             .HasKey(r => new { r.UserId, r.ShowId });
 
+        modelBuilder.Entity<MovieRating>()
+            .Property(r => r.Rating)
+            .HasColumnType("int"); // 🔥 Make sure EF maps this as INT
+
         base.OnModelCreating(modelBuilder);
     }
+
 }
 

@@ -68,13 +68,13 @@ const HeroCard: React.FC = () => {
         >
           <Typography variant="h2" fontWeight="bold" gutterBottom
           sx={{
-            fontFamily: 'MagicRetro, sans-serif',
+            fontFamily: 'BeachSound, sans-serif',
             fontSize: '3rem',
             color: '#FDF2CD',
           }}>
           Tailored for You<br /> From Classics to Today’s Favorites 
           </Typography>
-          <Typography variant="h6" sx={{ mb: 2 }}>
+          <Typography variant="h6" sx={{ mb: 2, color: "#FDF2CD !important" }}>
             Starts at $5.99. Cancel anytime.
           </Typography>
           <Typography variant="body1" sx={{
@@ -136,7 +136,7 @@ const HeroCard: React.FC = () => {
       {/* Informational Card */}
       <Box
         sx={{
-            backgroundColor: "rgba(253, 238, 205, 0.16)",
+            backgroundColor: "rgba(253, 242, 205, 0.35) !important",
             backdropFilter: "blur(6px)",
             color: "#FDF2CD",
             display: "flex",
@@ -151,6 +151,7 @@ const HeroCard: React.FC = () => {
             maxWidth: "1000px",
             mx: "auto",
             transition: "transform 0.3s ease, box-shadow 0.3s ease",
+            boxShadow: "0 8px 20px rgba(134, 128, 109, 0.3)",
             "&:hover": {
               transform: "scale(1.03)",
               boxShadow: "0 8px 20px rgba(213, 36, 41, 0.4)", // optional: glow on hover

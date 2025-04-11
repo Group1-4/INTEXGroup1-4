@@ -1,5 +1,6 @@
 import React, { useState, useEffect, createContext } from 'react';
 import { Navigate } from 'react-router-dom';
+import { API_URL } from '../api/MoviesAPI';
 
 export interface User {
   email: string;
@@ -43,7 +44,7 @@ function AuthorizeView(props: { children: React.ReactNode }) {
       }
     }
 
-    fetchWithRetry('https://localhost:4000/pingauth', {
+    fetchWithRetry(`${API_URL}/pingauth`, {
       method: 'GET',
       credentials: 'include',
     });

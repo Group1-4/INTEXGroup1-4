@@ -1,33 +1,119 @@
-body {
-  background: #6C3F18; /* Dark brown */
-  background: linear-gradient(to right, #6C3F18, #915018); /* Blend dark and light brown */
-  color: #FDF2CD; /* Default text color */
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+/* ========== GLOBAL STYLES ========== */
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: "Netflix Sans", system-ui, Avenir, Helvetica Neue, Segoe UI, Roboto, Ubuntu, sans-serif;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(to right, #6C3F18, #915018); /* Brown gradient */
+  color: #6C3F18; /* Default text color */
 }
 
-.h1 {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #FDF2CD;
+/* ========== CONTAINER & BACKGROUND ========== */
+.netflix-login-container {
+  position: relative;
+  background: url('/SquiglyStripes.png') no-repeat center center;
+  background-size: cover;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.netflix-login-container::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5); /* Overlay */
+  z-index: 1;
+}
+
+/* ========== CARD ========== */
+.netflix-login-card {
+  position: relative;
+  z-index: 2;
+  background-color: rgba(255, 253, 208, 0.9); /* Cream tone */
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 350px;
+  color: #333;
+}
+
+.netflix-login-card h1 {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #6C3F18;
+}
+
+.Register-title {
+  font-family: 'CreatoDisplay' !important;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #6C3F18 !important;
+}
+
+/* ========== FORM INPUTS ========== */
+.netflix-login-card .form-control {
+  background-color: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-bottom: 1px solid #8c8c8c;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  color: #333;
+  width: 100%;
+}
+
+.netflix-login-card .form-control::placeholder {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+/* ========== CHECKBOX GROUP ========== */
+.checkbox-group {
+  display: block;
   margin-bottom: 1rem;
 }
 
+.checkbox-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+/* ========== BUTTONS ========== */
+button.btn,
 .btn-login {
   font-size: 0.9rem;
   letter-spacing: 0.05rem;
   padding: 0.75rem 1rem;
-  color: #FDF2CD !important;
-  background-color: #D52429 !important; /* Primary red */
-  border: 2px solid #FDF2CD;
-  border-radius: 8px;
+  font-weight: bold;
+  text-transform: uppercase;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
   transition: all 0.3s ease;
+  border: 2px solid transparent;
+  color: #FDF2CD !important;
+  background-color: #D52429 !important;
+  border: 2px solid #FDF2CD;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  margin-top: 1rem;
 }
 
+button.btn:hover,
 .btn-login:hover {
-  background-color: #A61E24 !important; /* Darker red on hover */
+  background-color: #A61E24 !important;
   transform: scale(1.05);
 }
 
+/* ========== SOCIAL BUTTONS ========== */
 .btn-google {
   color: #fff !important;
   background-color: #EA4335 !important;
@@ -40,18 +126,38 @@ body {
   border-radius: 6px;
 }
 
+/* ========== CARD BODY ========== */
 .card-body {
   min-width: 400px;
-  background-color: rgba(253, 242, 205, 0.08); /* Transparent offwhite overlay */
+  background-color: rgba(253, 242, 205, 0.08); /* Transparent offwhite */
   padding: 2rem;
   border-radius: 12px;
   border: 1px solid rgba(253, 242, 205, 0.25);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
+/* ========== TYPOGRAPHY ========== */
+.login-h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #6C3F18 !important;
+  margin-bottom: 1rem;
+  font-family: 'BeachSound';
+}
+
+.register-h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #6C3F18 !important;
+  margin-bottom: 1rem;
+  font-family: 'CreatoDisplay';
+}
+
+/* ========== ERROR MESSAGES ========== */
 .error {
   color: #D52429;
   font-weight: bold;
   text-align: center;
   margin-top: 10px;
+  font-size: 0.9rem;
 }

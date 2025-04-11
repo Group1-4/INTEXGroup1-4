@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Identity.css';
+import './identity.css';
 import '@fortawesome/fontawesome-free/css/all.css';
+import { API_URL } from '../api/MoviesAPI';
 
 function LoginPage() {
   const [email, setEmail] = useState<string>('');
@@ -33,45 +34,45 @@ function LoginPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
-
+  
     if (!email || !password) {
       setError('Please fill in all fields.');
       return;
     }
-
-    const loginUrl = rememberme
-      ? 'https://localhost:4000/login?useCookies=true'
-      : 'https://localhost:4000/login?useSessionCookies=true';
-
+  
+    const loginUrl = `${API_URL}/custom-login`;
+  
     try {
       const response = await fetch(loginUrl, {
         method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        credentials: 'include', // ✅ crucial for cookies
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          rememberMe: rememberme, // ✅ this tells Identity to persist login
+        }),
       });
-
-      let data = null;
-      const contentLength = response.headers.get('content-length');
-      if (contentLength && parseInt(contentLength, 10) > 0) {
-        data = await response.json();
-      }
-
+  
       if (!response.ok) {
+        const data = await response.json();
         throw new Error(data?.message || 'Invalid email or password.');
       }
-
+  
       navigate('/admin');
     } catch (error: any) {
       setError(error.message || 'Error logging in.');
-      console.error('Fetch attempt failed:', error);
+      console.error('Login failed:', error);
     }
   };
+  
 
   return (
     <div className="netflix-login-container">
       <div className="netflix-login-card">
-        <h1>Sign In</h1>
+        <h1 className='login-h1'>Sign In</h1>
         <form onSubmit={handleSubmit}>
           <input
             className="form-control"
