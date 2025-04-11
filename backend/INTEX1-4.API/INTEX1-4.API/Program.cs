@@ -206,7 +206,12 @@ app.MapPost("/custom-login", async (
 
         if (result.Succeeded)
         {
-            return Results.Ok(new { message = "Login successful" });
+            var roles = await userManager.GetRolesAsync(user);
+            return Results.Ok(new {
+                message = "Login successful",
+                email = user.Email,
+                roles
+            });
         }
 
         return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);

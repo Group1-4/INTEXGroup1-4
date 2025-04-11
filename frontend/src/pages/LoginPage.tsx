@@ -34,45 +34,50 @@ function LoginPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
-  
+
     if (!email || !password) {
       setError('Please fill in all fields.');
       return;
     }
-  
+
     const loginUrl = `${API_URL}/custom-login`;
-  
+
     try {
       const response = await fetch(loginUrl, {
         method: 'POST',
-        credentials: 'include', // ✅ crucial for cookies
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           email,
           password,
-          rememberMe: rememberme, // ✅ this tells Identity to persist login
+          rememberMe: rememberme,
         }),
       });
-  
+
+      const data = await response.json();
+
       if (!response.ok) {
-        const data = await response.json();
         throw new Error(data?.message || 'Invalid email or password.');
       }
-  
-      navigate('/admin');
+
+      // ✅ navigate based on role
+      if (data.roles?.includes('Admin')) {
+        navigate('/admin');
+      } else {
+        navigate('/movies');
+      }
     } catch (error: any) {
       setError(error.message || 'Error logging in.');
       console.error('Login failed:', error);
     }
   };
-  
 
   return (
     <div className="netflix-login-container">
       <div className="netflix-login-card">
-        <h1 className='login-h1'>Sign In</h1>
+        <h1 className="login-h1">Sign In</h1>
         <form onSubmit={handleSubmit}>
           <input
             className="form-control"
