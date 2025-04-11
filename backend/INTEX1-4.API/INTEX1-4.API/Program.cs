@@ -202,8 +202,6 @@ app.MapPost("/signup", async (
 
     return Results.Ok(new { message = "User registered and signed in!" });
 });
-
-// CUSTOM LOGIN ROUTE
 app.MapPost("/custom-login", async (
     HttpContext context,
     SignInManager<IdentityUser> signInManager,
@@ -213,7 +211,6 @@ app.MapPost("/custom-login", async (
 ) =>
 {
     var user = await userManager.FindByEmailAsync(login.Email);
-
     if (user == null)
     {
         logger.LogInformation($"Login attempt failed for user: {login.Email} - User not found.");
@@ -226,33 +223,41 @@ app.MapPost("/custom-login", async (
         login.RememberMe,
         lockoutOnFailure: false);
 
-    if (!result.Succeeded)
+    if (result.Succeeded)
     {
-        logger.LogInformation($"Login failed for user: {user.Email} - Invalid password.");
-        return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);
+        var roles = await userManager.GetRolesAsync(user);
+
+        // ✅ Sign in manually to issue cookie in minimal API
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(ClaimTypes.Name, user.Email),
+        };
+
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
+
+        var identity = new ClaimsIdentity(claims, IdentityConstants.ApplicationScheme);
+        var principal = new ClaimsPrincipal(identity);
+
+        await context.SignInAsync(IdentityConstants.ApplicationScheme, principal);
+
+        logger.LogInformation($"User {user.Email} signed in and cookie issued.");
+
+        return Results.Ok(new {
+            message = "Login successful",
+            email = user.Email,
+            roles
+        });
     }
 
-    // ✅ Issue the cookie manually to make sure it's set
-    await context.SignInAsync(
-        IdentityConstants.ApplicationScheme,
-        new ClaimsPrincipal(new ClaimsIdentity(new[]
-        {
-            new Claim(ClaimTypes.Email, user.Email!),
-            new Claim(ClaimTypes.NameIdentifier, user.Id),
-            new Claim(ClaimTypes.Name, user.Email!)
-        }, IdentityConstants.ApplicationScheme))
-    );
-
-    logger.LogInformation($"Login successful for user: {user.Email}");
-
-    var roles = await userManager.GetRolesAsync(user);
-
-    return Results.Ok(new {
-        message = "Login successful",
-        email = user.Email,
-        roles
-    });
+    logger.LogInformation($"Login failed for user: {user.Email} - Bad password.");
+    return Results.Json(new { message = "Invalid email or password" }, statusCode: 401);
 });
+
 
 
 
